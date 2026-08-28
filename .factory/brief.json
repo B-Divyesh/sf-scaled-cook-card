@@ -1,0 +1,12 @@
+{
+  "slug": "scaled-cook-card",
+  "title": "Scaled Cook Card",
+  "territory": "utilities",
+  "user": "A home cook scaling a familiar recipe who needs every preparation step to retain the correctly scaled ingredient quantities while cooking hands-free.",
+  "smallest_useful_product": "Static/offline web app that imports a small YAML/JSON recipe, scales servings, renders bound ingredient tokens in each step, and saves actual yield/substitutions locally.",
+  "success_measure": "In a pilot of 20 cooked recipes, users report zero manual quantity recalculations and save corrections on at least 30% of recipes.",
+  "artifact_class": "static-web",
+  "monetization": "one-time",
+  "constraints": "Use user-authored/imported recipes only; no copyrighted site extraction; large touch controls and screen-wake behavior must degrade safely when unsupported.",
+  "why_distinct": "It treats a recipe as a live, scaled procedure rather than a collection to browse."
+}
