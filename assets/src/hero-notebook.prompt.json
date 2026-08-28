@@ -1,0 +1,7 @@
+{
+  "model": "factory-image",
+  "provider": "Azure AI Foundry via /opt/fleet/lib/gen-image.sh",
+  "generated_at": "2026-08-28",
+  "use_case": "stylized-concept",
+  "prompt": "Use case: stylized-concept. Asset type: landing-page hero illustration, landscape crop. Scene/backdrop: tactile editorial kitchen still life on worn oak. Subject: an open spiral kitchen notebook viewed from a slightly elevated angle, one cream page holding a neat hand-drawn recipe procedure represented only by abstract lines and measurement marks, with a wooden spoon, three small ceramic ingredient bowls, and a few red-pencil correction marks. Style/medium: warm editorial gouache and colored-pencil illustration with realistic paper grain, restrained and sophisticated rather than cute. Composition/framing: landscape 3:2; notebook occupies the right two-thirds with generous calm paper-toned negative space on the left; all utensils anatomically accurate and completely visible. Lighting/mood: soft late-afternoon window light, restrained shadows, focused and quietly practical. Color palette: oat paper, graphite, tomato red pencil, sage green, ink blue. Materials/textures: real cream paper, graphite, muted enamel, worn oak. Constraints: no readable writing or numbers anywhere; no hands or people; no interface screenshot. Avoid: text, watermark, logos, brands, food glamour, excessive clutter, generic app mockup, gradients, distorted utensils, pseudo-lettering. No text, no watermark, no logos."
+}
