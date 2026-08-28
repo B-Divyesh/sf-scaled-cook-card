@@ -1,0 +1,12 @@
+{
+  "name": "Scaled Cook Card",
+  "short_name": "Cook Card",
+  "description": "Scale a recipe once and see each ingredient amount inside its cooking step.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4eedc",
+  "theme_color": "#f4eedc",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
