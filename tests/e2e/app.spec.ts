@@ -27,6 +27,26 @@ test('imports sample, scales amounts, cooks with keyboard, and saves a correctio
   await expect(page.getByText(/made 5 ½ servings/i)).toBeVisible();
 });
 
+test('keeps an in-progress correction when the ready toast expires', async ({ page }) => {
+  await page.getByRole('button', { name: /cook the sample/i }).click();
+  // Enter the completion form while the recipe-ready toast is still pending.
+  await page.waitForTimeout(1_900);
+  await page.getByRole('button', { name: /start cook mode/i }).click();
+  for (let step = 0; step < 3; step += 1) await page.getByRole('button', { name: /next step/i }).click();
+  await page.getByRole('button', { name: /finish & note changes/i }).click();
+
+  const actualYield = page.getByLabel('Actual yield');
+  await actualYield.fill('5.5');
+  await page.getByLabel('Substitutions').fill('Used shallot for garlic');
+  // Cross the 3.2s toast-expiry boundary. This must not rerender the form.
+  await page.waitForTimeout(1_600);
+  await expect(actualYield).toHaveValue('5.5');
+  await expect(page.getByLabel('Substitutions')).toHaveValue('Used shallot for garlic');
+
+  await page.getByRole('button', { name: /save to ledger/i }).click();
+  await expect(page.getByText(/made 5 ½ servings/i)).toBeVisible();
+});
+
 test('reports invalid imports without losing the dialog', async ({ page }) => {
   await page.getByRole('button', { name: /import my recipe/i }).click();
   await page.getByLabel('Recipe YAML or JSON').fill('title: Broken');

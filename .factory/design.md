@@ -69,4 +69,4 @@ The hero uses one original generated still-life illustration to establish the wo
 
 ### Provenance
 
-`public/hero-notebook.webp` is generated specifically for this product with the factory Azure image deployment (`factory-image`) on 2026-08-28, using the prompt sheet above. It is original generated imagery and is disclosed in the footer. Source PNG and the exact prompt metadata are retained under `assets/src/`.
+`public/hero-notebook-v1-1280.webp` is generated specifically for this product with the factory Azure image deployment (`factory-image`) on 2026-08-28, using the prompt sheet above. The `v1` filename is intentionally versioned so the immutable production cache can be safely replaced with a new URL when artwork changes. It is original generated imagery and is disclosed in the footer. Source PNG and the exact prompt metadata are retained under `assets/src/`.

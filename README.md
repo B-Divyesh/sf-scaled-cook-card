@@ -74,7 +74,7 @@ npm run optimize:image
 
 ## Deployment and billing
 
-Deploy `dist/` as an Azure Static Web App. `public/staticwebapp.config.json` supplies SPA fallbacks, security headers, and asset MIME types.
+Deploy `dist/` as an Azure Static Web App. `public/staticwebapp.config.json` supplies SPA fallbacks, security headers, asset MIME types, and one-year immutable caching for Vite's fingerprinted assets and the explicitly versioned hero artwork. Bump the hero artwork URL version when replacing that image.
 
 The product uses only the Sociobot billing endpoints:
 

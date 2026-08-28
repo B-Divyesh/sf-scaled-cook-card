@@ -1,5 +1,5 @@
-const CACHE = 'scaled-cook-card-v2';
-const SHELL = ['/', '/index.html', '/manifest.webmanifest', '/favicon.svg', '/hero-notebook-768.webp', '/hero-notebook-1280.webp', '/hero-notebook-1280.avif'];
+const CACHE = 'scaled-cook-card-v3';
+const SHELL = ['/', '/index.html', '/manifest.webmanifest', '/favicon.svg', '/hero-notebook-v1-768.webp', '/hero-notebook-v1-1280.webp', '/hero-notebook-v1-1280.avif'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(SHELL)).then(() => self.skipWaiting()));

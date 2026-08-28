@@ -130,9 +130,9 @@ function landing(): string {
     </section>
     <figure class="hero-figure">
       <picture>
-        <source type="image/avif" srcset="/hero-notebook-1280.avif 1280w" sizes="(max-width: 760px) 94vw, 52vw">
-        <source type="image/webp" srcset="/hero-notebook-768.webp 768w, /hero-notebook-1280.webp 1280w" sizes="(max-width: 760px) 94vw, 52vw">
-        <img src="/hero-notebook-1280.webp" width="1280" height="853" alt="Illustrated open kitchen notebook with ingredient bowls, a wooden spoon, and pencil corrections" fetchpriority="high" decoding="async">
+        <source type="image/avif" srcset="/hero-notebook-v1-1280.avif 1280w" sizes="(max-width: 760px) 94vw, 52vw">
+        <source type="image/webp" srcset="/hero-notebook-v1-768.webp 768w, /hero-notebook-v1-1280.webp 1280w" sizes="(max-width: 760px) 94vw, 52vw">
+        <img src="/hero-notebook-v1-1280.webp" width="1280" height="853" alt="Illustrated open kitchen notebook with ingredient bowls, a wooden spoon, and pencil corrections" fetchpriority="high" decoding="async">
       </picture>
       <figcaption><span>01</span> Scale once <i></i> <span>02</span> Cook step by step <i></i> <span>03</span> Note what changed</figcaption>
     </figure>
@@ -333,7 +333,11 @@ function notify(message: string): void {
   state.toast = message;
   window.clearTimeout(toastTimer);
   render();
-  toastTimer = window.setTimeout(() => { state.toast = ''; render(); }, 3200);
+  toastTimer = window.setTimeout(() => {
+    state.toast = '';
+    const toast = root.querySelector<HTMLElement>('.toast');
+    if (toast) toast.textContent = '';
+  }, 3200);
 }
 
 function activateRecipe(recipe: Recipe, addToLibrary = state.license.valid): void {

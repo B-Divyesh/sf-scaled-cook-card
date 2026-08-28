@@ -13,6 +13,6 @@
     "strict": true,
     "noUncheckedIndexedAccess": true
   },
-  "include": ["src", "tests/recipe.test.ts", "vite.config.ts", "vitest.config.ts"],
+  "include": ["src", "tests/*.test.ts", "vite.config.ts", "vitest.config.ts"],
   "exclude": ["tests/e2e"]
 }
