@@ -1,55 +1,31 @@
-# Scaled Cook Card — build handoff
+# Scaled Cook Card — verification handoff
 
-## What was built
+## FAIL — do not release this candidate
 
-A finished Vite + vanilla TypeScript static web app for importing user-authored YAML/JSON recipes, changing the serving yield, and seeing every referenced ingredient’s scaled quantity directly inside its preparation step.
+Independent QA on 2026-08-28 verified commit `fa0690f6b96e73ca9acb20cff974f17190ed6d79` at https://scaled-cook-card.sociobot.in. The live deployment is byte-for-byte identical to this candidate, but it does not meet the acceptance contract.
 
-The end-to-end flow includes:
+The complete evidence and reproduction steps are in [`.factory/verification.md`](verification.md). No product source code was changed by the verifier.
 
-- clear empty state with an original notebook hero and usable sample recipe;
-- paste, file-picker, and drag/drop import with schema validation and actionable errors;
-- decimal, mixed, simple, and common Unicode fraction parsing;
-- direct serving controls and immediate step-level amount updates;
-- keyboard- and touch-friendly cook mode with one step at a time, progress, Back/Next, arrow keys, and an optional Wake Lock that degrades with an explanation;
-- post-cook actual yield, substitution, and note capture in local storage;
-- free JSON export, recipe replacement/deletion confirmation, offline state, and offline reload;
-- privacy and terms routes;
-- a $9 one-time Kitchen Pass sold only through Sociobot, including query-string license capture, local token storage, daily-cached verification, optimistic cached unlock, invalid-license notice, and paste-to-restore;
-- a paid unlimited local recipe library and full local cook history, while the free tier retains one complete working card and its latest correction;
-- Azure Static Web Apps fallback, security headers, PWA manifest, and versioned service-worker cache.
+### Release-blocking defect
 
-The product-specific handwritten lab notebook system is documented in `.factory/design.md`. The original generated source, prompt, and metadata are in `assets/src/`; production AVIF/WebP derivatives are all below 150 KB.
+The initial “recipe is ready to scale” toast expires after 3.2 seconds and performs a full render. If a cook has opened the completion form and entered an actual yield when that timeout expires, their value is silently erased. Saving then stores substitutions/notes but not the actual yield. This directly breaks the brief's required post-cook actual-yield correction flow. It was reproduced on the live 390 px site and made the committed Chromium core-flow test fail 2 of 3 repeated attempts.
 
-## How to run and verify
+### Other required fix
+
+Live hashed JS, CSS, and hero assets all return `Cache-Control: public, must-revalidate, max-age=30`; they need long-lived immutable caching to meet the static/PWA performance contract.
+
+## What passed
+
+`npm ci`, `npm test` (5/5), TypeScript checking, and the exact `npm run build` command passed. Bundles are within budget (74.18 KB JS raw, 18.02 KB CSS raw). The app passed independent desktop and 390 px checks for valid JSON/YAML-style scaling, invalid import recovery, serving boundaries, cook keyboard navigation, offline saved-card reload, legal routes, and paid restore UI. Live axe scans had no serious/critical findings; focus and reduced-motion behavior passed. Live Lighthouse mobile: Performance 98, Accessibility 100, LCP 1.7 s, TBT 141 ms, CLS 0. Privacy and security checks found local-first recipe storage, no initial third-party requests, no tracking, and appropriate CSP/permissions/referrer/nosniff headers.
+
+## Verify after fixes
 
 ```bash
 npm ci
 npm test
+npm run typecheck
 npm run build
 npm run test:e2e
 ```
 
-`npm run build` is the work-order build command. It runs TypeScript checking and Vite, then emits `dist/index.html` at the required root.
-
-Verification performed on 2026-08-28:
-
-- `npm audit`: 0 vulnerabilities
-- `npm test`: 5/5 unit tests passed
-- `npm run test:e2e`: 12/12 tests passed across desktop Chromium and 390×844 mobile Chromium, covering import, scaling, cook navigation, correction storage, invalid-import, legal-route, paid-surface, offline, and axe checks
-- `/opt/fleet/lib/verify-url.sh`: HTTP 200; title present; `lang="en"`; exactly one `h1`; main landmark present; zero images missing alt; zero unlabeled buttons; zero console/page errors
-- offline probe: saved recipe reloaded from the service worker, offline notice visible, zero console errors
-- production bundles: 74.18 KB JS / 25.47 KB gzip; 18.02 KB CSS / 4.90 KB gzip
-- hero assets: 94.5 KB AVIF, 149.6 KB desktop WebP, 46.9 KB mobile WebP
-- Lighthouse 12.8.2 mobile simulation against production preview: Performance 99, Accessibility 100, LCP 1.8 s, FCP 1.1 s, TBT 110 ms, CLS 0
-
-## Privacy and data
-
-Recipes, target servings, cook records, and license state are stored only in browser local storage. The only cross-origin runtime request is license verification to `api.sociobot.in` after a token is present. There are no analytics, trackers, CDN resources, web fonts, accounts, recipe uploads, or scraper behavior.
-
-## Known gaps and release steps
-
-- The factory must register `scaled-cook-card` and its production return URL with the Sociobot billing engine before checkout can complete. No product id is hardcoded.
-- A real paid token was not available in this build container; the checkout URL, token-capture/cleanup, cached verification, invalid/offline handling, and restore UI are implemented, while live purchase completion remains a release smoke test.
-- Screen Wake Lock support depends on browser/OS policy. Unsupported or denied requests leave cook mode fully usable and show an explicit explanation.
-- Offline support begins after one successful online load. Clearing browser site data removes locally stored cards and history, as stated on `/privacy`.
-- Web recipe extraction, meal planning, nutrition calculations, social publishing, and cloud synchronization remain intentional non-goals from the brief.
+Then repeat the live correction reproduction across the toast expiry boundary, check the full desktop/mobile suite repeatedly, and confirm immutable cache headers on hashed assets.
