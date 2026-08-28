@@ -46,3 +46,21 @@ test('legal routes work directly', async ({ page }) => {
   await page.goto('/terms');
   await expect(page.getByRole('heading', { level: 1, name: 'Terms of use' })).toBeVisible();
 });
+
+test('presents the one-time paid unlock and restore path', async ({ page }) => {
+  await page.getByRole('button', { name: 'Kitchen Pass' }).click();
+  await expect(page.getByText('$9')).toBeVisible();
+  await expect(page.getByRole('link', { name: /buy kitchen pass/i })).toHaveAttribute('href', 'https://api.sociobot.in/api/v1/products/scaled-cook-card/checkout');
+  await expect(page.getByLabel(/have a license/i)).toBeVisible();
+});
+
+test('reloads a saved card offline', async ({ page, context }) => {
+  await page.evaluate(() => navigator.serviceWorker.ready);
+  await page.reload();
+  await page.getByRole('button', { name: /cook the sample/i }).click();
+  await page.waitForTimeout(300);
+  await context.setOffline(true);
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await expect(page.getByRole('heading', { level: 1, name: 'Weeknight tomato pasta' })).toBeVisible();
+  await expect(page.getByText(/offline — your card still works/i)).toBeVisible();
+});
