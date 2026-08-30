@@ -187,7 +187,7 @@ test('activates the current service worker and accepts an update check', async (
     });
     expect(workerState.controlled).toBe(true);
     expect(workerState.scope).toBe('http://127.0.0.1:4173/');
-    expect(workerState.caches).toContain('scaled-cook-card-v4');
+    expect(workerState.caches).toContain('scaled-cook-card-v5');
   } finally {
     await context.close();
   }
