@@ -54,4 +54,4 @@ Recipes, serving choices, corrections, and demo data stay in browser local stora
 
 ## Deployment handoff
 
-Push the committed `main` revision to trigger the configured Azure Static Web Apps deployment. After deployment, verify the live revision’s hashed JavaScript changes, `scaled-cook-card-v3` service worker, direct `/demo` route, and the immutable cache header on `/assets/*` plus the three `hero-notebook-v1-*` assets. No known release-blocking gaps remain.
+Committed and pushed `bc7fd5e` to `main`. At 2026-08-30 05:36 UTC, the live endpoint was still serving the prior `index-DSOQOeuH.js` artifact: `/demo` was not yet present and the new `index-B626S3Vy.js` returned 404. No repository deployment workflow exists, and this work order does not authorize infrastructure inspection or changes. The factory deployment must publish this pushed static revision, then verify the new hashed JavaScript, `scaled-cook-card-v3` service worker, direct `/demo` route, and immutable cache headers on `/assets/*` plus the three `hero-notebook-v1-*` assets.
