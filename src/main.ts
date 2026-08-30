@@ -3,7 +3,7 @@ import { bindingIds, formatQuantity, parseRecipe, sampleRecipe, scaledAmount } f
 import { CHECKOUT_URL, cachedLicenseState, captureLicenseFromUrl, clearLicense, storeLicense, verifyLicense } from './license';
 import {
   getActiveRecipe, getCookRecords, getLibrary, getTargetServings, saveActiveRecipe,
-  saveCookRecords, saveLibrary, saveTargetServings, upsertLibrary,
+  saveCookRecords, saveLibrary, saveTargetServings, setStorageNamespace, clearStorageNamespace, upsertLibrary,
 } from './storage';
 import type { CookRecord, LicenseState, Recipe, RecipeStep } from './types';
 
@@ -24,20 +24,23 @@ interface AppState {
   online: boolean;
   wakeActive: boolean;
   wakeMessage: string;
+  demo: boolean;
 }
 
 const appRoot = document.querySelector<HTMLDivElement>('#app');
 if (!appRoot) throw new Error('App root is missing.');
 const root: HTMLDivElement = appRoot;
 
-captureLicenseFromUrl();
-const initialRecipe = getActiveRecipe();
+const demo = location.pathname === '/demo' || new URL(location.href).searchParams.get('demo') === '1';
+setStorageNamespace(demo ? 'demo:scc:' : 'scc:');
+if (!demo) captureLicenseFromUrl();
+const initialRecipe = getActiveRecipe() ?? (demo ? parseRecipe(sampleRecipe) : null);
 const state: AppState = {
   recipe: initialRecipe,
   targetServings: initialRecipe ? getTargetServings(initialRecipe.servings) : 4,
   library: getLibrary(),
   records: getCookRecords(),
-  license: cachedLicenseState(),
+  license: demo ? { token: null, valid: false, checking: false, message: '' } : cachedLicenseState(),
   importOpen: false,
   passOpen: false,
   cookOpen: false,
@@ -49,6 +52,7 @@ const state: AppState = {
   online: navigator.onLine,
   wakeActive: false,
   wakeMessage: navigator.wakeLock ? 'Keep this screen awake while cooking.' : 'Screen wake is not available in this browser.',
+  demo,
 };
 
 let wakeLock: WakeLockSentinel | null = null;
@@ -94,7 +98,7 @@ function renderStepText(step: RecipeStep): string {
 
 function header(): string {
   return `<header class="site-header">
-    <a class="wordmark" href="/" data-nav="/" aria-label="Scaled Cook Card home">
+    <a class="wordmark" href="${state.demo ? '/demo' : '/'}" data-nav="${state.demo ? '/demo' : '/'}" aria-label="Scaled Cook Card home">
       <span class="mark" aria-hidden="true">${icon('scale')}</span>
       <span>Scaled Cook Card</span>
     </a>
@@ -103,6 +107,11 @@ function header(): string {
       <button class="text-button" data-action="open-pass">${state.license.valid ? 'Kitchen Pass active' : 'Kitchen Pass'}</button>
     </nav>
   </header>`;
+}
+
+function demoBanner(): string {
+  if (!state.demo) return '';
+  return `<aside class="demo-banner" aria-label="Demo mode"><span><strong>Demo</strong> — sample data, nothing is saved to your real card.</span><span><button class="text-button" data-action="reset-demo">Reset demo</button><button class="text-button" data-action="start-real">Start for real</button></span></aside>`;
 }
 
 function footer(): string {
@@ -123,7 +132,7 @@ function landing(): string {
       <h1 id="main-title">Every amount,<br><em>right in the step.</em></h1>
       <p class="lede">Change the servings once. Your ingredient quantities follow you through the recipe, so flour-covered hands never have to calculate or scroll.</p>
       <div class="hero-actions">
-        <button class="button primary" data-action="try-sample">Cook the sample ${icon('arrow')}</button>
+        <button class="button primary" data-action="try-sample">Try it with sample data ${icon('arrow')}</button>
         <button class="button secondary" data-action="open-import">${icon('upload')} Import my recipe</button>
       </div>
       <p class="microcopy">YAML or JSON · works offline · stays on your device</p>
@@ -304,8 +313,12 @@ function completionForm(): string {
 
 function render(): void {
   const path = location.pathname.replace(/\/$/, '') || '/';
+  document.title = path === '/privacy' ? 'Privacy — Scaled Cook Card'
+    : path === '/terms' ? 'Terms — Scaled Cook Card'
+      : state.demo ? 'Demo — Scaled Cook Card'
+        : 'Scaled Cook Card — quantities that follow every step';
   const page = path === '/privacy' ? legalPage('privacy') : path === '/terms' ? legalPage('terms') : state.recipe ? workspace() : landing();
-  root.innerHTML = `${header()}${page}${footer()}${importDialog()}${passDialog()}${cookDialog()}<div class="toast" role="status" aria-live="polite">${escapeHtml(state.toast)}</div>`;
+  root.innerHTML = `${header()}${demoBanner()}${page}${footer()}${importDialog()}${passDialog()}${cookDialog()}<div class="toast" role="status" aria-live="polite">${escapeHtml(state.toast)}</div>`;
   if (state.importOpen) openRenderedDialog('import-dialog');
   if (state.passOpen) openRenderedDialog('pass-dialog');
   if (state.cookOpen) openRenderedDialog('cook-dialog');
@@ -348,7 +361,7 @@ function activateRecipe(recipe: Recipe, addToLibrary = state.license.valid): voi
   if (addToLibrary) state.library = upsertLibrary(recipe);
   state.importOpen = false;
   state.importError = '';
-  history.pushState({}, '', '/');
+  history.pushState({}, '', state.demo ? '/demo' : '/');
   notify(`${recipe.title} is ready to scale.`);
 }
 
@@ -409,7 +422,22 @@ root.addEventListener('click', (event) => {
   const nav = target.dataset.nav;
   if (nav) { event.preventDefault(); history.pushState({}, '', nav); state.importOpen = false; state.passOpen = false; render(); window.scrollTo(0, 0); return; }
   const action = target.dataset.action;
-  if (action === 'try-sample') activateRecipe(parseRecipe(sampleRecipe));
+  if (action === 'try-sample') location.assign('/demo');
+  if (action === 'reset-demo' && state.demo) {
+    clearStorageNamespace();
+    state.recipe = parseRecipe(sampleRecipe);
+    state.targetServings = state.recipe.servings;
+    state.records = [];
+    state.library = [];
+    saveActiveRecipe(state.recipe);
+    saveTargetServings(state.targetServings);
+    notify('Demo reset to the sample recipe.');
+  }
+  if (action === 'start-real' && state.demo) {
+    clearStorageNamespace();
+    setStorageNamespace('scc:');
+    location.assign('/');
+  }
   if (action === 'open-import') { state.importOpen = true; state.importError = ''; render(); }
   if (action === 'close-import') { state.importOpen = false; render(); }
   if (action === 'reset-sample') { state.importText = sampleRecipe; state.importError = ''; render(); }

@@ -6,6 +6,8 @@ It is for home cooks who know what they want to make and do not want to recalcul
 
 Live: https://scaled-cook-card.sociobot.in
 
+Try the isolated sample at `https://scaled-cook-card.sociobot.in/demo`. It uses separate browser storage and never changes a real card.
+
 ## What ships
 
 - YAML and JSON import by paste, file picker, or drag and drop
@@ -16,6 +18,7 @@ Live: https://scaled-cook-card.sociobot.in
 - JSON export that is always available
 - Offline shell and saved-recipe support through a service worker
 - Local-only recipe storage; no analytics or third-party runtime assets
+- Direct `/demo` sandbox with the shipped sample recipe and separate `demo:scc:` browser storage
 - $9 one-time Kitchen Pass integration through Sociobot billing for an unlimited local library and full local cook history
 
 The free experience includes one saved recipe, its latest correction, all scaling and cooking features, offline use, and export. Accessibility, safety behavior, and export are never paywalled.
@@ -88,6 +91,8 @@ The factory must register the slug and return URL before release. No payment-pro
 - Research brief: [`.factory/brief.json`](.factory/brief.json)
 - Visual system and image provenance: [`.factory/design.md`](.factory/design.md)
 - Build handoff: [`.factory/handoff.md`](.factory/handoff.md)
+- Demo behavior: [`.factory/demo.md`](.factory/demo.md)
+- Tested product claims: [`.factory/claims.json`](.factory/claims.json)
 
 ## License
 

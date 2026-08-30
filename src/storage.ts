@@ -1,9 +1,17 @@
 import type { CookRecord, Recipe } from './types';
 
-const ACTIVE_KEY = 'scc:active-recipe';
-const SERVINGS_KEY = 'scc:target-servings';
-const LIBRARY_KEY = 'scc:recipe-library';
-const RECORDS_KEY = 'scc:cook-records';
+let namespace = 'scc:';
+
+function key(name: string): string { return `${namespace}${name}`; }
+
+export function setStorageNamespace(nextNamespace: string): void { namespace = nextNamespace; }
+
+export function clearStorageNamespace(): void {
+  for (let index = localStorage.length - 1; index >= 0; index -= 1) {
+    const storedKey = localStorage.key(index);
+    if (storedKey?.startsWith(namespace)) localStorage.removeItem(storedKey);
+  }
+}
 
 function read<T>(key: string, fallback: T): T {
   try {
@@ -14,17 +22,17 @@ function read<T>(key: string, fallback: T): T {
   }
 }
 
-export function getActiveRecipe(): Recipe | null { return read<Recipe | null>(ACTIVE_KEY, null); }
+export function getActiveRecipe(): Recipe | null { return read<Recipe | null>(key('active-recipe'), null); }
 export function saveActiveRecipe(recipe: Recipe | null): void {
-  if (recipe) localStorage.setItem(ACTIVE_KEY, JSON.stringify(recipe));
-  else localStorage.removeItem(ACTIVE_KEY);
+  if (recipe) localStorage.setItem(key('active-recipe'), JSON.stringify(recipe));
+  else localStorage.removeItem(key('active-recipe'));
 }
-export function getTargetServings(fallback: number): number { return read<number>(SERVINGS_KEY, fallback); }
-export function saveTargetServings(value: number): void { localStorage.setItem(SERVINGS_KEY, JSON.stringify(value)); }
-export function getLibrary(): Recipe[] { return read<Recipe[]>(LIBRARY_KEY, []); }
-export function saveLibrary(recipes: Recipe[]): void { localStorage.setItem(LIBRARY_KEY, JSON.stringify(recipes)); }
-export function getCookRecords(): CookRecord[] { return read<CookRecord[]>(RECORDS_KEY, []); }
-export function saveCookRecords(records: CookRecord[]): void { localStorage.setItem(RECORDS_KEY, JSON.stringify(records)); }
+export function getTargetServings(fallback: number): number { return read<number>(key('target-servings'), fallback); }
+export function saveTargetServings(value: number): void { localStorage.setItem(key('target-servings'), JSON.stringify(value)); }
+export function getLibrary(): Recipe[] { return read<Recipe[]>(key('recipe-library'), []); }
+export function saveLibrary(recipes: Recipe[]): void { localStorage.setItem(key('recipe-library'), JSON.stringify(recipes)); }
+export function getCookRecords(): CookRecord[] { return read<CookRecord[]>(key('cook-records'), []); }
+export function saveCookRecords(records: CookRecord[]): void { localStorage.setItem(key('cook-records'), JSON.stringify(records)); }
 
 export function upsertLibrary(recipe: Recipe): Recipe[] {
   const library = getLibrary();
