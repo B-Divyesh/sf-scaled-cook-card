@@ -27,6 +27,9 @@ interface AppState {
   demo: boolean;
 }
 
+const SITE_URL = 'https://scaled-cook-card.sociobot.in';
+const BUILD_ID = '2026.08.30-repair.1';
+
 const appRoot = document.querySelector<HTMLDivElement>('#app');
 if (!appRoot) throw new Error('App root is missing.');
 const root: HTMLDivElement = appRoot;
@@ -57,6 +60,7 @@ const state: AppState = {
 
 let wakeLock: WakeLockSentinel | null = null;
 let toastTimer = 0;
+let routeAnnouncement = '';
 
 const escapeHtml = (value: unknown): string => String(value)
   .replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
@@ -104,6 +108,8 @@ function header(): string {
     </a>
     <nav aria-label="Utility navigation">
       ${!state.online ? '<span class="connection-pill"><span aria-hidden="true">●</span> Offline — your card still works</span>' : ''}
+      <a class="nav-link" href="/demo">Demo</a>
+      <a class="nav-link" href="/privacy" data-nav="/privacy">Privacy</a>
       <button class="text-button" data-action="open-pass">${state.license.valid ? 'Kitchen Pass active' : 'Kitchen Pass'}</button>
     </nav>
   </header>`;
@@ -116,26 +122,27 @@ function demoBanner(): string {
 
 function footer(): string {
   return `<footer class="site-footer">
-    <p>Private by design. Recipes stay in this browser.</p>
+    <p>Scaled recipe cards for home cooks.</p>
     <nav aria-label="Legal">
       <a href="/privacy" data-nav="/privacy">Privacy</a>
       <a href="/terms" data-nav="/terms">Terms</a>
     </nav>
-    <p class="generation-note">Notebook artwork generated for this product with Azure AI Foundry.</p>
+    <p class="generation-note">Built by Param Factory · build ${BUILD_ID}. Notebook artwork was generated for this product with Azure AI Foundry.</p>
   </footer>`;
 }
 
 function landing(): string {
   return `<main id="main" class="landing">
     <section class="hero-copy" aria-labelledby="main-title">
-      <p class="eyebrow">A recipe that does the arithmetic</p>
-      <h1 id="main-title">Every amount,<br><em>right in the step.</em></h1>
-      <p class="lede">Change the servings once. Your ingredient quantities follow you through the recipe, so flour-covered hands never have to calculate or scroll.</p>
+      <p class="eyebrow">Scaled Cook Card</p>
+      <h1 id="main-title">Scale recipe amounts<br><em>in every step.</em></h1>
+      <p class="lede">For home cooks who need correct quantities while their hands are busy.</p>
       <div class="hero-actions">
         <button class="button primary" data-action="try-sample">Try it with sample data ${icon('arrow')}</button>
         <button class="button secondary" data-action="open-import">${icon('upload')} Import my recipe</button>
       </div>
-      <p class="microcopy">YAML or JSON · works offline · stays on your device</p>
+      <p class="action-help">Open a ready pasta card, or paste a recipe you wrote.</p>
+      <ul class="plain-facts" aria-label="Product facts"><li>Import YAML or JSON.</li><li>Works offline after the first visit.</li><li>$9 once for optional history. Recipes stay in this browser.</li></ul>
     </section>
     <figure class="hero-figure">
       <picture>
@@ -147,14 +154,22 @@ function landing(): string {
     </figure>
     <section class="how-it-works" aria-labelledby="how-heading">
       <div>
-        <p class="eyebrow">The binding trick</p>
-        <h2 id="how-heading">Put the ingredient where the action is.</h2>
+        <p class="eyebrow">How it works</p>
+        <h2 id="how-heading">Bind each amount to its cooking step.</h2>
       </div>
       <div class="syntax-demo" aria-label="Example of a bound ingredient">
         <code>Add &#123;&#123;salt&#125;&#125; to the pot.</code>
         <span aria-hidden="true">becomes</span>
         <p>Add <span class="bound-token"><strong>1½ tsp</strong> fine salt</span> to the pot.</p>
       </div>
+    </section>
+    <section class="landing-detail" aria-labelledby="limits-heading">
+      <div><p class="eyebrow">Recipe boundaries</p><h2 id="limits-heading">What this card does not do</h2></div>
+      <p>Start with a recipe you wrote or can import. This card focuses on scaling and cooking that recipe.</p>
+    </section>
+    <section class="landing-detail pass-section" aria-labelledby="pass-heading">
+      <div><p class="eyebrow">Optional upgrade</p><h2 id="pass-heading">Kitchen Pass</h2></div>
+      <div><p><strong>$9 once.</strong> Keep an unlimited local recipe library and complete local cook history.</p><button class="button secondary" data-action="open-pass">See Kitchen Pass details</button></div>
     </section>
   </main>`;
 }
@@ -203,7 +218,7 @@ function workspace(): string {
     </div>
     <section class="ledger-summary" aria-labelledby="ledger-heading">
       <div><p class="eyebrow">After cooking</p><h2 id="ledger-heading">Correction ledger</h2></div>
-      ${latest ? `<div class="latest-note"><span>${new Date(latest.cookedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span><p>${latest.actualYield ? `Made ${formatQuantity(latest.actualYield)} servings. ` : ''}${escapeHtml(latest.substitutions || latest.notes || 'Cook completed — no changes noted.')}</p></div>` : '<p class="muted">Finish a cook to save the real yield, substitutions, and notes on this device.</p>'}
+      ${latest ? `<div class="latest-note"><span>${new Date(latest.cookedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span><p>${latest.actualYield !== null ? `Made ${formatQuantity(latest.actualYield)} servings. ` : ''}${escapeHtml(latest.substitutions || latest.notes || 'Cook completed — no changes noted.')}</p></div>` : '<p class="muted">Finish a cook to save the real yield, substitutions, and notes on this device.</p>'}
       <button class="button secondary" data-action="start-cook">${latest ? 'Cook it again' : 'Start cooking'}</button>
     </section>
     <div class="bottom-actions">
@@ -271,7 +286,8 @@ function passDialog(): string {
       : `<p class="pass-price"><strong>$9</strong> once</p>
       <ul class="check-list"><li>${icon('check')} Save unlimited recipe cards</li><li>${icon('check')} Keep the complete correction history</li><li>${icon('check')} Use the same license on your devices</li></ul>
       <p>The free card still includes scaling, cook mode, one saved recipe and its latest correction, offline use, and export.</p>
-      <a class="button primary full-button" href="${CHECKOUT_URL}">Buy Kitchen Pass ${icon('arrow')}</a>
+      <a class="button primary full-button" href="${CHECKOUT_URL}" target="_blank" rel="noopener noreferrer" aria-label="Buy Kitchen Pass (opens hosted checkout in a new tab)">Buy Kitchen Pass ${icon('arrow')}</a>
+      <p class="field-help">Checkout opens separately. If it is unavailable, your free cook card stays usable here.</p>
       <hr>
       <form id="license-form"><label for="license-token">Have a license? Paste it here</label><div class="inline-field"><input id="license-token" name="license" autocomplete="off" required><button class="button secondary" type="submit">Verify</button></div></form>
       ${state.license.message ? `<p class="license-message" aria-live="polite">${escapeHtml(state.license.message)}</p>` : ''}`}
@@ -313,15 +329,34 @@ function completionForm(): string {
 
 function render(): void {
   const path = location.pathname.replace(/\/$/, '') || '/';
-  document.title = path === '/privacy' ? 'Privacy — Scaled Cook Card'
-    : path === '/terms' ? 'Terms — Scaled Cook Card'
-      : state.demo ? 'Demo — Scaled Cook Card'
-        : 'Scaled Cook Card — quantities that follow every step';
-  const page = path === '/privacy' ? legalPage('privacy') : path === '/terms' ? legalPage('terms') : state.recipe ? workspace() : landing();
-  root.innerHTML = `${header()}${demoBanner()}${page}${footer()}${importDialog()}${passDialog()}${cookDialog()}<div class="toast" role="status" aria-live="polite">${escapeHtml(state.toast)}</div>`;
+  updateDocumentMetadata(path);
+  const page = path === '/privacy' ? legalPage('privacy')
+    : path === '/terms' ? legalPage('terms')
+      : path === '/' || path === '/demo' ? (state.recipe ? workspace() : landing())
+        : notFoundPage();
+  root.innerHTML = `${header()}${demoBanner()}<p class="sr-only" aria-live="polite" id="route-announcement">${escapeHtml(routeAnnouncement)}</p>${page}${footer()}${importDialog()}${passDialog()}${cookDialog()}<div class="toast" role="status" aria-live="polite">${escapeHtml(state.toast)}</div>`;
   if (state.importOpen) openRenderedDialog('import-dialog');
   if (state.passOpen) openRenderedDialog('pass-dialog');
   if (state.cookOpen) openRenderedDialog('cook-dialog');
+}
+
+function notFoundPage(): string {
+  return `<main id="main" class="legal-page not-found"><p class="eyebrow">Page not found</p><h1>That cook card page is missing.</h1><p class="lede">Return to the cook card to scale a recipe or open the sample.</p><p><a class="button primary" href="/" data-nav="/">Back to cook card</a></p></main>`;
+}
+
+function updateDocumentMetadata(path: string): void {
+  const page = path === '/privacy' ? { title: 'Privacy — Scaled Cook Card', description: 'How Scaled Cook Card keeps recipe data in your browser.' }
+    : path === '/terms' ? { title: 'Terms — Scaled Cook Card', description: 'Terms for using Scaled Cook Card.' }
+      : path === '/demo' ? { title: 'Demo — Scaled Cook Card', description: 'Try Scaled Cook Card with a sample recipe.' }
+        : path === '/' ? { title: 'Scaled Cook Card — scale recipe steps', description: 'Scale a recipe once, then see the right ingredient amount in every cooking step.' }
+          : { title: 'Page not found — Scaled Cook Card', description: 'This Scaled Cook Card page is not available.' };
+  document.title = page.title;
+  document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.setAttribute('href', `${SITE_URL}${path === '/' ? '/' : path}`);
+  document.querySelector<HTMLMetaElement>('meta[name="description"]')?.setAttribute('content', page.description);
+  document.querySelector<HTMLMetaElement>('meta[property="og:title"]')?.setAttribute('content', page.title);
+  document.querySelector<HTMLMetaElement>('meta[property="og:description"]')?.setAttribute('content', page.description);
+  document.querySelector<HTMLMetaElement>('meta[name="twitter:title"]')?.setAttribute('content', page.title);
+  document.querySelector<HTMLMetaElement>('meta[name="twitter:description"]')?.setAttribute('content', page.description);
 }
 
 function openRenderedDialog(id: string): void {
@@ -329,17 +364,45 @@ function openRenderedDialog(id: string): void {
     const dialog = document.querySelector<HTMLDialogElement>(`#${id}`);
     if (dialog && !dialog.open) {
       dialog.addEventListener('close', () => {
-        if (id === 'import-dialog') state.importOpen = false;
-        if (id === 'pass-dialog') state.passOpen = false;
+        if (id === 'import-dialog' && state.importOpen) { state.importOpen = false; render(); focusAfterRender('[data-action="open-import"]'); }
+        if (id === 'pass-dialog' && state.passOpen) { state.passOpen = false; render(); focusAfterRender('[data-action="open-pass"]'); }
         if (id === 'cook-dialog') {
           state.cookOpen = false;
           state.completionOpen = false;
           void toggleWake(false);
+          focusAfterRender('[data-action="start-cook"]');
         }
       }, { once: true });
       dialog.showModal();
     }
   });
+}
+
+function focusAfterRender(selector: string): void {
+  requestAnimationFrame(() => root.querySelector<HTMLElement>(selector)?.focus());
+}
+
+function focusRouteHeading(): void {
+  requestAnimationFrame(() => {
+    const heading = root.querySelector<HTMLElement>('main h1');
+    if (!heading) return;
+    heading.tabIndex = -1;
+    heading.focus();
+  });
+}
+
+function navigate(path: string): void {
+  if (state.demo && path !== '/demo') {
+    location.assign(path);
+    return;
+  }
+  history.pushState({}, '', path);
+  state.importOpen = false;
+  state.passOpen = false;
+  routeAnnouncement = `Opened ${path === '/privacy' ? 'Privacy' : path === '/terms' ? 'Terms' : 'Scaled Cook Card'}.`;
+  render();
+  window.scrollTo(0, 0);
+  focusRouteHeading();
 }
 
 function notify(message: string): void {
@@ -400,10 +463,11 @@ async function toggleWake(enabled: boolean): Promise<void> {
 
 function finishCook(data?: FormData): void {
   if (!state.recipe) return;
+  const enteredYield = String(data?.get('actualYield') ?? '').trim();
   const record: CookRecord = {
     id: crypto.randomUUID(), recipeId: state.recipe.id, cookedAt: new Date().toISOString(),
     targetServings: state.targetServings,
-    actualYield: data?.get('actualYield') ? Number(data.get('actualYield')) : null,
+    actualYield: enteredYield === '' ? null : Number(enteredYield),
     substitutions: String(data?.get('substitutions') ?? '').trim(), notes: String(data?.get('notes') ?? '').trim(),
   };
   const others = state.records.filter((item) => item.recipeId !== state.recipe?.id);
@@ -420,7 +484,7 @@ root.addEventListener('click', (event) => {
   const target = (event.target as HTMLElement).closest<HTMLElement>('[data-action], [data-nav]');
   if (!target) return;
   const nav = target.dataset.nav;
-  if (nav) { event.preventDefault(); history.pushState({}, '', nav); state.importOpen = false; state.passOpen = false; render(); window.scrollTo(0, 0); return; }
+  if (nav) { event.preventDefault(); navigate(nav); return; }
   const action = target.dataset.action;
   if (action === 'try-sample') location.assign('/demo');
   if (action === 'reset-demo' && state.demo) {
@@ -439,13 +503,13 @@ root.addEventListener('click', (event) => {
     location.assign('/');
   }
   if (action === 'open-import') { state.importOpen = true; state.importError = ''; render(); }
-  if (action === 'close-import') { state.importOpen = false; render(); }
+  if (action === 'close-import') { state.importOpen = false; render(); focusAfterRender('[data-action="open-import"]'); }
   if (action === 'reset-sample') { state.importText = sampleRecipe; state.importError = ''; render(); }
   if (action === 'import-recipe') doImport((document.querySelector<HTMLTextAreaElement>('#recipe-source')?.value ?? ''));
   if (action === 'increase-servings') updateServings(state.targetServings + Math.max(0.25, Math.round(state.targetServings / 4) || 1));
   if (action === 'decrease-servings') updateServings(Math.max(0.25, state.targetServings - Math.max(0.25, Math.round(state.targetServings / 4) || 1)));
   if (action === 'start-cook') { state.cookStep = 0; state.completionOpen = false; state.cookOpen = true; render(); }
-  if (action === 'close-cook') { state.cookOpen = false; state.completionOpen = false; void toggleWake(false); render(); }
+  if (action === 'close-cook') { state.cookOpen = false; state.completionOpen = false; void toggleWake(false); render(); focusAfterRender('[data-action="start-cook"]'); }
   if (action === 'previous-step') { state.cookStep = Math.max(0, state.cookStep - 1); render(); }
   if (action === 'next-step' && state.recipe) { if (state.cookStep < state.recipe.steps.length - 1) state.cookStep += 1; else state.completionOpen = true; render(); }
   if (action === 'skip-correction') finishCook();
@@ -456,7 +520,7 @@ root.addEventListener('click', (event) => {
     notify('Recipe removed from this device.');
   }
   if (action === 'open-pass') { state.passOpen = true; render(); }
-  if (action === 'close-pass') { state.passOpen = false; render(); }
+  if (action === 'close-pass') { state.passOpen = false; render(); focusAfterRender('[data-action="open-pass"]'); }
   if (action === 'remove-license') { clearLicense(); state.license = cachedLicenseState(); state.passOpen = false; notify('License removed from this device.'); }
 });
 
@@ -493,7 +557,7 @@ root.addEventListener('drop', (event) => {
 });
 
 function updateServings(value: number): void {
-  if (!Number.isFinite(value) || value <= 0 || value > 999) { notify('Choose a serving count between 0.25 and 999.'); return; }
+  if (!Number.isFinite(value) || value < 0.25 || value > 999) { notify('Choose a serving count between 0.25 and 999.'); return; }
   state.targetServings = Math.round(value * 100) / 100;
   saveTargetServings(state.targetServings);
   render();
@@ -523,7 +587,13 @@ window.addEventListener('keydown', (event) => {
   if (event.key === 'ArrowRight') { event.preventDefault(); document.querySelector<HTMLElement>('[data-action="next-step"]')?.click(); }
   if (event.key === 'ArrowLeft') { event.preventDefault(); document.querySelector<HTMLElement>('[data-action="previous-step"]')?.click(); }
 });
-window.addEventListener('popstate', render);
+window.addEventListener('popstate', () => {
+  state.importOpen = false;
+  state.passOpen = false;
+  routeAnnouncement = 'Page changed.';
+  render();
+  focusRouteHeading();
+});
 window.addEventListener('online', () => { state.online = true; render(); });
 window.addEventListener('offline', () => { state.online = false; render(); });
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && state.wakeActive && !wakeLock) void toggleWake(true); });

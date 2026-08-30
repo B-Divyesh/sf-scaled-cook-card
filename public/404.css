@@ -1,0 +1,21 @@
+:root { color-scheme: light; --paper: #f4eedc; --raised: #fffdf5; --ink: #252822; --muted: #5d6258; --tomato: #7e2b23; --focus: #17698d; font-family: ui-sans-serif, system-ui, sans-serif; background: var(--paper); color: var(--ink); }
+* { box-sizing: border-box; }
+body { min-height: 100vh; margin: 0; font-size: 17px; line-height: 1.55; background: var(--paper); }
+a { color: var(--tomato); text-underline-offset: .2em; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.skip-link { position: fixed; top: 8px; left: 8px; padding: 10px 16px; color: white; background: var(--ink); transform: translateY(-160%); }
+.skip-link:focus { transform: translateY(0); }
+header, footer { max-width: 1180px; margin: auto; padding: 16px clamp(20px, 5vw, 72px); display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+header { min-height: 76px; border-bottom: 1px solid #c8cfbf; }
+.wordmark { min-height: 44px; display: inline-flex; align-items: center; gap: 10px; color: var(--ink); font-weight: 800; text-decoration: none; }
+.wordmark span { width: 36px; height: 36px; display: grid; place-items: center; border: 2px solid currentColor; border-radius: 50%; color: var(--tomato); }
+nav { display: flex; gap: 8px; }
+nav a { min-height: 44px; padding: 8px; display: inline-flex; align-items: center; color: var(--ink); font-weight: 700; }
+main { max-width: 760px; min-height: 54vh; margin: auto; padding: clamp(56px, 12vw, 144px) clamp(20px, 5vw, 72px); }
+.eyebrow { margin: 0 0 12px; color: var(--tomato); font-size: .8rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+h1 { max-width: 12ch; margin: 0; font-size: clamp(2.7rem, 8vw, 5.8rem); line-height: .96; letter-spacing: -.06em; }
+main p:not(.eyebrow) { max-width: 45ch; margin: 28px 0; color: var(--muted); font-size: 1.1rem; }
+.button { min-height: 48px; padding: 11px 18px; display: inline-flex; align-items: center; color: white; background: var(--tomato); border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); font-weight: 800; text-decoration: none; }
+footer { flex-wrap: wrap; border-top: 1px solid #c8cfbf; color: var(--muted); font-size: .86rem; }
+footer p { margin: 0; }
+@media (max-width: 420px) { header { align-items: flex-start; flex-direction: column; } nav { flex-wrap: wrap; } }

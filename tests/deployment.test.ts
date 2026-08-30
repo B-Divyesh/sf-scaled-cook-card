@@ -1,9 +1,12 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync, statSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import sharp from 'sharp';
 import { describe, expect, it } from 'vitest';
 
 interface StaticWebAppsConfig {
-  routes: Array<{ route: string; headers?: Record<string, string> }>;
+  routes: Array<{ route: string; rewrite?: string; headers?: Record<string, string> }>;
   globalHeaders: Record<string, string>;
+  responseOverrides: Record<string, { rewrite: string }>;
 }
 
 const config = JSON.parse(readFileSync(new URL('../public/staticwebapp.config.json', import.meta.url), 'utf8')) as StaticWebAppsConfig;
@@ -29,5 +32,36 @@ describe('Azure Static Web Apps response policy', () => {
     expect(config.globalHeaders['Content-Security-Policy']).toContain("default-src 'self'");
     expect(config.globalHeaders['Content-Security-Policy']).toContain("frame-ancestors 'none'");
     expect(config.globalHeaders['Content-Security-Policy']).toContain('connect-src \'self\' https://api.sociobot.in');
+  });
+
+  it('keeps direct product routes and an actual 404 response explicit', () => {
+    for (const route of ['/demo', '/privacy', '/terms']) {
+      expect(config.routes.find((rule) => rule.route === route)?.rewrite).toBe('/index.html');
+    }
+    expect(config.responseOverrides['404']?.rewrite).toBe('/404.html');
+  });
+});
+
+describe('site discovery and social assets', () => {
+  it('ships canonical, social, crawler, and touch-icon metadata', () => {
+    const index = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+    expect(index).toContain('rel="canonical"');
+    expect(index).toContain('property="og:image"');
+    expect(index).toContain('name="twitter:card"');
+    expect(index).toContain('rel="apple-touch-icon"');
+    expect(readFileSync(new URL('../public/robots.txt', import.meta.url), 'utf8')).toContain('Sitemap:');
+    expect(readFileSync(new URL('../public/sitemap.xml', import.meta.url), 'utf8')).toContain('<loc>https://scaled-cook-card.sociobot.in/demo</loc>');
+    expect(readFileSync(new URL('../public/404.html', import.meta.url), 'utf8')).toContain('<h1>That cook card page is missing.</h1>');
+  });
+
+  it('ships a real 1200 by 630 social image and a 180 pixel touch icon', async () => {
+    const social = new URL('../public/social-card.jpg', import.meta.url);
+    const touchIcon = new URL('../public/apple-touch-icon.png', import.meta.url);
+    expect(existsSync(social)).toBe(true);
+    expect(existsSync(touchIcon)).toBe(true);
+    expect(statSync(social).size).toBeGreaterThan(10_000);
+    expect(statSync(touchIcon).size).toBeGreaterThan(1_000);
+    await expect(sharp(fileURLToPath(social)).metadata()).resolves.toMatchObject({ width: 1200, height: 630 });
+    await expect(sharp(fileURLToPath(touchIcon)).metadata()).resolves.toMatchObject({ width: 180, height: 180 });
   });
 });

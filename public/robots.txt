@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://scaled-cook-card.sociobot.in/sitemap.xml

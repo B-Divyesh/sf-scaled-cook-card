@@ -1,10 +1,45 @@
 [
   {
+    "id": "recipe-import-scaling",
+    "claim": "Imports a recipe and scales every bound ingredient reference in its cooking steps without changing exact fractions.",
+    "where": "landing page, README, ingredient list, procedure",
+    "test": "npm run test:e2e -- --grep @claim:recipe-import-scaling",
+    "sandbox": "fresh browser; import a recipe with 3/16 tsp, assert 3/16 appears in the list and its bound step, then scale to 8 servings and assert 3/8 in both places"
+  },
+  {
+    "id": "recipe-format",
+    "claim": "Recipes use a title, servings, ingredients, and steps; quantities may be numbers or fractions.",
+    "where": "README recipe format",
+    "test": "npm test -- --testNamePattern @claim:recipe-format",
+    "sandbox": "parse the documented YAML recipe and assert its title, ingredients, and bound step"
+  },
+  {
+    "id": "step-binding-list",
+    "claim": "A step can list ingredient ids when its text has no inline ingredient token.",
+    "where": "README recipe format",
+    "test": "npm test -- --testNamePattern @claim:step-binding-list",
+    "sandbox": "parse a JSON step with an ingredients list and assert its binding ids"
+  },
+  {
     "id": "actual-yield-correction",
     "claim": "Saves actual yield corrections locally after cooking",
     "where": "correction ledger, README",
     "test": "npm run test:e2e -- --grep @claim:actual-yield-correction",
     "sandbox": "390px browser; complete the sample cook, enter 5.5 servings, cross the 3.2-second ready-toast boundary, and save"
+  },
+  {
+    "id": "cook-controls",
+    "claim": "Arrow-key cooking remains available when screen wake is unsupported.",
+    "where": "README, cook mode",
+    "test": "npm run test:e2e -- --grep @claim:cook-controls",
+    "sandbox": "fresh browser with navigator.wakeLock removed; start the sample cook, assert the disabled wake control explains the fallback, then advance with ArrowRight"
+  },
+  {
+    "id": "json-export",
+    "claim": "Exports the active recipe as JSON.",
+    "where": "README, workspace export button",
+    "test": "npm run test:e2e -- --grep @claim:json-export",
+    "sandbox": "fresh browser; open the sample, download JSON, and parse the downloaded file"
   },
   {
     "id": "offline-reload",
@@ -22,9 +57,16 @@
   },
   {
     "id": "local-only-recipe-data",
-    "claim": "Recipe data stays in this browser",
+    "claim": "Recipe data stays in this browser and the cooking flow makes no analytics or third-party runtime requests.",
     "where": "footer, privacy page, README",
     "test": "npm run test:e2e -- --grep @claim:local-only-recipe-data",
     "sandbox": "record requests while saving a sample correction and assert each request is same-origin"
+  },
+  {
+    "id": "kitchen-pass",
+    "claim": "Kitchen Pass is a $9 one-time license with a separate checkout link and a license restore path.",
+    "where": "landing page, Kitchen Pass dialog, README, terms",
+    "test": "npm run test:e2e -- --grep @claim:kitchen-pass",
+    "sandbox": "fresh browser; intercept the documented verification URL with a valid recorded fixture, assert the $9 separate checkout link, submit a fixture token, and observe the active state"
   }
 ]

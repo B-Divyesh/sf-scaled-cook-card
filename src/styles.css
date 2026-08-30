@@ -21,8 +21,8 @@
 }
 
 * { box-sizing: border-box; }
-html { min-width: 320px; background: var(--paper); scroll-behavior: smooth; }
-body { margin: 0; min-width: 320px; min-height: 100vh; font-size: 17px; line-height: 1.55; background-color: var(--paper); background-image: radial-gradient(rgb(37 40 34 / 4%) .6px, transparent .6px); background-size: 7px 7px; }
+html { background: var(--paper); scroll-behavior: smooth; }
+body { margin: 0; min-width: 0; min-height: 100vh; font-size: 17px; line-height: 1.55; overflow-wrap: anywhere; background-color: var(--paper); background-image: radial-gradient(rgb(37 40 34 / 4%) .6px, transparent .6px); background-size: 7px 7px; }
 button, input, textarea, select { font: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
 button { color: inherit; }
@@ -35,13 +35,13 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
 .sr-only { position: absolute!important; width: 1px!important; height: 1px!important; padding: 0!important; margin: -1px!important; overflow: hidden!important; clip: rect(0,0,0,0)!important; white-space: nowrap!important; border: 0!important; }
 
 .site-header { max-width: 1440px; min-height: 76px; margin: auto; padding: 14px clamp(20px, 5vw, 72px); display: flex; align-items: center; justify-content: space-between; gap: 24px; }
-.wordmark { color: var(--graphite); text-decoration: none; display: inline-flex; align-items: center; gap: 10px; font-family: ui-rounded, "Arial Rounded MT Bold", system-ui, sans-serif; font-weight: 760; letter-spacing: -.02em; }
+.wordmark { min-height: 44px; color: var(--graphite); text-decoration: none; display: inline-flex; align-items: center; gap: 10px; font-family: ui-rounded, "Arial Rounded MT Bold", system-ui, sans-serif; font-weight: 760; letter-spacing: -.02em; }
 .mark { width: 40px; height: 40px; border: 1.5px solid var(--graphite); border-radius: 50%; display: grid; place-items: center; transform: rotate(-4deg); }
-.site-header nav { display: flex; align-items: center; justify-content: flex-end; gap: 16px; }
+.site-header nav { display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
+.nav-link { min-height: 44px; padding: 8px; display: inline-flex; align-items: center; color: var(--graphite); font-weight: 700; text-decoration-color: var(--rule); text-underline-offset: 5px; }
 .demo-banner { max-width: 1440px; margin: 0 auto; padding: 8px clamp(20px, 5vw, 72px); display: flex; align-items: center; justify-content: space-between; gap: 12px; border-block: 1px solid var(--sage); background: #e5eee7; color: var(--graphite); font-size: .82rem; }
 .demo-banner strong { color: var(--sage); }
 .demo-banner > span:last-child { display: flex; gap: 12px; }
-.demo-banner .text-button { min-height: 36px; padding-block: 2px; }
 .text-button { appearance: none; border: 0; background: none; min-height: 44px; padding: 8px; color: var(--graphite); font-weight: 700; text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 5px; cursor: pointer; }
 .text-button:hover { color: var(--tomato-dark); text-decoration-color: currentColor; }
 .connection-pill { font-size: .78rem; font-weight: 700; color: var(--mustard); display: inline-flex; gap: 7px; align-items: center; }
@@ -62,7 +62,10 @@ h2 { margin: 0; font-family: ui-rounded, "Arial Rounded MT Bold", system-ui, san
 .primary { color: #fff; background: var(--tomato-dark); }
 .primary:hover { background: #6e241e; }
 .secondary { background: var(--paper-raised); color: var(--graphite); }
-.microcopy { color: var(--graphite-soft); font-size: .82rem; }
+.action-help { margin: 14px 0 0; color: var(--graphite-soft); font-size: .9rem; }
+.plain-facts { list-style: none; padding: 0; margin: 20px 0 0; display: grid; gap: 6px; color: var(--graphite-soft); font-size: .88rem; }
+.plain-facts li { display: flex; gap: 8px; align-items: baseline; }
+.plain-facts li::before { content: "—"; color: var(--tomato-dark); font-weight: 800; }
 .hero-figure { margin: 0; position: relative; }
 .hero-figure::before { content: "FIELD NOTES / 01"; position: absolute; z-index: 2; right: -10px; top: -32px; font: 700 .68rem/1 ui-monospace, monospace; letter-spacing: .12em; color: var(--graphite-soft); transform: rotate(3deg); }
 .hero-figure picture { display: block; padding: 10px; background: var(--paper-raised); box-shadow: var(--shadow); transform: rotate(1.2deg); }
@@ -70,6 +73,11 @@ h2 { margin: 0; font-family: ui-rounded, "Arial Rounded MT Bold", system-ui, san
 .hero-figure figcaption { margin-top: 24px; display: flex; align-items: center; gap: 10px; color: var(--graphite-soft); font: 700 .68rem/1.2 ui-monospace, monospace; letter-spacing: .06em; text-transform: uppercase; }
 .hero-figure figcaption i { flex: 1; border-top: 1px solid var(--rule); }
 .how-it-works { grid-column: 1 / -1; margin-top: 112px; padding: 48px 0; border-top: 1px solid var(--graphite); border-bottom: 1px solid var(--graphite); display: grid; grid-template-columns: .8fr 1.2fr; gap: 56px; align-items: center; }
+.landing-detail { grid-column: 1 / -1; display: grid; grid-template-columns: .8fr 1.2fr; gap: 56px; padding: 48px 0 0; }
+.landing-detail p { max-width: 58ch; margin: 0; color: var(--graphite-soft); }
+.pass-section { padding-top: 40px; }
+.pass-section strong { color: var(--tomato-dark); }
+.pass-section .button { margin-top: 18px; }
 .syntax-demo { padding: 24px 28px; background: var(--paper-raised); border-left: 3px solid var(--ink-blue); box-shadow: 4px 4px 0 var(--rule); }
 .syntax-demo code { display: block; color: var(--graphite-soft); }
 .syntax-demo > span { display: block; margin: 6px 0; color: var(--tomato-dark); font-size: .75rem; font-weight: 800; text-transform: uppercase; }
@@ -91,12 +99,12 @@ h2 { margin: 0; font-family: ui-rounded, "Arial Rounded MT Bold", system-ui, san
 .library-strip label { font-weight: 800; }
 .library-strip select { min-height: 44px; min-width: 220px; padding: 6px 10px; border: 1px solid var(--graphite); background: var(--paper-raised); }
 .library-strip span { margin-left: auto; color: var(--sage); font-size: .82rem; font-weight: 700; }
-.recipe-sheet { display: grid; grid-template-columns: minmax(250px, .72fr) minmax(440px, 1.28fr); min-height: 560px; background-color: var(--paper-raised); background-image: linear-gradient(to bottom, transparent 31px, rgb(116 142 144 / 12%) 32px); background-size: 100% 32px; box-shadow: var(--shadow); }
+.recipe-sheet { display: grid; grid-template-columns: minmax(0, .72fr) minmax(0, 1.28fr); min-height: 560px; background-color: var(--paper-raised); background-image: linear-gradient(to bottom, transparent 31px, rgb(116 142 144 / 12%) 32px); background-size: 100% 32px; box-shadow: var(--shadow); }
 .ingredient-margin { padding: 40px 32px; border-right: 1px solid #d8b3aa; background: rgb(255 253 245 / 82%); }
 .section-number { width: 35px; height: 35px; display: grid; place-items: center; margin-bottom: 24px; border: 1.5px solid currentColor; border-radius: 50%; color: var(--tomato-dark); font: 800 .78rem/1 ui-monospace, monospace; }
 .ingredient-margin h2 { margin-bottom: 28px; font-size: 1.4rem; }
 .ingredient-list { list-style: none; padding: 0; margin: 0; }
-.ingredient-list li { display: grid; grid-template-columns: minmax(72px, auto) 1fr; gap: 12px; min-height: 52px; padding: 10px 0; border-bottom: 1px dashed var(--rule); align-items: baseline; }
+.ingredient-list li { display: grid; grid-template-columns: minmax(0, auto) minmax(0, 1fr); gap: 12px; min-height: 52px; padding: 10px 0; border-bottom: 1px dashed var(--rule); align-items: baseline; }
 .ingredient-list .quantity { color: var(--ink-blue); font-weight: 850; font-variant-numeric: tabular-nums; }
 .ingredient-list small { display: block; color: var(--graphite-soft); }
 .procedure { padding: 40px clamp(28px, 5vw, 64px); }
@@ -120,7 +128,8 @@ h2 { margin: 0; font-family: ui-rounded, "Arial Rounded MT Bold", system-ui, san
 
 .site-footer { max-width: 1440px; margin: auto; padding: 32px clamp(20px, 5vw, 72px) 48px; display: grid; grid-template-columns: 1fr auto; gap: 8px 24px; border-top: 1px solid var(--rule); color: var(--graphite-soft); font-size: .8rem; }
 .site-footer p { margin: 0; }
-.site-footer nav { display: flex; gap: 18px; }
+.site-footer nav { display: flex; gap: 8px; }
+.site-footer a { min-height: 44px; padding: 8px; display: inline-flex; align-items: center; }
 .generation-note { grid-column: 1 / -1; }
 
 dialog { color: var(--graphite); }
@@ -195,7 +204,8 @@ dialog::backdrop { background: rgb(37 40 34 / 58%); backdrop-filter: blur(2px); 
   h1 { font-size: clamp(3rem, 14vw, 4.6rem); }
   .hero-figure { margin-top: 64px; }
   .hero-figure::before { right: 4px; }
-  .how-it-works { margin-top: 72px; grid-template-columns: 1fr; gap: 28px; }
+  .how-it-works, .landing-detail { grid-template-columns: 1fr; gap: 28px; }
+  .how-it-works { margin-top: 72px; }
   .recipe-masthead { align-items: stretch; flex-direction: column; }
   .recipe-actions { align-items: stretch; min-width: 0; }
   .serving-control { justify-content: start; }
@@ -239,6 +249,25 @@ dialog::backdrop { background: rgb(37 40 34 / 58%); backdrop-filter: blur(2px); 
   .dialog-actions .button { width: 100%; }
   .cook-controls .button { flex: 1; padding-inline: 8px; }
   .active-step .bound-token { white-space: normal; }
+}
+
+@media (max-width: 320px) {
+  .site-header { align-items: flex-start; flex-direction: column; gap: 4px; padding-inline: 12px; }
+  .site-header nav { width: 100%; flex-wrap: wrap; justify-content: flex-start; }
+  .demo-banner, .landing, .workspace { padding-inline: 12px; }
+  .serving-control { grid-template-columns: repeat(3, 44px); gap: 6px; }
+  .serving-control > span { grid-column: 1 / -1; }
+  .serving-control input { width: 44px; }
+  .ingredient-margin, .procedure { padding-inline: 14px; }
+  .step-list > li { grid-template-columns: 26px minmax(0, 1fr); gap: 6px; }
+  .step-index { overflow-wrap: normal; }
+  .active-step { grid-template-columns: 26px minmax(0, 1fr); padding-inline: 14px; }
+  .cook-header { padding-left: 14px; }
+  .step-amounts, .wake-toggle { margin-inline: 14px; }
+  .cook-controls { position: static; flex-direction: column; padding-inline: 14px; }
+  .cook-controls .button { width: 100%; }
+  .completion-form { padding-inline: 14px; }
+  .site-footer { padding-inline: 12px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

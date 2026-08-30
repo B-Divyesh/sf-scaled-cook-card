@@ -2,14 +2,15 @@ import { describe, expect, it } from 'vitest';
 import { bindingIds, formatQuantity, parseQuantity, parseRecipe, sampleRecipe, scaledAmount } from '../src/recipe';
 
 describe('recipe import', () => {
-  it('parses the documented YAML sample and binds step ingredients', () => {
+  it('parses the documented YAML recipe shape @claim:recipe-format', () => {
     const recipe = parseRecipe(sampleRecipe);
     expect(recipe.title).toBe('Weeknight tomato pasta');
     expect(recipe.ingredients).toHaveLength(5);
     expect(bindingIds(recipe.steps[1]!)).toEqual(['oil', 'garlic']);
+    expect(parseQuantity('1 1/2', 'Quantity')).toBe(1.5);
   });
 
-  it('accepts JSON and structured step bindings', () => {
+  it('accepts structured ingredient lists after a step @claim:step-binding-list', () => {
     const recipe = parseRecipe(JSON.stringify({
       title: 'Toast', servings: 1,
       ingredients: [{ id: 'bread', name: 'bread', quantity: '1 1/2', unit: 'slices' }],
