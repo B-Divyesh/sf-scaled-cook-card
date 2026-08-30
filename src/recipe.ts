@@ -7,6 +7,13 @@ const FRACTIONS: Array<[number, string]> = [
   [3 / 4, '¾'], [5 / 6, '⅚'], [7 / 8, '⅞'],
 ];
 
+// These denominators cover the fractions cooks commonly write by hand while
+// still leaving ordinary decimals alone.  The previous formatter accepted a
+// 0.025 difference, which changed 3/16 into 1/6.  A displayed fraction must
+// therefore be the value (within floating-point noise), never merely nearby.
+const FRACTION_DENOMINATORS = [2, 3, 4, 6, 8, 16, 32, 64];
+const FRACTION_EPSILON = 0.001;
+
 const unicodeFractions: Record<string, number> = {
   '⅛': 1 / 8, '⅙': 1 / 6, '¼': 1 / 4, '⅓': 1 / 3, '⅜': 3 / 8,
   '½': 1 / 2, '⅝': 5 / 8, '⅔': 2 / 3, '¾': 3 / 4, '⅚': 5 / 6, '⅞': 7 / 8,
@@ -126,18 +133,42 @@ export function parseRecipe(source: string): Recipe {
 export function formatQuantity(value: number): string {
   if (!Number.isFinite(value)) return '—';
   if (value === 0) return '0';
-  const whole = Math.floor(value + 1e-7);
+  const whole = Math.floor(value);
   const decimal = value - whole;
-  let closest: [number, string] | undefined;
+  if (decimal < FRACTION_EPSILON) return String(whole);
+  if (1 - decimal < FRACTION_EPSILON) return String(whole + 1);
+
+  let numerator = 0;
+  let denominator = 1;
   let distance = Number.POSITIVE_INFINITY;
-  for (const fraction of FRACTIONS) {
-    const nextDistance = Math.abs(decimal - fraction[0]);
-    if (nextDistance < distance) { closest = fraction; distance = nextDistance; }
+  for (const candidateDenominator of FRACTION_DENOMINATORS) {
+    const candidateNumerator = Math.round(decimal * candidateDenominator);
+    if (!candidateNumerator || candidateNumerator >= candidateDenominator) continue;
+    const nextDistance = Math.abs(decimal - candidateNumerator / candidateDenominator);
+    if (nextDistance < distance) {
+      numerator = candidateNumerator;
+      denominator = candidateDenominator;
+      distance = nextDistance;
+    }
   }
-  if (closest && distance < 0.025) return `${whole || ''}${whole ? ' ' : ''}${closest[1]}`;
-  if (decimal < 0.025) return String(whole);
-  if (1 - decimal < 0.025) return String(whole + 1);
+
+  if (distance <= FRACTION_EPSILON) {
+    const divisor = greatestCommonDivisor(numerator, denominator);
+    const reducedNumerator = numerator / divisor;
+    const reducedDenominator = denominator / divisor;
+    const fraction = reducedNumerator / reducedDenominator;
+    const unicode = FRACTIONS.find(([amount]) => amount === fraction)?.[1];
+    const printed = unicode ?? `${reducedNumerator}/${reducedDenominator}`;
+    return `${whole || ''}${whole ? ' ' : ''}${printed}`;
+  }
   return new Intl.NumberFormat('en', { maximumFractionDigits: 2 }).format(value);
+}
+
+function greatestCommonDivisor(left: number, right: number): number {
+  let dividend = left;
+  let divisor = right;
+  while (divisor) [dividend, divisor] = [divisor, dividend % divisor];
+  return dividend;
 }
 
 export function scaledAmount(ingredient: Ingredient, baseServings: number, targetServings: number): string {

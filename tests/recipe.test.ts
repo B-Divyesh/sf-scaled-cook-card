@@ -33,6 +33,10 @@ describe('scaling and display', () => {
     expect(formatQuantity(0.333)).toBe('⅓');
   });
 
+  it('keeps an exact uncommon fraction instead of snapping it to a nearby amount', () => {
+    expect(formatQuantity(parseQuantity('3/16', 'Amount'))).toBe('3/16');
+  });
+
   it('scales an amount for a target yield', () => {
     expect(scaledAmount({ id: 'oil', name: 'oil', quantity: 2, unit: 'tbsp' }, 4, 6)).toBe('3 tbsp');
   });
