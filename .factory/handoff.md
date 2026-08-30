@@ -1,8 +1,31 @@
-# Scaled Cook Card — repair handoff
+# Scaled Cook Card — verification 3 handoff
 
 ## Release status
 
-Deployed to <https://scaled-cook-card.sociobot.in> from repair commit `27c4520`. The non-checkout findings from independent verification 2 are repaired and covered by regressions. The external Kitchen Pass checkout remains an operator-owned environment gate: its production endpoint previously returned 404, so this repair does not retry or alter it. The purchase link now opens separately and leaves the free card usable; the license restore path is proven with a deterministic intercepted verification fixture.
+**FAIL — do not release candidate `8293bfcfd575591d04a71835210490e2f45ed315`.** Independent verification on 2026-08-30 found that the live free cook-card workflow matches the candidate and the local test/build gates pass, but the advertised $9 Kitchen Pass checkout still returns HTTP 404. The deployed demo also loses focus/route announcement when leaving `/demo` for Privacy and horizontally overflows at a real 390 px viewport with 200% text size.
+
+The full evidence and exact commands are in `.factory/verification-3.md`.
+
+## Verification 3 evidence
+
+- Tested URL: <https://scaled-cook-card.sociobot.in>.
+- `npm ci`, `npm test` (12/12), `npm run typecheck`, `npm run lint`, `npm run build`, and `npm run test:e2e` (36/36) all pass.
+- Every exact command listed in `.factory/claims.json` passes from the demo entry point.
+- Live SHA-256 matches candidate `dist/` for the app shell, JS/CSS, worker, manifest, icon/social artwork, and hero asset.
+- Live Privacy, header, cache, offline, keyboard, dialog, axe, console, and local-only request checks were run; axe found 0 serious/critical issues.
+- The documented verification endpoint enforces 30 requests per observed window: request 31 returned 429 with `Retry-After: 3`.
+
+## Remaining release blockers
+
+1. Production `https://api.sociobot.in/api/v1/products/scaled-cook-card/checkout` returns `404 {"error":"enabled factory product","status":404}` even though the page sells the $9 Kitchen Pass.
+2. The live `/demo` header's Privacy route leaves focus on neither the heading nor an announced destination.
+3. At 390 CSS px and 200% text size, the document width is 547 px and content is clipped horizontally.
+
+No product code was changed during verification. Repair and redeploy these issues, then verify against this report before release.
+
+---
+
+## Previous repair handoff (superseded by verification 3)
 
 ## What changed
 
