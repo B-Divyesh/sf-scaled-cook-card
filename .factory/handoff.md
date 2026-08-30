@@ -49,7 +49,17 @@ npm run test:e2e -- --grep 'no serious accessibility|activates the current servi
 
 ## Deployment
 
-`dist/` is the unchanged Azure Static Web Apps artifact. Deploy it only to `sf-scaled-cook-card`; this repair does not modify shared billing, DNS, databases, secrets, or any other service. Live identity, headers, routes, offline update, and default checkout-gate checks are recorded below after deployment.
+`dist/` is the unchanged Azure Static Web Apps artifact. It was deployed directly to **`sf-scaled-cook-card`** on 2026-08-30 UTC as deployment `65080746-1e43-4185-9ece-87fbcc6052bc`. No shared billing, DNS, databases, secrets, or other service was changed.
+
+Live verification at <https://scaled-cook-card.sociobot.in> passed:
+
+- SHA-256 bytes match local `dist/` for `index.html`, the JS and CSS assets, `sw.js`, manifest, favicon, touch icon, social card, and hero AVIF.
+- Root, `/demo`, `/privacy`, `/terms`, `robots.txt`, `sitemap.xml`, and `404.html` return 200; an unknown path returns the designed page with HTTP 404.
+- Root HTML revalidates in 30 seconds; fingerprinted JS returns `Cache-Control: public, max-age=31536000, immutable`. HSTS, `nosniff`, strict origin referrer policy, camera/microphone/geolocation denial, and response-header CSP with `frame-ancestors 'none'` are present.
+- Live `verify-url.sh` recorded zero console/page errors and all basic semantic checks. Evidence: `.factory/evidence-live-repair-4/`.
+- In a fresh browser context, `/demo` at 390 × 844 and 200% text reports `390 / 390 / 390` for viewport, HTML width, and body width. Header Privacy moves focus to “Privacy, in plain language”, announces “Opened Privacy.”, and retains the demo banner.
+- A fresh live worker context is controlled by `scaled-cook-card-v5`; after going offline, `/demo` reloads the sample card and its offline message. ArrowRight advances the live cook dialog from Step 1 to Step 2.
+- The default live Kitchen Pass dialog reports checkout unavailable and contains zero **Buy Kitchen Pass** links, so it does not send visitors to the known external 404.
 
 ## Known gap / next step
 
