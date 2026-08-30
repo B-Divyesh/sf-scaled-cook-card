@@ -19,7 +19,7 @@ Try the isolated sample at `https://scaled-cook-card.sociobot.in/demo`. It uses 
 - Keeps recipe data in this browser. The cooking flow makes no analytics or third-party runtime requests.
 - Runs `/demo` with separate `demo:scc:` browser storage.
 
-Kitchen Pass is a $9 one-time license. It adds an unlimited local recipe library and complete local cook history. The free card keeps scaling, cooking, and export.
+When checkout is enabled, Kitchen Pass is a $9 one-time license. It adds an unlimited local recipe library and complete local cook history. The free card keeps scaling, cooking, and export.
 
 ## Recipe format
 
@@ -78,12 +78,12 @@ npm run optimize:image
 
 Deploy `dist/` as an Azure Static Web App. `public/staticwebapp.config.json` supplies direct app routes, a real 404 response, security headers, asset MIME types, and one-year immutable caching for fingerprinted assets and versioned hero art. Bump the hero-art URL version when replacing that image.
 
-The product uses only the Sociobot billing endpoints:
+When enabled, the product uses only these Sociobot billing endpoints:
 
 - checkout: `https://api.sociobot.in/api/v1/products/scaled-cook-card/checkout`
 - verify: `https://api.sociobot.in/api/v1/products/scaled-cook-card/verify?license=…`
 
-The purchase link opens separately, so a checkout outage leaves the free card usable. Browser tests use a recorded verification fixture for the restore path. The factory operator must restore the checkout endpoint before release. No payment-provider SDK or product id is embedded here.
+Checkout is disabled unless the public build setting `VITE_KITCHEN_PASS_CHECKOUT_ENABLED` is exactly `true`. This keeps an unavailable shared checkout endpoint out of the product while the free card and license restore path remain usable. After the billing operator verifies the endpoint, build with that setting enabled and verify the hosted redirect and return-token flow. Browser tests use a recorded verification fixture for the restore path. No payment-provider SDK or product id is embedded here.
 
 ## Product records
 

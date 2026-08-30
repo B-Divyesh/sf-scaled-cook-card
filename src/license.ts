@@ -2,6 +2,9 @@ import type { LicenseState } from './types';
 
 export const PRODUCT_SLUG = 'scaled-cook-card';
 export const CHECKOUT_URL = `https://api.sociobot.in/api/v1/products/${PRODUCT_SLUG}/checkout`;
+// This public build setting keeps an unavailable shared endpoint out of the
+// product until the billing operator has enabled it. It is not a credential.
+export const CHECKOUT_ENABLED = import.meta.env.VITE_KITCHEN_PASS_CHECKOUT_ENABLED === 'true';
 const TOKEN_KEY = `sb_license:${PRODUCT_SLUG}`;
 const VERDICT_KEY = `sb_license_verdict:${PRODUCT_SLUG}`;
 const DAY = 86_400_000;

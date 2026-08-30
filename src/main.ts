@@ -1,6 +1,6 @@
 import './styles.css';
 import { bindingIds, formatQuantity, parseRecipe, sampleRecipe, scaledAmount } from './recipe';
-import { CHECKOUT_URL, cachedLicenseState, captureLicenseFromUrl, clearLicense, storeLicense, verifyLicense } from './license';
+import { CHECKOUT_ENABLED, CHECKOUT_URL, cachedLicenseState, captureLicenseFromUrl, clearLicense, storeLicense, verifyLicense } from './license';
 import {
   getActiveRecipe, getCookRecords, getLibrary, getTargetServings, saveActiveRecipe,
   saveCookRecords, saveLibrary, saveTargetServings, setStorageNamespace, clearStorageNamespace, upsertLibrary,
@@ -33,6 +33,7 @@ const BUILD_ID = '2026.08.30-repair.1';
 const appRoot = document.querySelector<HTMLDivElement>('#app');
 if (!appRoot) throw new Error('App root is missing.');
 const root: HTMLDivElement = appRoot;
+const routeAnnouncementElement = document.querySelector<HTMLElement>('#route-announcement');
 
 const demo = location.pathname === '/demo' || new URL(location.href).searchParams.get('demo') === '1';
 setStorageNamespace(demo ? 'demo:scc:' : 'scc:');
@@ -60,7 +61,6 @@ const state: AppState = {
 
 let wakeLock: WakeLockSentinel | null = null;
 let toastTimer = 0;
-let routeAnnouncement = '';
 
 const escapeHtml = (value: unknown): string => String(value)
   .replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
@@ -169,7 +169,9 @@ function landing(): string {
     </section>
     <section class="landing-detail pass-section" aria-labelledby="pass-heading">
       <div><p class="eyebrow">Optional upgrade</p><h2 id="pass-heading">Kitchen Pass</h2></div>
-      <div><p><strong>$9 once.</strong> Keep an unlimited local recipe library and complete local cook history.</p><button class="button secondary" data-action="open-pass">See Kitchen Pass details</button></div>
+      <div>${CHECKOUT_ENABLED
+    ? '<p><strong>$9 once.</strong> Keep an unlimited local recipe library and complete local cook history.</p>'
+    : '<p><strong>Kitchen Pass checkout is unavailable right now.</strong> The free card keeps scaling, cooking, and export.</p>'}<button class="button secondary" data-action="open-pass">See Kitchen Pass details</button></div>
     </section>
   </main>`;
 }
@@ -242,16 +244,19 @@ function libraryPanel(): string {
 
 function legalPage(kind: 'privacy' | 'terms'): string {
   const privacy = kind === 'privacy';
+  const passPurchase = CHECKOUT_ENABLED
+    ? 'The Kitchen Pass is a $9 one-time license for one person’s devices. It unlocks an unlimited local recipe library and complete local cook history. Sociobot/Dodo is the merchant of record and handles payment and refunds. A refunded, expired, or revoked license may stop unlocking paid features; recipe export remains available.'
+    : 'Kitchen Pass checkout is currently unavailable. The free card keeps scaling, cooking, offline use, and export. If you already have a Kitchen Pass license, you can restore it on this device. When checkout is enabled, it will be a $9 one-time license for one person’s devices.';
   return `<main id="main" class="legal-page">
     <p class="eyebrow">Last updated August 28, 2026</p>
     <h1>${privacy ? 'Privacy, in plain language' : 'Terms of use'}</h1>
     <p class="lede">${privacy ? 'Your recipes belong in your kitchen, not in our database.' : 'A short, practical agreement for using Scaled Cook Card.'}</p>
     ${privacy ? `<section><h2>What stays on this device</h2><p>Imported recipes, scaled serving choices, cook corrections, and license tokens are stored in your browser’s local storage. Scaled Cook Card has no account system and does not send recipe content to us.</p></section>
-      <section><h2>Network requests</h2><p>The app requests its own files and, when you provide a Kitchen Pass license, asks the Sociobot billing API whether that license is valid. Checkout is hosted by Sociobot/Dodo, the merchant of record, under their checkout privacy terms. There are no advertising or behavioral analytics scripts.</p></section>
+      <section><h2>Network requests</h2><p>The app requests its own files and, when you provide a Kitchen Pass license, asks the Sociobot billing API whether that license is valid. When checkout is enabled, Sociobot/Dodo hosts it as the merchant of record. There are no advertising or behavioral analytics scripts.</p></section>
       <section><h2>Your control</h2><p>Export is always available. “Remove this card” deletes the active recipe after confirmation. Clearing site data in your browser removes all local recipes, records, and the saved license.</p></section>`
       : `<section><h2>Use of the tool</h2><p>Scaled Cook Card performs arithmetic on user-authored recipe data. Check amounts, allergens, temperatures, and food safety for your circumstances. The tool is provided “as is” without cooking, nutrition, or medical guarantees.</p></section>
       <section><h2>Your content</h2><p>You retain all rights to recipes you enter. Only import content you have the right to use. The service does not scrape or republish recipe websites.</p></section>
-      <section><h2>Kitchen Pass purchase</h2><p>The Kitchen Pass is a $9 one-time license for one person’s devices. It unlocks an unlimited local recipe library and complete local cook history. Sociobot/Dodo is the merchant of record and handles payment and refunds. A refunded, expired, or revoked license may stop unlocking paid features; recipe export remains available.</p></section>
+      <section><h2>Kitchen Pass purchase</h2><p>${passPurchase}</p></section>
       <section><h2>Offline and availability</h2><p>Installed app files and local recipes are designed to remain usable offline after the first successful load. Browser storage and screen-wake support vary by device. We may update or discontinue the hosted service.</p></section>`}
     <p><a class="button secondary" href="/" data-nav="/">Back to cook card</a></p>
   </main>`;
@@ -283,11 +288,10 @@ function passDialog(): string {
     <h2 id="pass-title">Kitchen Pass</h2>
     ${state.license.valid ? `<div class="license-active">${icon('check')}<div><strong>License active</strong><span>Unlimited recipe library and full cook history are unlocked.</span></div></div>
       <button class="text-button danger-link" data-action="remove-license">Remove license from this device</button>`
-      : `<p class="pass-price"><strong>$9</strong> once</p>
+      : `${CHECKOUT_ENABLED ? '<p class="pass-price"><strong>$9</strong> once</p>' : '<p class="checkout-unavailable" role="status"><strong>Checkout is unavailable right now.</strong> Your free cook card stays usable. If you already bought Kitchen Pass, paste your license below.</p>'}
       <ul class="check-list"><li>${icon('check')} Save unlimited recipe cards</li><li>${icon('check')} Keep the complete correction history</li><li>${icon('check')} Use the same license on your devices</li></ul>
       <p>The free card still includes scaling, cook mode, one saved recipe and its latest correction, offline use, and export.</p>
-      <a class="button primary full-button" href="${CHECKOUT_URL}" target="_blank" rel="noopener noreferrer" aria-label="Buy Kitchen Pass (opens hosted checkout in a new tab)">Buy Kitchen Pass ${icon('arrow')}</a>
-      <p class="field-help">Checkout opens separately. If it is unavailable, your free cook card stays usable here.</p>
+      ${CHECKOUT_ENABLED ? `<a class="button primary full-button" href="${CHECKOUT_URL}" target="_blank" rel="noopener noreferrer" aria-label="Buy Kitchen Pass (opens hosted checkout in a new tab)">Buy Kitchen Pass ${icon('arrow')}</a><p class="field-help">Checkout opens separately, and your free cook card stays usable here.</p>` : ''}
       <hr>
       <form id="license-form"><label for="license-token">Have a license? Paste it here</label><div class="inline-field"><input id="license-token" name="license" autocomplete="off" required><button class="button secondary" type="submit">Verify</button></div></form>
       ${state.license.message ? `<p class="license-message" aria-live="polite">${escapeHtml(state.license.message)}</p>` : ''}`}
@@ -334,7 +338,7 @@ function render(): void {
     : path === '/terms' ? legalPage('terms')
       : path === '/' || path === '/demo' ? (state.recipe ? workspace() : landing())
         : notFoundPage();
-  root.innerHTML = `${header()}${demoBanner()}<p class="sr-only" aria-live="polite" id="route-announcement">${escapeHtml(routeAnnouncement)}</p>${page}${footer()}${importDialog()}${passDialog()}${cookDialog()}<div class="toast" role="status" aria-live="polite">${escapeHtml(state.toast)}</div>`;
+  root.innerHTML = `${header()}${demoBanner()}${page}${footer()}${importDialog()}${passDialog()}${cookDialog()}<div class="toast" role="status" aria-live="polite">${escapeHtml(state.toast)}</div>`;
   if (state.importOpen) openRenderedDialog('import-dialog');
   if (state.passOpen) openRenderedDialog('pass-dialog');
   if (state.cookOpen) openRenderedDialog('cook-dialog');
@@ -391,18 +395,20 @@ function focusRouteHeading(): void {
   });
 }
 
+function announceRoute(message: string): void {
+  if (!routeAnnouncementElement) return;
+  routeAnnouncementElement.textContent = '';
+  requestAnimationFrame(() => { routeAnnouncementElement.textContent = message; });
+}
+
 function navigate(path: string): void {
-  if (state.demo && path !== '/demo') {
-    location.assign(path);
-    return;
-  }
   history.pushState({}, '', path);
   state.importOpen = false;
   state.passOpen = false;
-  routeAnnouncement = `Opened ${path === '/privacy' ? 'Privacy' : path === '/terms' ? 'Terms' : 'Scaled Cook Card'}.`;
   render();
   window.scrollTo(0, 0);
   focusRouteHeading();
+  announceRoute(`Opened ${path === '/privacy' ? 'Privacy' : path === '/terms' ? 'Terms' : 'Scaled Cook Card'}.`);
 }
 
 function notify(message: string): void {
@@ -590,9 +596,9 @@ window.addEventListener('keydown', (event) => {
 window.addEventListener('popstate', () => {
   state.importOpen = false;
   state.passOpen = false;
-  routeAnnouncement = 'Page changed.';
   render();
   focusRouteHeading();
+  announceRoute('Page changed.');
 });
 window.addEventListener('online', () => { state.online = true; render(); });
 window.addEventListener('offline', () => { state.online = false; render(); });

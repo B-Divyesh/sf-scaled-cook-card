@@ -105,15 +105,20 @@ test('legal routes work directly', async ({ page }) => {
   await expect(page).toHaveTitle('Terms — Scaled Cook Card');
 });
 
-test('presents the one-time paid unlock and restore path @claim:kitchen-pass', async ({ page }) => {
+test('keeps Kitchen Pass checkout build-gated and restores a license @claim:kitchen-pass', async ({ page }) => {
   await page.route('https://api.sociobot.in/api/v1/products/scaled-cook-card/verify?license=fixture-license', async (route) => {
     await route.fulfill({ json: { valid: true, reason: 'ok' } });
   });
   await page.getByRole('button', { name: 'Kitchen Pass', exact: true }).click();
-  await expect(page.getByText('$9', { exact: true })).toBeVisible();
   const purchaseLink = page.getByRole('link', { name: /buy kitchen pass/i });
-  await expect(purchaseLink).toHaveAttribute('href', 'https://api.sociobot.in/api/v1/products/scaled-cook-card/checkout');
-  await expect(purchaseLink).toHaveAttribute('target', '_blank');
+  if (process.env.VITE_KITCHEN_PASS_CHECKOUT_ENABLED === 'true') {
+    await expect(page.getByText('$9', { exact: true })).toBeVisible();
+    await expect(purchaseLink).toHaveAttribute('href', 'https://api.sociobot.in/api/v1/products/scaled-cook-card/checkout');
+    await expect(purchaseLink).toHaveAttribute('target', '_blank');
+  } else {
+    await expect(page.locator('.checkout-unavailable')).toContainText('Checkout is unavailable right now.');
+    await expect(purchaseLink).toHaveCount(0);
+  }
   await expect(page.getByLabel(/have a license/i)).toBeVisible();
   await page.getByLabel(/have a license/i).fill('fixture-license');
   await page.getByRole('button', { name: 'Verify' }).click();
@@ -241,11 +246,36 @@ test('returns focus from dialogs and moves focus to the route heading', async ({
   await expect(page.getByText('Opened Privacy.')).toBeAttached();
 });
 
-test('uses accessible mobile targets and reflows at 200 percent text size', async ({ page }, testInfo) => {
+test('keeps focus and announces Privacy when navigating there from the demo', async ({ page }) => {
+  await page.goto('/demo');
+  await page.locator('.site-header').getByRole('link', { name: 'Privacy' }).click();
+  await expect(page).toHaveURL(/\/privacy$/);
+  await expect(page.getByRole('heading', { level: 1, name: 'Privacy, in plain language' })).toBeFocused();
+  await expect(page.locator('#route-announcement')).toHaveText('Opened Privacy.');
+});
+
+test('reflows the demo at a fixed 390px viewport with 200 percent text size', async ({ browser }) => {
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: false, deviceScaleFactor: 1 });
+  const page = await context.newPage();
+  try {
+    await page.goto('/demo');
+    await page.evaluate(() => { document.documentElement.style.fontSize = '200%'; });
+    await expect.poll(() => page.evaluate(() => ({
+      viewport: window.innerWidth,
+      html: document.documentElement.scrollWidth,
+      body: document.body.scrollWidth,
+    }))).toEqual({ viewport: 390, html: 390, body: 390 });
+    await expect(page.locator('.site-header')).toContainText('Privacy');
+    await expect(page.locator('.demo-banner')).toContainText('Start for real');
+    await expect(page.locator('.procedure')).toBeVisible();
+  } finally {
+    await context.close();
+  }
+});
+
+test('uses accessible mobile targets at 390px', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile', 'Mobile-only regression coverage');
   await page.getByRole('button', { name: /try it with sample data/i }).click();
-  await page.evaluate(() => { document.documentElement.style.fontSize = '200%'; });
-  await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy();
 
   for (const locator of [
     page.locator('.wordmark'),

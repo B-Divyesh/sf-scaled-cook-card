@@ -64,9 +64,9 @@
   },
   {
     "id": "kitchen-pass",
-    "claim": "Kitchen Pass is a $9 one-time license with a separate checkout link and a license restore path.",
+    "claim": "Kitchen Pass checkout is shown only in builds where it is enabled, and a purchased license can be restored locally.",
     "where": "landing page, Kitchen Pass dialog, README, terms",
     "test": "npm run test:e2e -- --grep @claim:kitchen-pass",
-    "sandbox": "fresh browser; intercept the documented verification URL with a valid recorded fixture, assert the $9 separate checkout link, submit a fixture token, and observe the active state"
+    "sandbox": "fresh browser; assert the default build exposes no broken checkout link, intercept the documented verification URL with a valid recorded fixture, submit a fixture token, and observe the active state"
   }
 ]

@@ -10,6 +10,7 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "test:checkout-enabled": "VITE_KITCHEN_PASS_CHECKOUT_ENABLED=true playwright test --grep @claim:kitchen-pass",
     "optimize:image": "node scripts/optimize-image.mjs"
   },
   "dependencies": {
