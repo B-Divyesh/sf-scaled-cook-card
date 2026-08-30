@@ -2,7 +2,7 @@
 
 ## Release status
 
-The non-checkout findings from independent verification 2 are repaired and covered by regressions. The external Kitchen Pass checkout remains an operator-owned environment gate: its production endpoint previously returned 404, so this repair does not retry or alter it. The purchase link now opens separately and leaves the free card usable; the license restore path is proven with a deterministic intercepted verification fixture.
+Deployed to <https://scaled-cook-card.sociobot.in> from repair commit `27c4520`. The non-checkout findings from independent verification 2 are repaired and covered by regressions. The external Kitchen Pass checkout remains an operator-owned environment gate: its production endpoint previously returned 404, so this repair does not retry or alter it. The purchase link now opens separately and leaves the free card usable; the license restore path is proven with a deterministic intercepted verification fixture.
 
 ## What changed
 
@@ -47,6 +47,7 @@ Accessibility and response checks:
 
 - Playwright axe: landing, workspace, cook dialog, and privacy route — **0 serious/critical violations** (6 project checks).
 - `verify-url.sh http://127.0.0.1:4173`: HTTP 200; title, `lang`, one `<h1>`, `<main>`, image alts, and button labels present; zero console/page errors. Evidence: `.factory/evidence-repair/verify.json` and its desktop/mobile captures.
+- `verify-url.sh https://scaled-cook-card.sociobot.in`: HTTP 200; title, `lang`, one `<h1>`, `<main>`, image alts, and button labels present; zero console/page errors. Evidence: `.factory/evidence-live/verify.json` and its desktop/mobile captures.
 - Local mobile Lighthouse: **100 performance / 100 accessibility**; LCP **1.81 s**, TBT **16 ms**, CLS **0**. Evidence: `.factory/evidence-repair/lighthouse.json`.
 - Final production bundle: JS **79.13 KB raw / 26.81 KB gzip**; CSS **20.15 KB raw / 5.23 KB gzip**; social image **99 KB**; no shipped fonts.
 - Privacy capture remains same-origin through demo import, cook, and save. The only license test request is the recorded/intercepted verification fixture, which contains no recipe data.
@@ -54,7 +55,9 @@ Accessibility and response checks:
 
 ## Deployment note
 
-`dist/` is the unchanged static-web deployment class. `public/staticwebapp.config.json` now rewrites only `/demo`, `/privacy`, and `/terms` to the app shell, returns the designed `/404.html` for unknown paths, preserves immutable caching for hashed assets/versioned hero art, and retains the existing restrictive response policy.
+`dist/` is the unchanged static-web deployment class. It was deployed to the scoped `sf-scaled-cook-card` Static Web App on 2026-08-30 UTC. The live root, JS/CSS, worker, manifest, favicon, social image, and touch icon matched the final `dist/` SHA-256 bytes. Live `/demo`, `/privacy`, `/terms`, `robots.txt`, `sitemap.xml`, and `/404.html` return 200; an unknown path returns HTTP 404 with the designed page. The fingerprinted JS response is `Cache-Control: public, max-age=31536000, immutable`. Header and 404 evidence is in `.factory/evidence-live/`.
+
+`public/staticwebapp.config.json` rewrites only `/demo`, `/privacy`, and `/terms` to the app shell, returns the designed `/404.html` for unknown paths, preserves immutable caching for hashed assets/versioned hero art, and retains the existing restrictive response policy.
 
 ## Remaining external action
 
