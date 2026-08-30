@@ -1,0 +1,5 @@
+dist/assets/index-C_Kr74Dc.js raw=78854 gzip=26480
+dist/assets/style-DRUjPbID.css raw=20560 gzip=5306
+dist/hero-notebook-v1-768.webp raw=46926 gzip=46980
+dist/hero-notebook-v1-1280.avif raw=94495 gzip=94530
+font_files=0
