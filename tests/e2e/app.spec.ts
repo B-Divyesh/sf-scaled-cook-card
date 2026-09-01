@@ -10,6 +10,7 @@ test.beforeEach(async ({ page }) => {
 
 test('imports sample, scales amounts, cooks with keyboard, and saves a correction', async ({ page }) => {
   await page.getByRole('button', { name: /try it with sample data/i }).click();
+  await expect(page).toHaveURL(/\?demo=1$/);
   await expect(page.getByRole('heading', { level: 1, name: 'Weeknight tomato pasta' })).toBeVisible();
   await page.getByLabel('Number of servings').fill('6');
   await page.getByLabel('Number of servings').press('Tab');

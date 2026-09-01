@@ -503,7 +503,7 @@ root.addEventListener('click', (event) => {
   const nav = target.dataset.nav;
   if (nav) { event.preventDefault(); navigate(nav); return; }
   const action = target.dataset.action;
-  if (action === 'try-sample') location.assign('/demo');
+  if (action === 'try-sample') location.assign('/?demo=1');
   if (action === 'reset-demo' && state.demo) {
     clearStorageNamespace();
     state.recipe = parseRecipe(sampleRecipe);
