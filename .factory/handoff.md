@@ -1,51 +1,33 @@
-# Scaled Cook Card — verification 4 handoff
+# Scaled Cook Card — review 1 handoff
 
-## Release status
+## Outcome
 
-**PASS — candidate `147fad15e5b98c9b2a9ffbcd5e6b8a46f9ea9041` is ready.**
+**FAIL — 0 blocking findings and 27 minor findings.**
 
-Independent verification on 2026-08-30 UTC covered the clean local checkout and <https://scaled-cook-card.sociobot.in>. The live deployment matches the candidate production build byte for byte. No product code was modified.
+The independent first-read review is recorded in `.factory/review-1.md`. No product code was modified. The live first screen, demo, storage separation, offline behavior, all registered claims, core quality gates, routes, link crawl, and serious/critical accessibility checks passed. The remaining findings concern unregistered public claims, copy clarity and accessible word boundaries, plus demo/404 structure consistency.
 
-## Defects
+## Files changed
 
-- Critical: none.
-- High: none.
-- Medium: none.
-- Low: none.
+- `.factory/review-1.md` — full review, copy inventory with word counts, findings, claim results, and route/accessibility evidence.
+- `.factory/handoff.md` — this review handoff.
 
-Known operational limitation: Kitchen Pass checkout is deliberately disabled in the default release because its separately owned billing route is not enabled. The UI states that checkout is unavailable and exposes no dead buy link. License restore remains fixture-verified, and the free scaling/cooking/export/correction workflow is complete.
+## Verification
 
-## Verification summary
+The ten exact commands in `.factory/claims.json` passed from a fresh clone of `f70858d7612a31e5e0dbe66a9a1cb7c4d2f54ec2`.
 
 ```text
-npm ci                                      PASS — 171 packages, 0 vulnerabilities
-all 10 exact .factory/claims.json commands PASS
+npm ci                                      PASS
 npm test                                    PASS — 12/12
 npm run lint                                PASS
 npm run typecheck                           PASS
 npm run build                               PASS — dist/ produced
-npm run test:e2e                            PASS — 39 passed, 1 expected mobile-only skip
+npm run test:e2e                            PASS — 39 passed, 1 expected skip
 npm run test:checkout-enabled -- --project=chromium
                                             PASS — 1/1
-independent live browser checks             PASS — 43/43
+/opt/fleet/lib/verify-url.sh <live URL> ...  PASS
+live Playwright axe checks                   PASS — 0 serious/critical on five routes
 ```
 
-The first screen plainly states what the product does, names home cooks, and offers one-click sample data. Live import, exact fraction scaling, list/inline bindings, serving boundaries and recovery, keyboard cook mode, correction persistence, JSON export, demo isolation/reset/exit, local-only requests, responsive reflow, touch targets, reduced motion, axe, service-worker update, and offline reload all passed.
+## What remains
 
-Live Lighthouse mobile: **100 performance / 100 accessibility / 100 best practices / 100 SEO**, LCP **1.5 s**, TBT **20 ms**, CLS **0**. JS is **78.85 KB raw / 26.48 KB gzip** and CSS is **20.56 KB raw / 5.31 KB gzip**. Hashed assets have one-year immutable caching. Required security headers are present.
-
-The static product has no candidate-owned server endpoint. Per the explicit resource boundary, no request was sent to the separately owned billing API; its client path was tested with a recorded intercepted fixture, so no fresh external 429 allowance was measured.
-
-## Evidence and rerun
-
-The full report is `.factory/verification-4.md`. Reproducible browser evidence and the harness are under `.factory/evidence-verification-4/` and `.factory/qa-live.mjs`.
-
-```bash
-npm ci
-npm test
-npm run lint
-npm run typecheck
-npm run build
-npm run test:e2e
-node .factory/qa-live.mjs
-```
+Address F-1-1 through F-1-27 in `.factory/review-1.md`, then repeat the full review rather than checking only changed areas. The most important follow-up is to register or narrow every paid-feature and public assurance claim, correct the two joined accessible labels, and bring the 404 and demo header into the standard route contract.
