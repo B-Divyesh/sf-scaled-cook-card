@@ -10,7 +10,7 @@ Reviewed 2026-09-01. Sentence counts exclude button labels and image alt text.
 | Works offline after the first visit. | 6 | Pass |
 | $9 once for optional history. | 5 | Pass |
 | Cook cards stay in this browser. | 6 | Pass |
-| Make one recipe easier to cook. | 7 | Pass |
+| Make a cook card in three steps. | 7 | Pass |
 | Paste YAML or JSON from a recipe you wrote. | 9 | Pass |
 | Change servings. | 2 | Pass |
 | Linked amounts update where you need them. | 7 | Pass |

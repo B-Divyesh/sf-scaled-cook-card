@@ -28,7 +28,7 @@ interface AppState {
 }
 
 const SITE_URL = 'https://scaled-cook-card.sociobot.in';
-const BUILD_ID = '2026.09.01-polish.2';
+const BUILD_ID = '2026.09.01-polish.3';
 
 const appRoot = document.querySelector<HTMLDivElement>('#app');
 if (!appRoot) throw new Error('App root is missing.');
@@ -103,7 +103,7 @@ function renderStepText(step: RecipeStep): string {
 
 function header(): string {
   return `<header class="site-header">
-    <a class="wordmark" href="/" aria-label="Scaled Cook Card home">
+    <a class="wordmark" href="/" aria-label="Scaled Cook Card home"${state.demo ? ' data-action="start-real"' : ''}>
       <span class="mark" aria-hidden="true">${icon('scale')}</span>
       <span>Scaled Cook Card</span>
     </a>
@@ -155,14 +155,13 @@ function landing(): string {
     <section class="how-it-works" aria-labelledby="how-heading">
       <div>
         <p class="eyebrow">How it works</p>
-        <h2 id="how-heading">Make one recipe easier to cook.</h2>
+        <h2 id="how-heading">Make a cook card in three steps</h2>
       </div>
       <ol class="how-steps">
         <li><span class="step-number">01</span><div><h3>Import a recipe file</h3><p>Paste YAML or JSON from a recipe you wrote.</p></div></li>
         <li><span class="step-number">02</span><div><h3>Scale and cook each step</h3><p>Change servings. Linked amounts update where you need them.</p><div class="syntax-demo" aria-label="Example of a linked ingredient amount"><code>Add &#123;&#123;salt&#125;&#125; to the pot.</code><p>becomes <span class="bound-token"><strong>1½ tsp</strong> fine salt</span></p></div></div></li>
         <li><span class="step-number">03</span><div><h3>Save what changed</h3><p>Record the real yield, substitutions, and notes after cooking.</p></div></li>
       </ol>
-      </div>
     </section>
     <section class="landing-detail" aria-labelledby="limits-heading">
       <div><p class="eyebrow">Recipe boundaries</p><h2 id="limits-heading">What this card does not do</h2></div>
@@ -247,7 +246,7 @@ function legalPage(kind: 'privacy' | 'terms'): string {
   const privacy = kind === 'privacy';
   const passPurchase = CHECKOUT_ENABLED
     ? 'Kitchen Pass is a $9 one-time license. It unlocks an unlimited local cook card library and complete local cook history. Checkout opens on Sociobot. A revoked license stops paid history. Scaled cook card export remains available.'
-    : 'Kitchen Pass checkout is currently unavailable. The free card keeps scaling, cooking, offline use, and export. If you already have a Kitchen Pass license, you can restore it on this device. When checkout is enabled, it will be a $9 one-time license for one person’s devices.';
+    : 'Kitchen Pass checkout is currently unavailable. The free card keeps scaling, cooking, offline use, and export. If you already have a Kitchen Pass license, you can restore it on this device. When checkout is enabled, it costs $9 once.';
   return `<main id="main" class="legal-page">
     <p class="eyebrow">Last updated August 28, 2026</p>
     <h1>${privacy ? 'Privacy, in plain language' : 'Terms of use'}</h1>

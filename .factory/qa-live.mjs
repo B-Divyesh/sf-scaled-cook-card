@@ -3,7 +3,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { mkdirSync, writeFileSync } from 'node:fs';
 
 const base = 'https://scaled-cook-card.sociobot.in';
-const evidenceDir = '.factory/evidence-polish-2/live-qa';
+const evidenceDir = '.factory/evidence-polish-3/live-qa';
 mkdirSync(evidenceDir, { recursive: true });
 
 const checks = [];
@@ -208,7 +208,7 @@ try {
     return { controlled: Boolean(navigator.serviceWorker.controller), scope: registration.scope, caches: await caches.keys() };
   });
   record('live service worker controls the page', worker.controlled && worker.scope === `${base}/`, JSON.stringify(worker));
-  record('live service worker uses candidate cache version', worker.caches.includes('scaled-cook-card-v6'), JSON.stringify(worker.caches));
+  record('live service worker uses candidate cache version', worker.caches.includes('scaled-cook-card-v7'), JSON.stringify(worker.caches));
   await offlineContext.setOffline(true);
   await offlinePage.reload({ waitUntil: 'domcontentloaded' });
   record('live demo reloads offline', await offlinePage.getByRole('heading', { level: 1, name: 'Weeknight tomato pasta' }).isVisible() && await offlinePage.getByText(/offline — your card still works/i).isVisible(), offlinePage.url());

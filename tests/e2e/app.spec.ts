@@ -112,12 +112,37 @@ test('keeps the offline, price, and browser-storage facts on the desktop first s
 });
 
 test('uses a real three-step landing flow and route-appropriate skip labels', async ({ page }) => {
+  await expect(page.getByRole('heading', { level: 2, name: 'Make a cook card in three steps' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Import a recipe file' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Scale and cook each step' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Save what changed' })).toBeVisible();
   for (const route of ['/privacy', '/terms', '/artwork']) {
     await page.goto(route);
     await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeVisible();
+  }
+});
+
+test('keeps the complete first screen visible on a 390px phone', async ({ browser }) => {
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+  const page = await context.newPage();
+  try {
+    await page.goto('/');
+    for (const text of [
+      'Scale recipe amounts in every step.',
+      'For home cooks who need correct quantities while their hands are busy.',
+      'Works offline after the first visit.',
+      '$9 once for optional history.',
+      'Cook cards stay in this browser.',
+    ]) {
+      const box = await page.getByText(text, { exact: true }).boundingBox();
+      expect(box, text).not.toBeNull();
+      expect((box?.y ?? 844) + (box?.height ?? 1), text).toBeLessThanOrEqual(844);
+    }
+    await expect(page.getByRole('button', { name: /try it with sample data/i })).toBeInViewport();
+    await expect(page.getByRole('button', { name: /import my recipe/i })).toBeInViewport();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(390);
+  } finally {
+    await context.close();
   }
 });
 
@@ -134,6 +159,29 @@ test('legal routes work directly', async ({ page }) => {
   await page.goto('/terms');
   await expect(page.getByRole('heading', { level: 1, name: 'Terms of use' })).toBeVisible();
   await expect(page).toHaveTitle('Terms — Scaled Cook Card');
+});
+
+test('sets route-specific metadata and exposes legal links on every app page', async ({ page }) => {
+  const routes = [
+    ['/', 'Scaled Cook Card — scale recipe steps', 'https://scaled-cook-card.sociobot.in/'],
+    ['/demo', 'Demo — Scaled Cook Card', 'https://scaled-cook-card.sociobot.in/demo'],
+    ['/privacy', 'Privacy — Scaled Cook Card', 'https://scaled-cook-card.sociobot.in/privacy'],
+    ['/terms', 'Terms — Scaled Cook Card', 'https://scaled-cook-card.sociobot.in/terms'],
+    ['/artwork', 'Artwork provenance — Scaled Cook Card', 'https://scaled-cook-card.sociobot.in/artwork'],
+    ['/missing-cook-card', 'Page not found — Scaled Cook Card', 'https://scaled-cook-card.sociobot.in/missing-cook-card'],
+  ] as const;
+  for (const [route, title, canonical] of routes) {
+    await page.goto(route);
+    await expect(page).toHaveTitle(title);
+    await expect(page.locator('main')).toHaveCount(1);
+    await expect(page.locator('h1')).toHaveCount(1);
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /\S/);
+    await expect(page.locator('meta[property="og:title"]')).toHaveAttribute('content', title);
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', 'https://scaled-cook-card.sociobot.in/social-card.jpg');
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', canonical);
+    await expect(page.locator('.site-footer').getByRole('link', { name: 'Privacy' })).toHaveAttribute('href', '/privacy');
+    await expect(page.locator('.site-footer').getByRole('link', { name: 'Terms' })).toHaveAttribute('href', '/terms');
+  }
 });
 
 test('keeps Kitchen Pass checkout build-gated and restores a license @claim:kitchen-pass', async ({ page }) => {
@@ -293,13 +341,14 @@ test('activates the current service worker and accepts an update check', async (
     });
     expect(workerState.controlled).toBe(true);
     expect(workerState.scope).toBe('http://127.0.0.1:4173/');
-    expect(workerState.caches).toContain('scaled-cook-card-v6');
+    expect(workerState.caches).toContain('scaled-cook-card-v7');
   } finally {
     await context.close();
   }
 });
 
 test('keeps demo data separate from a real card @claim:demo-sandbox', async ({ page }) => {
+  await page.evaluate(() => localStorage.setItem('scc:demo-isolation-sentinel', 'real-data'));
   await page.goto('/?demo=1');
   await expect(page).toHaveTitle('Demo — Scaled Cook Card');
   await expect(page.getByLabel('Demo mode')).toContainText('sample data, nothing is saved to your real cook card');
@@ -309,14 +358,27 @@ test('keeps demo data separate from a real card @claim:demo-sandbox', async ({ p
   await expect(page.getByText('600 g').first()).toBeVisible();
   const storageKeys = await page.evaluate(() => Object.keys(localStorage));
   expect(storageKeys.some((key) => key.startsWith('demo:scc:'))).toBeTruthy();
-  expect(storageKeys.some((key) => key.startsWith('scc:'))).toBeFalsy();
+  expect(storageKeys.filter((key) => key.startsWith('scc:'))).toEqual(['scc:demo-isolation-sentinel']);
+  expect(await page.evaluate(() => localStorage.getItem('scc:demo-isolation-sentinel'))).toBe('real-data');
+
+  await page.getByRole('button', { name: 'Reset demo' }).click();
+  await expect(page.getByLabel('Number of servings')).toHaveValue('4');
+  expect(await page.evaluate(() => localStorage.getItem('scc:demo-isolation-sentinel'))).toBe('real-data');
+
+  await page.getByRole('button', { name: 'Start for real' }).click();
+  await expect(page).toHaveURL(/\/$/);
+  expect(await page.evaluate(() => Object.keys(localStorage).some((key) => key.startsWith('demo:scc:')))).toBeFalsy();
+  expect(await page.evaluate(() => localStorage.getItem('scc:demo-isolation-sentinel'))).toBe('real-data');
 });
 
 test('sends the demo wordmark home without reading demo storage', async ({ page }) => {
   await page.goto('/demo');
+  await page.getByLabel('Number of servings').fill('6');
+  await page.getByLabel('Number of servings').press('Tab');
   await page.getByRole('link', { name: 'Scaled Cook Card home' }).click();
   await expect(page).toHaveURL(/\/$/);
   await expect(page.getByRole('heading', { level: 1, name: 'Scale recipe amounts in every step.' })).toBeVisible();
+  expect(await page.evaluate(() => Object.keys(localStorage).some((key) => key.startsWith('demo:scc:')))).toBeFalsy();
 });
 
 test('does not send recipe data to another origin @claim:local-only-recipe-data', async ({ page }) => {
@@ -357,6 +419,10 @@ test('returns focus from dialogs and moves focus to the route heading', async ({
   const heading = page.getByRole('heading', { level: 1, name: 'Privacy, in plain language' });
   await expect(heading).toBeFocused();
   await expect(page.getByText('Opened Privacy.')).toBeAttached();
+  await page.goBack();
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.getByRole('heading', { level: 1, name: 'Scale recipe amounts in every step.' })).toBeFocused();
+  await expect(page.locator('#route-announcement')).toHaveText('Page changed.');
 });
 
 test('keeps focus and announces Privacy when navigating there from the demo', async ({ page }) => {
@@ -411,8 +477,14 @@ test('has no serious accessibility violations in workspace and cook mode', async
   expect(results.violations.filter((item) => ['serious', 'critical'].includes(item.impact ?? ''))).toEqual([]);
 });
 
-test('has no serious accessibility violations on the privacy route', async ({ page }) => {
-  await page.goto('/privacy');
-  const results = await new AxeBuilder({ page }).analyze();
+test('has no serious accessibility violations in dialogs and secondary routes', async ({ page }) => {
+  await page.getByRole('button', { name: /import my recipe/i }).click();
+  let results = await new AxeBuilder({ page }).analyze();
   expect(results.violations.filter((item) => ['serious', 'critical'].includes(item.impact ?? ''))).toEqual([]);
+  await page.getByRole('button', { name: 'Close import dialog' }).click();
+  for (const route of ['/privacy', '/terms', '/artwork', '/missing-cook-card']) {
+    await page.goto(route);
+    results = await new AxeBuilder({ page }).analyze();
+    expect(results.violations.filter((item) => ['serious', 'critical'].includes(item.impact ?? '')), route).toEqual([]);
+  }
 });

@@ -1,1 +1,1 @@
-Scale recipe amounts inside every cooking step while you cook.
+Scale recipe amounts and see each quantity inside its cooking step.
