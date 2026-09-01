@@ -1,46 +1,33 @@
-# Scaled Cook Card — polish 3 handoff
+# Scaled Cook Card — independent verification 7 handoff
 
 ## Outcome
 
-**PASS.** Every finding in reviews 1–3 is resolved. The release is deployed at <https://scaled-cook-card.sociobot.in>.
+**FAIL.** Candidate `d1301126a38fb52a012db5c6ebba1e85c6fa7521` was checked locally and at <https://scaled-cook-card.sociobot.in> on 2026-09-01 UTC.
 
-The round-3 workflow heading now reads `Make a cook card in three steps`. The demo works from both `/demo` and `/?demo=1`, uses only `demo:scc:` storage, preserves real-data sentinels, resets to the shipped sample, and discards demo state when leaving.
+The free recipe workflow, accessibility baseline, privacy behavior, offline mode, responsive layout, production build, and live deployment identity all passed. Release acceptance remains blocked for two high-severity findings:
 
-## Release
+1. The required `@claim:free-card-limits` command failed once at its 30-second limit before passing on rerun. The contract treats any claim-test failure as release-blocking.
+2. The live first screen advertises `$9 once for optional history`, but checkout is disabled and the documented product checkout route returns HTTP 404. A new visitor cannot purchase Kitchen Pass.
 
-- Product repair commits: `4ab611183b24a14b8574c3422c922b6a44313913`, `d279e78aa0f802e5de4ce84e326854299ebaa56b`
-- Azure Static Web Apps deployment id: `7c79c838-4189-4f9e-92fe-100e38e9e123`
-- Live bundle: `assets/index-D04khHhB.js`
-- Service-worker cache: `scaled-cook-card-v7`
-- Visible build id: `2026.09.01-polish.3`
+Full evidence and reproduction details are in [`.factory/verification-7.md`](verification-7.md).
 
-## Verification
+## Verification summary
 
-- Fresh clone at `d279e78aa0f802e5de4ce84e326854299ebaa56b`: all 17 exact commands in `.factory/claims.json` passed.
-- `npm test`: 15/15 passed.
-- `npm run lint`: passed.
-- `npm run typecheck`: passed.
-- `npm run build`: passed; `dist/index.html` exists.
-- `npm run test:e2e`: 55 passed, 5 expected checkout-only skips.
-- JavaScript: 80.27 kB raw / 27.08 kB gzip. CSS: 21.10 kB raw / 5.37 kB gzip.
-- Live URL verifier: HTTP 200, correct title and language, one H1, one main, complete image alternatives, labelled buttons, and zero console errors.
-- Live browser audit: 52/52 checks passed, including direct routes, metadata, legal links, focus, 404, mobile, privacy, offline, and reduced motion.
-- Playwright axe integration: zero serious or critical findings on the landing page, import dialog, workspace, cook mode, Privacy, Terms, Artwork, and missing-page UI.
-- Live mobile Lighthouse: performance 100, accessibility 100, best practices 100, SEO 100; LCP 1.6 s, CLS 0, total blocking time 20 ms.
+- `npm ci`: PASS; zero reported package vulnerabilities.
+- `npm test`: PASS, 15/15.
+- `npm run lint`: PASS.
+- `npm run typecheck`: PASS.
+- `npm run build`: PASS; `dist/` produced.
+- `npm run test:e2e`: PASS, 55 passed and 5 expected checkout-disabled skips.
+- Required claim commands: 16 passed first run; `free-card-limits` failed first run and passed on immediate rerun.
+- Fresh live browser audit: 52/52 checks passed apart from the separately checked unavailable purchase path.
+- Live bundle identity: PASS; JavaScript, CSS, and service-worker hashes match the candidate build.
+- Mobile Lighthouse: 98 performance, 100 accessibility, 100 best practices, 100 SEO; LCP 1.3 s, CLS 0, total blocking time 180 ms.
+- License verification request allowance: 30 successful requests in the observed minute window; request 31 returned 429 with `Retry-After: 3`.
 
-Evidence is in [`.factory/evidence-polish-3`](evidence-polish-3), with the complete finding map in [`.factory/polish-3.md`](polish-3.md).
+## Required next steps
 
-## Run locally
+1. Make the `free-card-limits` claim check wait for the one-step cook dialog state before choosing its next action, then run every exact command in `.factory/claims.json` from a fresh installation with no failures.
+2. Register and enable the `scaled-cook-card` Sociobot billing product, enable checkout in the release build, and confirm the live buy link redirects to hosted checkout. If purchase is intentionally unavailable, remove the live `$9 once` promotion until it can be completed.
 
-```bash
-npm ci
-npm test
-npm run lint
-npm run typecheck
-npm run build
-npm run test:e2e
-```
-
-## Known gaps
-
-None. Kitchen Pass checkout remains intentionally hidden in the default build until the hosted checkout is enabled; its enabled path and revoked-license behavior are fixture-tested.
+No product code was changed during verification.

@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-09-01T21:55:38.006Z",
+  "testedAt": "2026-09-01T22:19:59.301Z",
   "base": "https://scaled-cook-card.sociobot.in",
   "checks": [
     {
@@ -110,7 +110,7 @@
     {
       "name": "post-cook notes persist in demo storage",
       "pass": true,
-      "detail": "{\"id\":\"588dbfd1-0a50-4f1f-9d91-11b131bcc66c\",\"recipeId\":\"recipe-1unmmea\",\"cookedAt\":\"2026-09-01T21:55:22.468Z\",\"targetServings\":999,\"actualYield\":5.5,\"substitutions\":\"Used shallot for garlic\",\"notes\":\"Reduce simmer by two minutes\"}"
+      "detail": "{\"id\":\"de9bbb8e-57a1-4f59-9227-5a8987bbc7e2\",\"recipeId\":\"recipe-1unmmea\",\"cookedAt\":\"2026-09-01T22:19:43.873Z\",\"targetServings\":999,\"actualYield\":5.5,\"substitutions\":\"Used shallot for garlic\",\"notes\":\"Reduce simmer by two minutes\"}"
     },
     {
       "name": "workspace has zero serious or critical axe findings",
@@ -279,9 +279,9 @@
       "content-encoding": "br",
       "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://api.sociobot.in; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https://api.sociobot.in; frame-ancestors 'none'",
       "content-type": "text/html",
-      "date": "Tue, 01 Sep 2026 21:55:19 GMT",
-      "etag": "\"65139454\"",
-      "last-modified": "Tue, 01 Sep 2026 21:54:53 GMT",
+      "date": "Tue, 01 Sep 2026 22:19:38 GMT",
+      "etag": "\"15215370\"",
+      "last-modified": "Tue, 01 Sep 2026 22:01:35 GMT",
       "permissions-policy": "camera=(), microphone=(), geolocation=()",
       "referrer-policy": "strict-origin-when-cross-origin",
       "strict-transport-security": "max-age=10886400; includeSubDomains; preload",
