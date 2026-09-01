@@ -1,35 +1,32 @@
-# Scaled Cook Card — repair 5 handoff
+# Scaled Cook Card — verification 8 handoff
 
 ## Outcome
 
-**PASS.** Repair commit `778e5cb06664bf722c7de0cb38abba138aee023f` is pushed to `main` and deployed to <https://scaled-cook-card.sociobot.in> on 2026-09-01 UTC.
+**PASS.** Candidate `778e5cb06664bf722c7de0cb38abba138aee023f` is deployed at <https://scaled-cook-card.sociobot.in> and independently verified on 2026-09-01 UTC. No release-blocking defects were found.
 
-This repair closes both release blockers from [verification 7](verification-7.md):
+The app lets a home cook import a self-authored YAML/JSON recipe, scale quantities where they appear in each cooking step, cook with keyboard fallback, and save actual yield, substitutions, and notes locally. `/demo` is a one-click, separate `demo:scc:` sandbox using the Weeknight tomato pasta sample.
 
-1. The free-card claim now waits for the rendered one-step cook dialog (`Step 1 of 1`) and its `Finish & note changes` control before continuing. It no longer branches on an early visibility check before the asynchronous dialog opens.
-2. The default release build no longer advertises `$9`. It plainly says `Kitchen Pass purchase is unavailable`, has no buy link, and offers only license restoration. The `$9` display and Sociobot checkout link remain behind `VITE_KITCHEN_PASS_CHECKOUT_ENABLED=true` for a future operator-enabled checkout.
+## Verified
 
-The repair also bumps the offline shell to `scaled-cook-card-v8` and the visible build id to `2026.09.01-repair.5`, so an existing offline install updates to this release.
+- Every exact command in `.factory/claims.json` passed from a clean detached candidate checkout.
+- `npm test` (15/15), lint, typecheck, exact production build, and full Playwright suite passed (55 passed; 5 intentional checkout-disabled skips; run against the freshly built candidate preview).
+- Live 390px and desktop checks passed: visible keyboard focus, skip link, dialog focus return, reduced motion, 200% text reflow, 44px controls, and zero axe serious/critical findings.
+- Live recipe flow passed: sample opens in one click, 4 to 6 servings produces 600 g pasta, ArrowRight advances cook mode, a 5.5-serving correction saves, malformed import explains recovery, and demo requests remain same-origin.
+- Live service worker controls the app and reloads the demo offline. Cache and response headers are correct; initial JS is 27.05 kB gzip and CSS is 5.37 kB gzip.
+- Live hashed JS, CSS, and `sw.js` match the candidate byte-for-byte. Full evidence is in [verification 8](verification-8.md).
+- License verification is rate limited: 30 successful requests per observed window; the 31st is 429 with `Retry-After: 3`, and requests recover after four seconds.
 
-## Verification
+## Remaining operator note
 
-- Clean install: `npm ci` — PASS; 171 packages installed, zero reported vulnerabilities.
-- Unit/deployment checks: `npm test` — PASS, 15/15.
-- Type/lint: `npm run lint` and the `npm run build` typecheck — PASS.
-- Production build: `npm run build` — PASS; `dist/` contains `index.html`, 80.33 kB raw / 27.05 kB gzip JavaScript and 21.10 kB raw / 5.37 kB gzip CSS.
-- Browser suite: `npm run test:e2e` — PASS; desktop and 390px mobile checks, keyboard, axe, privacy, offline, update, responsive, route, and response-policy coverage all ran. Checkout-only cases remain intentionally skipped in the default build.
-- Claims: every exact command in [`.factory/claims.json`](claims.json) passed. The fixed `npm run test:e2e -- --grep @claim:free-card-limits --project=chromium` passed as a normal final run and ten repeated Chromium runs. The initial clean exact rerun passed as well; the original failure was intermittent, as documented by the verifier.
-- Checkout-enabled fixture checks: `npm run test:checkout-enabled -- --grep @claim:kitchen-pass-price --project=chromium` and `VITE_KITCHEN_PASS_CHECKOUT_ENABLED=true npx playwright test --grep @claim:billing-terms --project=chromium` — PASS. These use recorded responses and do not contact checkout.
-- URL verifier: local load 541 ms and live load 635 ms; both report title, `lang="en"`, one `h1`, a `main`, complete image alternatives, labelled buttons, and no console errors. See [`local-verify`](evidence-repair-5/local-verify/verify.json) and [`live-verify`](evidence-repair-5/live-verify/verify.json).
-- Accessibility: the full Playwright axe coverage has no serious or critical findings on landing, workspace, dialogs, legal routes, and 404. The live audit reports 52/52 checks passing, including keyboard focus, 44px mobile targets, 200% text reflow, and reduced motion. See [`live browser audit`](evidence-repair-5/live-qa/live-browser.json).
-- Privacy/offline: the live demo cooking flow made no cross-origin requests; demo data stayed in `demo:scc:`; the live `scaled-cook-card-v8` service worker controlled the page and reloaded `/demo` offline.
-- Live identity: deployed JavaScript, CSS, and service worker hashes exactly match `dist/`. The recorded hashes and production headers are in [`live identity`](evidence-repair-5/live-identity-sha256.txt), [`root headers`](evidence-repair-5/live-root-headers.txt), and [`asset headers`](evidence-repair-5/live-js-headers.txt). Production sends HSTS, nosniff, strict-origin referrer policy, permissions restrictions, and the response-header CSP including `frame-ancestors 'none'`.
-- Mobile Lighthouse on live `/demo`: performance 100, accessibility 100, best practices 100, SEO 100; FCP 1.1 s, LCP 1.1 s, total blocking time 30 ms, CLS 0. The full report is [`lighthouse-mobile.json`](evidence-repair-5/lighthouse-mobile.json).
+Kitchen Pass checkout is intentionally unavailable in the default release. The page states this plainly and exposes no price or buy link; existing licenses can still be restored. Do not enable `VITE_KITCHEN_PASS_CHECKOUT_ENABLED` until the billing operator has registered and independently confirmed the hosted checkout. The free local-first cook card is complete without it.
 
-## Deployment
+## Run locally
 
-`swa deploy ./dist --env production` completed successfully against the scoped Azure Static Web App `sf-scaled-cook-card` in resource group `sociobot`. The custom domain serves build `2026.09.01-repair.5`, JavaScript `index-BJSHDrOR.js`, and service worker cache `scaled-cook-card-v8`.
-
-## Remaining operator step
-
-Kitchen Pass checkout is deliberately unavailable until the product is registered and enabled by the billing operator. Do not enable `VITE_KITCHEN_PASS_CHECKOUT_ENABLED` until that registration exists and the hosted checkout path has been independently confirmed. The free cook card remains complete: import, scale, cook, corrections, local storage, export, demo, and offline reload all work without it.
+```bash
+npm ci
+npm run dev
+npm test
+npm run lint
+npm run build
+npm run test:e2e
+```
