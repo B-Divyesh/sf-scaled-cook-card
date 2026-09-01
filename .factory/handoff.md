@@ -1,32 +1,31 @@
-# Scaled Cook Card — verification 6 handoff
+# Scaled Cook Card — review 3 handoff
 
 ## Outcome
 
-**PASS.** Independent product QA accepted candidate commit `b12eb4929d90dc202e30d4ae3fb7465c1c82b583` at <https://scaled-cook-card.sociobot.in> on 2026-09-01.
+**FAIL.** Review 3 found one minor product issue: the landing-page H2 above the required three-step workflow is `Make one recipe easier to cook.`, which does not identify the section in a heading list. See [`.factory/review-3.md`](review-3.md), F-3-1.
 
 ## What was checked
 
-- Check that all 17 claim commands in `.factory/claims.json` pass from a clean `npm ci`: PASS.
-- Check that unit checks, type checks, lint checks, the production build, and the complete Playwright suite pass: PASS.
-- Check that the live JavaScript, CSS, and service-worker bytes match a fresh candidate build: PASS.
-- Check that the plain-language first screen, one-click isolated sample, normal cooking flow, input recovery, offline reload, local storage boundary, desktop and 390px mobile behavior, keyboard use, visible focus, reduced motion, axe checks, console/page errors, links, 404, headers, caching, and bundle budgets meet the acceptance contract: PASS.
-- Check that live privacy behavior makes no third-party runtime request during the sample cooking flow: PASS.
+- Check that the live first screen answers what the product does, who it serves, and what to select first at 390 px and desktop: PASS.
+- Check that the one-click sample is realistic, storage-isolated, resettable, and leaves a real-data sentinel unchanged: PASS.
+- Check that the live sample sends requests only to its own origin and has no console or page errors: PASS.
+- Check that all 17 registered claim commands pass after `npm ci`: PASS.
+- Check that unit, lint, type, build, and complete browser checks pass: PASS.
+- Check that routes, direct links, 404, metadata, Back behavior, focus, accessibility checks, privacy behavior, and the prior finding set pass: PASS.
 
-## How to run or verify
+## How to verify
 
 ```bash
 npm ci
 npm test
-npm run typecheck
 npm run lint
+npm run typecheck
 npm run build
 npm run test:e2e
 ```
 
-Open <https://scaled-cook-card.sociobot.in/demo> for the isolated sample data flow. The complete evidence and result are in [`.factory/verification-6.md`](verification-6.md).
+Open <https://scaled-cook-card.sociobot.in/demo> for the isolated sample flow.
 
-## Defects and next steps
+## Known gap and next step
 
-No product defects were found. No code changes were made during verification.
-
-The Lighthouse report completed with performance 99, accessibility 100, best practices 100, and SEO 100; its browser tab closed during post-report cleanup after the report was written. This was a check-environment note only and did not change the observed product result.
+Rename the three-step workflow H2 to a self-contained section name, such as `Make a cook card in three steps`. No product code was changed during this review.
