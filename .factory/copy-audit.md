@@ -21,6 +21,10 @@ Reviewed 2026-09-01. Sentence counts exclude button labels and image alt text.
 
 No sentence exceeds 22 words. No banned marketing terms appear.
 
+## Catalog description
+
+`Scale recipe amounts and see each quantity inside its cooking step.` — 11 words, 67 characters, verb first, no banned words.
+
 ## Terminology
 
 | Concept | Product term |

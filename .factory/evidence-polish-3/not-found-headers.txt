@@ -1,0 +1,15 @@
+HTTP/2 404 
+content-type: text/html
+date: Tue, 01 Sep 2026 21:59:40 GMT
+cache-control: public, must-revalidate, max-age=30
+etag: "65139454"
+last-modified: Tue, 01 Sep 2026 21:54:53 GMT
+content-length: 2310
+strict-transport-security: max-age=10886400; includeSubDomains; preload
+referrer-policy: strict-origin-when-cross-origin
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+x-dns-prefetch-control: off
+permissions-policy: camera=(), microphone=(), geolocation=()
+content-security-policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://api.sociobot.in; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https://api.sociobot.in; frame-ancestors 'none'
+

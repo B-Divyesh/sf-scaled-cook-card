@@ -13,7 +13,7 @@ const serious = (result) => result.violations.filter((item) => ['serious', 'crit
 
 const browser = await chromium.launch({ headless: true });
 try {
-  const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   const page = await context.newPage();
   const requests = [];
   const consoleErrors = [];
@@ -31,6 +31,12 @@ try {
   record('cold first screen states the job', heading === 'Scale recipe amounts in every step.', heading);
   record('cold first screen identifies the user', lede.includes('home cooks') && lede.includes('hands are busy'), lede);
   record('cold first screen has one-click sample demo', demoButton === 1, `matching actions: ${demoButton}`);
+  record('workflow heading names the three-step section', await page.getByRole('heading', { level: 2, name: 'Make a cook card in three steps' }).isVisible(), 'Make a cook card in three steps');
+  const firstScreenFacts = await page.locator('.plain-facts li').evaluateAll((items) => items.map((item) => {
+    const box = item.getBoundingClientRect();
+    return { text: item.textContent?.trim(), bottom: Math.round(box.bottom) };
+  }));
+  record('desktop first screen shows all three facts', firstScreenFacts.length === 3 && firstScreenFacts.every((item) => item.bottom <= 900), JSON.stringify(firstScreenFacts));
   record('hero image loads', hero.complete && hero.naturalWidth > 0, JSON.stringify(hero));
   record('root response is 200', rootResponse?.status() === 200, String(rootResponse?.status()));
   observations.rootHeaders = await rootResponse?.allHeaders();
@@ -51,8 +57,9 @@ try {
   const landingAxe = await new AxeBuilder({ page }).analyze();
   record('landing has zero serious or critical axe findings', serious(landingAxe).length === 0, JSON.stringify(serious(landingAxe).map((v) => ({ id: v.id, impact: v.impact }))));
 
+  await page.evaluate(() => localStorage.setItem('scc:live-demo-sentinel', 'real-data'));
   await page.getByRole('button', { name: /try it with sample data/i }).click();
-  await page.waitForURL(`${base}/demo`);
+  await page.waitForURL(`${base}/?demo=1`);
   record('demo opens ready sample in one click', await page.getByRole('heading', { level: 1, name: 'Weeknight tomato pasta' }).isVisible(), page.url());
   record('demo banner persists', await page.getByLabel('Demo mode').isVisible(), (await page.getByLabel('Demo mode').innerText()).replace(/\s+/g, ' ').trim());
 
@@ -71,7 +78,7 @@ try {
   record('out-of-range serving recovers', await servings.inputValue() === '999' && await page.getByText('Choose a serving count between 0.25 and 999.').isVisible(), `input=${await servings.inputValue()}`);
 
   const demoKeys = await page.evaluate(() => Object.keys(localStorage));
-  record('demo writes only its isolated namespace', demoKeys.length > 0 && demoKeys.every((key) => key.startsWith('demo:scc:')), demoKeys.join(', '));
+  record('demo writes only its isolated namespace', demoKeys.some((key) => key.startsWith('demo:scc:')) && demoKeys.filter((key) => key !== 'scc:live-demo-sentinel').every((key) => key.startsWith('demo:scc:')) && await page.evaluate(() => localStorage.getItem('scc:live-demo-sentinel')) === 'real-data', demoKeys.join(', '));
 
   await page.getByRole('button', { name: /start cook mode/i }).focus();
   await page.keyboard.press('Enter');
@@ -102,7 +109,7 @@ try {
   await page.getByRole('button', { name: 'Start for real' }).click();
   await page.waitForURL(`${base}/`);
   const afterDemoKeys = await page.evaluate(() => Object.keys(localStorage));
-  record('Start for real discards demo data', await page.getByRole('heading', { level: 1, name: 'Scale recipe amounts in every step.' }).isVisible() && afterDemoKeys.every((key) => !key.startsWith('demo:scc:')), JSON.stringify(afterDemoKeys));
+  record('Start for real discards demo data', await page.getByRole('heading', { level: 1, name: 'Scale recipe amounts in every step.' }).isVisible() && afterDemoKeys.every((key) => !key.startsWith('demo:scc:')) && await page.evaluate(() => localStorage.getItem('scc:live-demo-sentinel')) === 'real-data', JSON.stringify(afterDemoKeys));
 
   const outbound = requests.filter((item) => new URL(item.url).origin !== base);
   record('demo cooking flow has no cross-origin requests', outbound.length === 0, JSON.stringify(outbound));
@@ -112,6 +119,16 @@ try {
   observations.consoleErrors = consoleErrors;
   observations.pageErrors = pageErrors;
   await context.close();
+
+  const queryDemoContext = await browser.newContext();
+  const queryDemoPage = await queryDemoContext.newPage();
+  await queryDemoPage.goto(`${base}/?demo=1`, { waitUntil: 'networkidle' });
+  record('?demo=1 opens the isolated sample directly', await queryDemoPage.title() === 'Demo — Scaled Cook Card' && await queryDemoPage.getByLabel('Demo mode').isVisible() && await queryDemoPage.getByRole('heading', { level: 1, name: 'Weeknight tomato pasta' }).isVisible(), queryDemoPage.url());
+  await queryDemoPage.getByLabel('Number of servings').fill('6');
+  await queryDemoPage.getByLabel('Number of servings').press('Tab');
+  const queryDemoKeys = await queryDemoPage.evaluate(() => Object.keys(localStorage));
+  record('?demo=1 writes only demo storage', queryDemoKeys.length > 0 && queryDemoKeys.every((key) => key.startsWith('demo:scc:')), queryDemoKeys.join(', '));
+  await queryDemoContext.close();
 
   const importContext = await browser.newContext({ viewport: { width: 1280, height: 900 } });
   const importPage = await importContext.newPage();
@@ -162,6 +179,15 @@ try {
   const mobilePage = await mobileContext.newPage();
   const mobileErrors = [];
   mobilePage.on('console', (message) => { if (message.type() === 'error') mobileErrors.push(message.text()); });
+  await mobilePage.goto(base, { waitUntil: 'networkidle' });
+  const mobileFirstScreen = await mobilePage.evaluate(() => ({
+    heading: document.querySelector('h1')?.textContent?.replace(/\s+/g, ' ').trim(),
+    factCount: document.querySelectorAll('.plain-facts li').length,
+    actionBottoms: [...document.querySelectorAll('.hero-actions .button')].map((item) => Math.round(item.getBoundingClientRect().bottom)),
+    width: document.documentElement.scrollWidth,
+  }));
+  record('390px first screen shows the job, facts, and both actions', mobileFirstScreen.heading === 'Scale recipe amounts in every step.' && mobileFirstScreen.factCount === 3 && mobileFirstScreen.actionBottoms.length === 2 && mobileFirstScreen.actionBottoms.every((bottom) => bottom <= 844) && mobileFirstScreen.width === 390, JSON.stringify(mobileFirstScreen));
+  await mobilePage.screenshot({ path: `${evidenceDir}/live-mobile-cold.png`, fullPage: false });
   await mobilePage.goto(`${base}/demo`, { waitUntil: 'networkidle' });
   await mobilePage.evaluate(() => { document.documentElement.style.fontSize = '200%'; });
   const reflow = await mobilePage.evaluate(() => ({ viewport: innerWidth, html: document.documentElement.scrollWidth, body: document.body.scrollWidth }));
@@ -216,10 +242,19 @@ try {
 
   const legalContext = await browser.newContext();
   const legalPage = await legalContext.newPage();
-  for (const route of ['/privacy', '/terms']) {
+  const routeMetadata = [
+    ['/', 'Scaled Cook Card — scale recipe steps'],
+    ['/demo', 'Demo — Scaled Cook Card'],
+    ['/privacy', 'Privacy — Scaled Cook Card'],
+    ['/terms', 'Terms — Scaled Cook Card'],
+    ['/artwork', 'Artwork provenance — Scaled Cook Card'],
+  ];
+  for (const [route, expectedTitle] of routeMetadata) {
     const response = await legalPage.goto(`${base}${route}`, { waitUntil: 'networkidle' });
     const h1Count = await legalPage.locator('h1').count();
-    record(`${route} route is direct and semantic`, response?.status() === 200 && h1Count === 1 && await legalPage.locator('main').count() === 1, `status=${response?.status()} title=${await legalPage.title()} h1=${h1Count}`);
+    const canonical = await legalPage.locator('link[rel="canonical"]').getAttribute('href');
+    const socialTitle = await legalPage.locator('meta[property="og:title"]').getAttribute('content');
+    record(`${route} route has direct semantic metadata`, response?.status() === 200 && h1Count === 1 && await legalPage.locator('main').count() === 1 && await legalPage.title() === expectedTitle && canonical === `${base}${route}` && socialTitle === expectedTitle, `status=${response?.status()} title=${await legalPage.title()} canonical=${canonical} h1=${h1Count}`);
   }
   const privacyAxe = await new AxeBuilder({ page: legalPage }).analyze();
   record('legal page has zero serious or critical axe findings', serious(privacyAxe).length === 0, JSON.stringify(serious(privacyAxe).map((v) => ({ id: v.id, impact: v.impact }))));
@@ -235,8 +270,19 @@ try {
     linkResults.push({ href, status: response.status() });
   }
   record('all rendered same-origin links resolve', linkResults.every((item) => item.status >= 200 && item.status < 400), JSON.stringify(linkResults));
-  const missingResponse = await legalPage.goto(`${base}/definitely-missing-verification-4`, { waitUntil: 'networkidle' });
-  record('unknown URL returns designed 404', missingResponse?.status() === 404 && await legalPage.getByRole('heading', { level: 1, name: 'That cook card page is missing.' }).isVisible(), `status=${missingResponse?.status()}`);
+  await legalPage.goto(base, { waitUntil: 'networkidle' });
+  await legalPage.locator('.site-header').getByRole('link', { name: 'Privacy' }).click();
+  await legalPage.goBack();
+  await legalPage.waitForFunction(() => document.activeElement?.matches('h1') && document.querySelector('#route-announcement')?.textContent === 'Page changed.');
+  const backState = await legalPage.evaluate(() => ({
+    focusedHeading: document.activeElement?.matches('h1') && document.activeElement.textContent?.replace(/\s+/g, ' ').trim(),
+    announcement: document.querySelector('#route-announcement')?.textContent,
+  }));
+  record('Back restores and focuses the root heading', backState.focusedHeading === 'Scale recipe amounts in every step.' && backState.announcement === 'Page changed.', JSON.stringify(backState));
+  const missingResponse = await legalPage.goto(`${base}/definitely-missing-polish-3`, { waitUntil: 'networkidle' });
+  const missingTitle = await legalPage.title();
+  const missingSocialTitle = await legalPage.locator('meta[property="og:title"]').getAttribute('content');
+  record('unknown URL returns designed 404 with metadata', missingResponse?.status() === 404 && await legalPage.getByRole('heading', { level: 1, name: 'That cook card page is missing.' }).isVisible() && missingTitle === 'Page not found — Scaled Cook Card' && missingSocialTitle === missingTitle, `status=${missingResponse?.status()} title=${missingTitle}`);
   await legalContext.close();
 } finally {
   await browser.close();

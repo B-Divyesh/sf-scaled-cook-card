@@ -53,7 +53,7 @@
     "claim": "The sample demo does not save to your real cook card",
     "where": "demo banner, README",
     "test": "npm run test:e2e -- --grep @claim:demo-sandbox",
-    "sandbox": "open /demo, edit servings, and assert only demo:scc: browser storage keys exist"
+    "sandbox": "preserve a real-data sentinel; open /?demo=1, edit servings, reset, and start for real; assert only demo:scc: keys change and are discarded on exit"
   },
   {
     "id": "local-only-recipe-data",

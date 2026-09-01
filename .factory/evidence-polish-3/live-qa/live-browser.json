@@ -1,0 +1,355 @@
+{
+  "testedAt": "2026-09-01T21:55:38.006Z",
+  "base": "https://scaled-cook-card.sociobot.in",
+  "checks": [
+    {
+      "name": "cold first screen states the job",
+      "pass": true,
+      "detail": "Scale recipe amounts in every step."
+    },
+    {
+      "name": "cold first screen identifies the user",
+      "pass": true,
+      "detail": "For home cooks who need correct quantities while their hands are busy."
+    },
+    {
+      "name": "cold first screen has one-click sample demo",
+      "pass": true,
+      "detail": "matching actions: 1"
+    },
+    {
+      "name": "workflow heading names the three-step section",
+      "pass": true,
+      "detail": "Make a cook card in three steps"
+    },
+    {
+      "name": "desktop first screen shows all three facts",
+      "pass": true,
+      "detail": "[{\"text\":\"Works offline after the first visit.\",\"bottom\":646},{\"text\":\"$9 once for optional history.\",\"bottom\":672},{\"text\":\"Cook cards stay in this browser.\",\"bottom\":698}]"
+    },
+    {
+      "name": "hero image loads",
+      "pass": true,
+      "detail": "{\"complete\":true,\"naturalWidth\":748,\"naturalHeight\":499}"
+    },
+    {
+      "name": "root response is 200",
+      "pass": true,
+      "detail": "200"
+    },
+    {
+      "name": "first Tab reaches skip link",
+      "pass": true,
+      "detail": "{\"text\":\"Skip to main content\",\"href\":\"#main\"}"
+    },
+    {
+      "name": "keyboard focus is visibly styled",
+      "pass": true,
+      "detail": "{\"tag\":\"A\",\"text\":\"Scaled Cook Card\",\"outline\":\"rgb(23, 105, 141) solid 3px\",\"outlineColor\":\"rgb(23, 105, 141)\",\"outlineWidth\":\"3px\"}"
+    },
+    {
+      "name": "landing has zero serious or critical axe findings",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "demo opens ready sample in one click",
+      "pass": true,
+      "detail": "https://scaled-cook-card.sociobot.in/?demo=1"
+    },
+    {
+      "name": "demo banner persists",
+      "pass": true,
+      "detail": "Demo — sample data, nothing is saved to your real cook card. Reset demo Start for real"
+    },
+    {
+      "name": "normal scaling updates bound values",
+      "pass": true,
+      "detail": "6 servings -> 600 g in list and steps"
+    },
+    {
+      "name": "minimum serving boundary works",
+      "pass": true,
+      "detail": "input=0.25"
+    },
+    {
+      "name": "maximum serving boundary works",
+      "pass": true,
+      "detail": "input=999"
+    },
+    {
+      "name": "out-of-range serving recovers",
+      "pass": true,
+      "detail": "input=999"
+    },
+    {
+      "name": "demo writes only its isolated namespace",
+      "pass": true,
+      "detail": "scc:live-demo-sentinel, demo:scc:target-servings"
+    },
+    {
+      "name": "cook mode starts from keyboard",
+      "pass": true,
+      "detail": "Step 1 visible"
+    },
+    {
+      "name": "cook dialog has zero serious or critical axe findings",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "ArrowRight advances cooking",
+      "pass": true,
+      "detail": "Step 2 visible"
+    },
+    {
+      "name": "post-cook correction saves actual yield",
+      "pass": true,
+      "detail": "Sep 1, 2026 Made 5 ½ servings. Used shallot for garlic"
+    },
+    {
+      "name": "post-cook notes persist in demo storage",
+      "pass": true,
+      "detail": "{\"id\":\"588dbfd1-0a50-4f1f-9d91-11b131bcc66c\",\"recipeId\":\"recipe-1unmmea\",\"cookedAt\":\"2026-09-01T21:55:22.468Z\",\"targetServings\":999,\"actualYield\":5.5,\"substitutions\":\"Used shallot for garlic\",\"notes\":\"Reduce simmer by two minutes\"}"
+    },
+    {
+      "name": "workspace has zero serious or critical axe findings",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "Reset demo restores the shipped sample",
+      "pass": true,
+      "detail": "servings=4 records=0"
+    },
+    {
+      "name": "Start for real discards demo data",
+      "pass": true,
+      "detail": "[\"scc:live-demo-sentinel\"]"
+    },
+    {
+      "name": "demo cooking flow has no cross-origin requests",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "live flow has no console errors",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "live flow has no page errors",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "?demo=1 opens the isolated sample directly",
+      "pass": true,
+      "detail": "https://scaled-cook-card.sociobot.in/?demo=1"
+    },
+    {
+      "name": "?demo=1 writes only demo storage",
+      "pass": true,
+      "detail": "demo:scc:target-servings"
+    },
+    {
+      "name": "invalid import explains recovery",
+      "pass": true,
+      "detail": "Servings must be a number or fraction."
+    },
+    {
+      "name": "valid recovery import renders inline and list bindings",
+      "pass": true,
+      "detail": "01 Bloom 3/16 tsp paprika. 02 Add the liquid. 1 ½ cups stock"
+    },
+    {
+      "name": "fraction import scales without approximation",
+      "pass": true,
+      "detail": "⅜ tsp paprika 3 cups stock"
+    },
+    {
+      "name": "import recovery has no console errors",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "return license is stored, scrubbed, and fixture-verified",
+      "pass": true,
+      "detail": "url=https://scaled-cook-card.sociobot.in/ token=fixture-return-license intercepted=https://api.sociobot.in/api/v1/products/scaled-cook-card/verify?license=fixture-return-license"
+    },
+    {
+      "name": "390px first screen shows the job, facts, and both actions",
+      "pass": true,
+      "detail": "{\"heading\":\"Scale recipe amounts in every step.\",\"factCount\":3,\"actionBottoms\":[554,615],\"width\":390}"
+    },
+    {
+      "name": "390px at 200% text has no horizontal overflow",
+      "pass": true,
+      "detail": "{\"viewport\":390,\"html\":390,\"body\":390}"
+    },
+    {
+      "name": "visible mobile controls meet 44px touch target",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "mobile flow has no console errors",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "reduced motion removes material animation and transitions",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "live service worker controls the page",
+      "pass": true,
+      "detail": "{\"controlled\":true,\"scope\":\"https://scaled-cook-card.sociobot.in/\",\"caches\":[\"scaled-cook-card-v7\"]}"
+    },
+    {
+      "name": "live service worker uses candidate cache version",
+      "pass": true,
+      "detail": "[\"scaled-cook-card-v7\"]"
+    },
+    {
+      "name": "live demo reloads offline",
+      "pass": true,
+      "detail": "https://scaled-cook-card.sociobot.in/demo"
+    },
+    {
+      "name": "/ route has direct semantic metadata",
+      "pass": true,
+      "detail": "status=200 title=Scaled Cook Card — scale recipe steps canonical=https://scaled-cook-card.sociobot.in/ h1=1"
+    },
+    {
+      "name": "/demo route has direct semantic metadata",
+      "pass": true,
+      "detail": "status=200 title=Demo — Scaled Cook Card canonical=https://scaled-cook-card.sociobot.in/demo h1=1"
+    },
+    {
+      "name": "/privacy route has direct semantic metadata",
+      "pass": true,
+      "detail": "status=200 title=Privacy — Scaled Cook Card canonical=https://scaled-cook-card.sociobot.in/privacy h1=1"
+    },
+    {
+      "name": "/terms route has direct semantic metadata",
+      "pass": true,
+      "detail": "status=200 title=Terms — Scaled Cook Card canonical=https://scaled-cook-card.sociobot.in/terms h1=1"
+    },
+    {
+      "name": "/artwork route has direct semantic metadata",
+      "pass": true,
+      "detail": "status=200 title=Artwork provenance — Scaled Cook Card canonical=https://scaled-cook-card.sociobot.in/artwork h1=1"
+    },
+    {
+      "name": "legal page has zero serious or critical axe findings",
+      "pass": true,
+      "detail": "[]"
+    },
+    {
+      "name": "all rendered same-origin links resolve",
+      "pass": true,
+      "detail": "[{\"href\":\"https://scaled-cook-card.sociobot.in/#main\",\"status\":200},{\"href\":\"https://scaled-cook-card.sociobot.in/\",\"status\":200},{\"href\":\"https://scaled-cook-card.sociobot.in/demo\",\"status\":200},{\"href\":\"https://scaled-cook-card.sociobot.in/privacy\",\"status\":200},{\"href\":\"https://scaled-cook-card.sociobot.in/terms\",\"status\":200},{\"href\":\"https://scaled-cook-card.sociobot.in/artwork\",\"status\":200},{\"href\":\"https://scaled-cook-card.sociobot.in/demo#main\",\"status\":200},{\"href\":\"https://scaled-cook-card.sociobot.in/privacy#main\",\"status\":200},{\"href\":\"https://scaled-cook-card.sociobot.in/terms#main\",\"status\":200}]"
+    },
+    {
+      "name": "Back restores and focuses the root heading",
+      "pass": true,
+      "detail": "{\"focusedHeading\":\"Scale recipe amounts in every step.\",\"announcement\":\"Page changed.\"}"
+    },
+    {
+      "name": "unknown URL returns designed 404 with metadata",
+      "pass": true,
+      "detail": "status=404 title=Page not found — Scaled Cook Card"
+    }
+  ],
+  "observations": {
+    "firstRead": {
+      "heading": "Scale recipe amounts in every step.",
+      "lede": "For home cooks who need correct quantities while their hands are busy.",
+      "demoButton": 1,
+      "hero": {
+        "complete": true,
+        "naturalWidth": 748,
+        "naturalHeight": 499
+      }
+    },
+    "rootHeaders": {
+      "cache-control": "public, must-revalidate, max-age=30",
+      "content-encoding": "br",
+      "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://api.sociobot.in; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https://api.sociobot.in; frame-ancestors 'none'",
+      "content-type": "text/html",
+      "date": "Tue, 01 Sep 2026 21:55:19 GMT",
+      "etag": "\"65139454\"",
+      "last-modified": "Tue, 01 Sep 2026 21:54:53 GMT",
+      "permissions-policy": "camera=(), microphone=(), geolocation=()",
+      "referrer-policy": "strict-origin-when-cross-origin",
+      "strict-transport-security": "max-age=10886400; includeSubDomains; preload",
+      "vary": "Accept-Encoding",
+      "x-content-type-options": "nosniff",
+      "x-dns-prefetch-control": "off",
+      "x-xss-protection": "1; mode=block"
+    },
+    "requests": [
+      {
+        "url": "https://scaled-cook-card.sociobot.in/",
+        "method": "GET",
+        "resourceType": "document"
+      },
+      {
+        "url": "https://scaled-cook-card.sociobot.in/assets/index-D04khHhB.js",
+        "method": "GET",
+        "resourceType": "script"
+      },
+      {
+        "url": "https://scaled-cook-card.sociobot.in/assets/style-DFv06S3l.css",
+        "method": "GET",
+        "resourceType": "stylesheet"
+      },
+      {
+        "url": "https://scaled-cook-card.sociobot.in/hero-notebook-v1-1280.avif",
+        "method": "GET",
+        "resourceType": "image"
+      },
+      {
+        "url": "https://scaled-cook-card.sociobot.in/?demo=1",
+        "method": "GET",
+        "resourceType": "document"
+      },
+      {
+        "url": "https://scaled-cook-card.sociobot.in/assets/index-D04khHhB.js",
+        "method": "GET",
+        "resourceType": "script"
+      },
+      {
+        "url": "https://scaled-cook-card.sociobot.in/assets/style-DFv06S3l.css",
+        "method": "GET",
+        "resourceType": "stylesheet"
+      },
+      {
+        "url": "https://scaled-cook-card.sociobot.in/",
+        "method": "GET",
+        "resourceType": "document"
+      },
+      {
+        "url": "https://scaled-cook-card.sociobot.in/assets/index-D04khHhB.js",
+        "method": "GET",
+        "resourceType": "script"
+      },
+      {
+        "url": "https://scaled-cook-card.sociobot.in/assets/style-DFv06S3l.css",
+        "method": "GET",
+        "resourceType": "stylesheet"
+      },
+      {
+        "url": "https://scaled-cook-card.sociobot.in/hero-notebook-v1-1280.avif",
+        "method": "GET",
+        "resourceType": "image"
+      }
+    ],
+    "consoleErrors": [],
+    "pageErrors": [],
+    "undersizedMobileTargets": []
+  },
+  "passed": true
+}

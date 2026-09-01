@@ -6,7 +6,7 @@ Use a recipe file you wrote or can import. The cook card scales it while you coo
 
 Live: https://scaled-cook-card.sociobot.in
 
-Try the isolated sample at `https://scaled-cook-card.sociobot.in/demo`. It uses separate browser storage and never changes a real cook card.
+Try the isolated sample at `https://scaled-cook-card.sociobot.in/?demo=1`. It uses separate browser storage and never changes a real cook card.
 
 ## What it does
 
