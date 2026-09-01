@@ -36,10 +36,10 @@
   },
   {
     "id": "json-export",
-    "claim": "Exports the active cook card as JSON.",
+    "claim": "Exports the displayed scaled cook card as JSON.",
     "where": "README, workspace export button",
     "test": "npm run test:e2e -- --grep @claim:json-export",
-    "sandbox": "fresh browser; open the sample, download JSON, and parse the downloaded file"
+    "sandbox": "fresh browser; scale the sample from four to six servings, download JSON, and assert the file has servings 6 and pasta quantity 600"
   },
   {
     "id": "offline-reload",
@@ -92,10 +92,10 @@
   },
   {
     "id": "billing-terms",
-    "claim": "Checkout is hosted by Sociobot/Dodo, and a revoked license stops paid features.",
+    "claim": "Checkout opens on Sociobot, and a revoked license stops paid history.",
     "where": "Kitchen Pass dialog, terms",
     "test": "VITE_KITCHEN_PASS_CHECKOUT_ENABLED=true npx playwright test --grep @claim:billing-terms --project=chromium",
-    "sandbox": "checkout-enabled preview; assert the documented hosted URL and a recorded revoked verification response locks the paid library"
+    "sandbox": "checkout-enabled preview; assert the Sociobot checkout URL and a recorded revoked verification response locks the paid library"
   },
   {
     "id": "art-provenance",

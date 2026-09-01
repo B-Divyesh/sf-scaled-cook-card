@@ -155,7 +155,7 @@ try {
   });
   await licensePage.goto(`${base}/?license=fixture-return-license`, { waitUntil: 'networkidle' });
   const capturedToken = await licensePage.evaluate(() => localStorage.getItem('sb_license:scaled-cook-card'));
-  record('return license is stored, scrubbed, and fixture-verified', licensePage.url() === `${base}/` && capturedToken === 'fixture-return-license' && interceptedVerification.endsWith('license=fixture-return-license') && await licensePage.getByRole('button', { name: 'Kitchen Pass active' }).isVisible(), `url=${licensePage.url()} token=${capturedToken} intercepted=${interceptedVerification}`);
+  record('return license is stored, scrubbed, and fixture-verified', licensePage.url() === `${base}/` && capturedToken === 'fixture-return-license' && interceptedVerification.endsWith('license=fixture-return-license') && await licensePage.getByRole('button', { name: 'History upgrade active' }).isVisible(), `url=${licensePage.url()} token=${capturedToken} intercepted=${interceptedVerification}`);
   await licenseContext.close();
 
   const mobileContext = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, isMobile: false });

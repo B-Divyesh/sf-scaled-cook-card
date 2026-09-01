@@ -28,7 +28,7 @@ interface AppState {
 }
 
 const SITE_URL = 'https://scaled-cook-card.sociobot.in';
-const BUILD_ID = '2026.09.01-polish.1';
+const BUILD_ID = '2026.09.01-polish.2';
 
 const appRoot = document.querySelector<HTMLDivElement>('#app');
 if (!appRoot) throw new Error('App root is missing.');
@@ -137,12 +137,12 @@ function landing(): string {
     <section class="hero-copy" aria-labelledby="main-title">
       <h1 id="main-title">Scale recipe amounts <br><em>in every step.</em></h1>
       <p class="lede">For home cooks who need correct quantities while their hands are busy.</p>
+      <ul class="plain-facts" aria-label="Product facts"><li>Works offline after the first visit.</li><li>$9 once for optional history.</li><li>Cook cards stay in this browser.</li></ul>
       <div class="hero-actions">
         <button class="button primary" data-action="try-sample">Try it with sample data ${icon('arrow')}</button>
         <button class="button secondary" data-action="open-import">${icon('upload')} Import my recipe</button>
       </div>
       <p class="action-help">Open a ready pasta cook card, or paste a recipe you wrote.</p>
-      <ul class="plain-facts" aria-label="Product facts"><li>Import YAML or JSON.</li><li>Works offline after the first visit.</li><li>$9 once for optional history.</li><li>Recipes stay in this browser.</li></ul>
     </section>
     <figure class="hero-figure">
       <picture>
@@ -155,13 +155,13 @@ function landing(): string {
     <section class="how-it-works" aria-labelledby="how-heading">
       <div>
         <p class="eyebrow">How it works</p>
-        <h2 id="how-heading">See each ingredient amount inside its cooking step.</h2>
+        <h2 id="how-heading">Make one recipe easier to cook.</h2>
       </div>
-      <div class="syntax-demo" aria-label="Example of a linked ingredient amount">
-        <span class="syntax-label">In your recipe file</span><code>Add &#123;&#123;salt&#125;&#125; to the pot.</code>
-        <span class="syntax-help">The name inside braces matches an ingredient id.</span>
-        <span aria-hidden="true">becomes</span>
-        <p>Add <span class="bound-token"><strong>1½ tsp</strong> fine salt</span> to the pot.</p>
+      <ol class="how-steps">
+        <li><span class="step-number">01</span><div><h3>Import a recipe file</h3><p>Paste YAML or JSON from a recipe you wrote.</p></div></li>
+        <li><span class="step-number">02</span><div><h3>Scale and cook each step</h3><p>Change servings. Linked amounts update where you need them.</p><div class="syntax-demo" aria-label="Example of a linked ingredient amount"><code>Add &#123;&#123;salt&#125;&#125; to the pot.</code><p>becomes <span class="bound-token"><strong>1½ tsp</strong> fine salt</span></p></div></div></li>
+        <li><span class="step-number">03</span><div><h3>Save what changed</h3><p>Record the real yield, substitutions, and notes after cooking.</p></div></li>
+      </ol>
       </div>
     </section>
     <section class="landing-detail" aria-labelledby="limits-heading">
@@ -225,7 +225,7 @@ function workspace(): string {
       <button class="button secondary" data-action="start-cook">${latest ? 'Cook it again' : 'Start cooking'}</button>
     </section>
     <div class="bottom-actions">
-      <button class="text-button" data-action="export-recipe">Export recipe JSON</button>
+      <button class="text-button" data-action="export-recipe">Export scaled cook card JSON</button>
       <button class="text-button" data-action="open-import">Import another</button>
       <button class="text-button danger-link" data-action="delete-recipe">Remove this card</button>
     </div>
@@ -246,15 +246,15 @@ function libraryPanel(): string {
 function legalPage(kind: 'privacy' | 'terms'): string {
   const privacy = kind === 'privacy';
   const passPurchase = CHECKOUT_ENABLED
-    ? 'Kitchen Pass is a $9 one-time license. It unlocks an unlimited local recipe library and complete local cook history. Checkout is hosted by Sociobot/Dodo. A refunded, expired, or revoked license stops the paid features. Recipe export remains available.'
+    ? 'Kitchen Pass is a $9 one-time license. It unlocks an unlimited local cook card library and complete local cook history. Checkout opens on Sociobot. A revoked license stops paid history. Scaled cook card export remains available.'
     : 'Kitchen Pass checkout is currently unavailable. The free card keeps scaling, cooking, offline use, and export. If you already have a Kitchen Pass license, you can restore it on this device. When checkout is enabled, it will be a $9 one-time license for one person’s devices.';
   return `<main id="main" class="legal-page">
     <p class="eyebrow">Last updated August 28, 2026</p>
     <h1>${privacy ? 'Privacy, in plain language' : 'Terms of use'}</h1>
     <p class="lede">${privacy ? 'Your recipes belong in your kitchen, not in our database.' : 'A short, practical agreement for using Scaled Cook Card.'}</p>
     ${privacy ? `<section><h2>What stays on this device</h2><p>Imported recipes, scaled serving choices, cook corrections, and license tokens are stored in your browser’s local storage. Scaled Cook Card has no account system and does not send recipe content to us.</p></section>
-      <section><h2>Network requests</h2><p>The app requests its own files and, when you provide a Kitchen Pass license, asks the Sociobot billing API whether that license is valid. When checkout is enabled, Sociobot/Dodo hosts it as the merchant of record. There are no advertising or behavioral analytics scripts.</p></section>
-      <section><h2>Your control</h2><p>Export is always available. “Remove this card” deletes the active cook card after confirmation. Clearing site data in your browser removes local cook cards, records, and the saved license.</p></section>`
+      <section><h2>Network requests</h2><p>The app requests its own files and, when you provide a Kitchen Pass license, asks the Sociobot billing API whether that license is valid. There are no advertising or behavioral analytics scripts.</p></section>
+      <section><h2>Your control</h2><p>Scaled cook card export is always available. “Remove this card” deletes the active cook card after confirmation. Clearing site data in your browser removes local cook cards, records, and the saved license.</p></section>`
       : `<section><h2>Use of the tool</h2><p>Scaled Cook Card performs arithmetic on user-authored recipe data. Check amounts, allergens, temperatures, and food safety for your circumstances. The tool is provided “as is” without cooking, nutrition, or medical guarantees.</p></section>
       <section><h2>Your content</h2><p>You retain all rights to recipes you enter. Only import content you have the right to use. The service does not scrape or republish recipe websites.</p></section>
       <section><h2>Kitchen Pass purchase</h2><p>${passPurchase}</p></section>
@@ -286,17 +286,17 @@ function passDialog(): string {
   return `<dialog id="pass-dialog" class="notebook-dialog pass-dialog" aria-labelledby="pass-title">
     <button class="dialog-close" data-action="close-pass" aria-label="Close Kitchen Pass dialog">${icon('close')}</button>
     <p class="eyebrow">One-time upgrade</p>
-    <h2 id="pass-title">Kitchen Pass</h2>
+    <h2 id="pass-title">Kitchen Pass storage upgrade</h2>
     ${state.license.valid ? `<div class="license-active">${icon('check')}<div><strong>License active</strong><span>Unlimited recipe library and full cook history are unlocked.</span></div></div>
       <button class="text-button danger-link" data-action="remove-license">Remove license from this device</button>`
       : `${CHECKOUT_ENABLED ? '<p class="pass-price"><strong>$9</strong> once</p>' : '<p class="checkout-unavailable" role="status"><strong>Checkout is unavailable right now.</strong> Your free cook card stays usable. If you already bought Kitchen Pass, paste your license below.</p>'}
       <ul class="check-list"><li>${icon('check')} Save unlimited cook cards</li><li>${icon('check')} Keep the complete correction history</li><li>${icon('check')} Restore your license on this device</li></ul>
-      <p>The free cook card includes scaling, cook mode, one saved cook card and its latest correction, offline use, and export.</p>
+      <p>The free cook card includes scaling, cook mode, one saved cook card and its latest correction, offline use, and scaled cook card export.</p>
       ${CHECKOUT_ENABLED ? `<a class="button primary full-button" href="${CHECKOUT_URL}" target="_blank" rel="noopener noreferrer" aria-label="Buy Kitchen Pass (opens hosted checkout in a new tab)">Buy Kitchen Pass ${icon('arrow')}</a><p class="field-help">Checkout opens separately, and your free cook card stays usable here.</p>` : ''}
       <hr>
       <form id="license-form"><label for="license-token">Have a license? Paste it here</label><div class="inline-field"><input id="license-token" name="license" autocomplete="off" required><button class="button secondary" type="submit">Restore Kitchen Pass</button></div></form>
       ${state.license.message ? `<p class="license-message" aria-live="polite">${escapeHtml(state.license.message)}</p>` : ''}`}
-    <p class="legal-note">Sociobot/Dodo is the merchant of record and handles refunds. Refunds revoke the license. <a href="/privacy" data-nav="/privacy">Privacy</a> · <a href="/terms" data-nav="/terms">Terms</a></p>
+    <p class="legal-note">Checkout opens on Sociobot. A revoked license stops paid history. <a href="/privacy" data-nav="/privacy">Privacy</a> · <a href="/terms" data-nav="/terms">Terms</a></p>
   </dialog>`;
 }
 
@@ -591,13 +591,22 @@ async function readRecipeFile(file?: File): Promise<void> {
 
 function exportRecipe(): void {
   if (!state.recipe) return;
-  const blob = new Blob([JSON.stringify(state.recipe, null, 2)], { type: 'application/json' });
+  const scaledCookCard = {
+    title: state.recipe.title,
+    servings: state.targetServings,
+    ingredients: state.recipe.ingredients.map((ingredient) => ({
+      ...ingredient,
+      quantity: ingredient.quantity * state.targetServings / state.recipe!.servings,
+    })),
+    steps: state.recipe.steps,
+  };
+  const blob = new Blob([JSON.stringify(scaledCookCard, null, 2)], { type: 'application/json' });
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
-  link.download = `${state.recipe.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'recipe'}.json`;
+  link.download = `${state.recipe.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'cook-card'}-scaled-cook-card.json`;
   link.click();
   URL.revokeObjectURL(link.href);
-  notify('Recipe JSON exported.');
+  notify('Scaled cook card JSON exported.');
 }
 
 window.addEventListener('keydown', (event) => {

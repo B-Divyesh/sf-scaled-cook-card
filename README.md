@@ -14,12 +14,12 @@ Try the isolated sample at `https://scaled-cook-card.sociobot.in/demo`. It uses 
 - Keeps exact fractions such as `3/16` instead of changing them to a nearby amount.
 - Lets you cook with arrow keys when screen wake is unavailable.
 - Saves actual yield, substitutions, and notes locally after cooking.
-- Exports the active cook card as JSON.
+- Exports the displayed scaled cook card as JSON.
 - Works offline after the first visit.
 - Keeps recipe data in this browser. The cooking flow makes no analytics or third-party runtime requests.
 - Runs `/demo` with separate `demo:scc:` browser storage.
 
-When checkout is enabled, Kitchen Pass costs $9 once. It keeps unlimited local cook cards and complete local cook history. The free cook card keeps scaling, cooking, and export.
+When checkout is enabled, Kitchen Pass costs $9 once. It keeps unlimited local cook cards and complete local cook history. The free cook card keeps scaling, cooking, and scaled cook card export.
 
 ## Recipe format
 

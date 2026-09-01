@@ -96,6 +96,31 @@ test('landing page has no serious accessibility violations', async ({ page }) =>
   expect(results.violations.filter((item) => ['serious', 'critical'].includes(item.impact ?? ''))).toEqual([]);
 });
 
+test('keeps the offline, price, and browser-storage facts on the desktop first screen', async ({ browser }) => {
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await context.newPage();
+  try {
+    await page.goto('/');
+    for (const fact of ['Works offline after the first visit.', '$9 once for optional history.', 'Cook cards stay in this browser.']) {
+      const box = await page.getByText(fact, { exact: true }).boundingBox();
+      expect(box, fact).not.toBeNull();
+      expect((box?.y ?? 900) + (box?.height ?? 1), fact).toBeLessThanOrEqual(900);
+    }
+  } finally {
+    await context.close();
+  }
+});
+
+test('uses a real three-step landing flow and route-appropriate skip labels', async ({ page }) => {
+  await expect(page.getByRole('heading', { name: 'Import a recipe file' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Scale and cook each step' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Save what changed' })).toBeVisible();
+  for (const route of ['/privacy', '/terms', '/artwork']) {
+    await page.goto(route);
+    await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeVisible();
+  }
+});
+
 test('keeps word boundaries in the headline and recipe-file label', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1, name: 'Scale recipe amounts in every step.' })).toBeVisible();
   await page.getByRole('button', { name: /import my recipe/i }).click();
@@ -126,6 +151,7 @@ test('keeps Kitchen Pass checkout build-gated and restores a license @claim:kitc
     await expect(purchaseLink).toHaveCount(0);
   }
   await expect(page.getByLabel(/have a license/i)).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Kitchen Pass storage upgrade' })).toBeVisible();
   await page.getByLabel(/have a license/i).fill('fixture-license');
   await page.getByRole('button', { name: 'Restore Kitchen Pass' }).click();
   await expect(page.getByText('License active')).toBeVisible();
@@ -187,27 +213,33 @@ test('keeps one free cook card and its latest correction @claim:free-card-limits
   expect(saved).toEqual([expect.objectContaining({ actualYield: 4 })]);
 });
 
-test('shows hosted billing and locks paid history after a revoked verification @claim:billing-terms', async ({ page }) => {
+test('opens checkout on Sociobot and locks paid history after a revoked verification @claim:billing-terms', async ({ page }) => {
   test.skip(process.env.VITE_KITCHEN_PASS_CHECKOUT_ENABLED !== 'true', 'Requires the checkout-enabled build.');
   await page.route('https://api.sociobot.in/api/v1/products/scaled-cook-card/verify?license=revoked-license', (route) => route.fulfill({ json: { valid: false, reason: 'revoked' } }));
   await page.locator('.site-header').getByRole('button', { name: 'View history upgrade', exact: true }).click();
   await expect(page.getByRole('link', { name: /buy kitchen pass/i })).toHaveAttribute('href', 'https://api.sociobot.in/api/v1/products/scaled-cook-card/checkout');
-  await expect(page.locator('.legal-note')).toContainText('Sociobot/Dodo is the merchant of record');
+  await expect(page.locator('.legal-note')).toContainText('Checkout opens on Sociobot. A revoked license stops paid history.');
   await page.getByLabel(/have a license/i).fill('revoked-license');
   await page.getByRole('button', { name: 'Restore Kitchen Pass' }).click();
   await expect(page.getByText('License no longer active')).toBeVisible();
   await expect(page.locator('.library-strip')).toHaveCount(0);
 });
 
-test('exports the active recipe as JSON @claim:json-export', async ({ page }) => {
+test('exports the displayed scaled cook card as JSON @claim:json-export', async ({ page }) => {
   await page.getByRole('button', { name: /try it with sample data/i }).click();
+  await page.getByLabel('Number of servings').fill('6');
+  await page.getByLabel('Number of servings').press('Tab');
+  await expect(page.locator('.step-list')).toContainText('600 g');
   const downloadPromise = page.waitForEvent('download');
-  await page.getByRole('button', { name: /export recipe json/i }).click();
+  await page.getByRole('button', { name: /export scaled cook card json/i }).click();
   const download = await downloadPromise;
-  expect(download.suggestedFilename()).toBe('weeknight-tomato-pasta.json');
+  expect(download.suggestedFilename()).toBe('weeknight-tomato-pasta-scaled-cook-card.json');
   const path = await download.path();
   expect(path).not.toBeNull();
-  expect(JSON.parse(await readFile(path!, 'utf8'))).toMatchObject({ title: 'Weeknight tomato pasta', servings: 4 });
+  expect(JSON.parse(await readFile(path!, 'utf8'))).toMatchObject({
+    title: 'Weeknight tomato pasta', servings: 6,
+    ingredients: expect.arrayContaining([expect.objectContaining({ id: 'pasta', quantity: 600 })]),
+  });
 });
 
 test('keeps arrow-key cooking available when screen wake is unsupported @claim:cook-controls', async ({ page }) => {

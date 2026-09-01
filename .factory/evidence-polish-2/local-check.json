@@ -1,0 +1,18 @@
+{
+  "facts": [
+    {
+      "text": "Works offline after the first visit.",
+      "bottom": 646
+    },
+    {
+      "text": "$9 once for optional history.",
+      "bottom": 672
+    },
+    {
+      "text": "Cook cards stay in this browser.",
+      "bottom": 698
+    }
+  ],
+  "errors": [],
+  "demoUrl": "http://127.0.0.1:4173/?demo=1"
+}
