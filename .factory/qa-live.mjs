@@ -3,7 +3,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { mkdirSync, writeFileSync } from 'node:fs';
 
 const base = 'https://scaled-cook-card.sociobot.in';
-const evidenceDir = '.factory/evidence-verification-4';
+const evidenceDir = '.factory/evidence-polish-2/live-qa';
 mkdirSync(evidenceDir, { recursive: true });
 
 const checks = [];

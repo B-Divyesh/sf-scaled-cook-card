@@ -1,0 +1,39 @@
+{
+  "facts": [
+    {
+      "text": "Works offline after the first visit.",
+      "bottom": 646
+    },
+    {
+      "text": "$9 once for optional history.",
+      "bottom": 672
+    },
+    {
+      "text": "Cook cards stay in this browser.",
+      "bottom": 698
+    }
+  ],
+  "stepHeads": [
+    "Import a recipe file",
+    "Scale and cook each step",
+    "Save what changed"
+  ],
+  "passHeading": true,
+  "legalText": "Checkout opens on Sociobot. A revoked license stops paid history. Privacy · Terms",
+  "banner": "Demo — sample data, nothing is saved to your real cook card.\nReset demo\nStart for real",
+  "exported": {
+    "servings": 6,
+    "pasta": 600,
+    "filename": "weeknight-tomato-pasta-scaled-cook-card.json"
+  },
+  "skips": {
+    "/privacy": 1,
+    "/terms": 1,
+    "/artwork": 1
+  },
+  "missingStatus": 404,
+  "missingMeta": "https://scaled-cook-card.sociobot.in/social-card.jpg",
+  "errors": [
+    "Failed to load resource: the server responded with a status of 404 ()"
+  ]
+}
