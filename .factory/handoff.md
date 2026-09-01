@@ -1,33 +1,41 @@
-# Scaled Cook Card — review 1 handoff
+# Scaled Cook Card — polish 1 handoff
 
 ## Outcome
 
-**FAIL — 0 blocking findings and 27 minor findings.**
+Repaired all 27 findings from `.factory/review-1.md` on commit `cb0ee6b` (`fix: polish reviewed cook card release`). The product remains a Vite + TypeScript static web app with its warm handwritten-lab-notebook identity.
 
-The independent first-read review is recorded in `.factory/review-1.md`. No product code was modified. The live first screen, demo, storage separation, offline behavior, all registered claims, core quality gates, routes, link crawl, and serious/critical accessibility checks passed. The remaining findings concern unregistered public claims, copy clarity and accessible word boundaries, plus demo/404 structure consistency.
+## What changed
 
-## Files changed
+- Fixed assistive-text word boundaries in the landing headline and recipe-file label.
+- Made `?demo=1` and `/demo` isolated sample entries with the persistent banner, reset, start-for-real flow, and a home-linking wordmark.
+- Registered all public, price, paid-limit, billing, provenance, implementation, and cache claims in `.factory/claims.json`; each has exactly one tagged test.
+- Enforced the free tier’s one cook-card/latest-correction limit and verified paid multi-card/full-history behavior.
+- Rewrote reviewed copy in plain words, unified terms around `cook card` and `recipe file`, and updated the verb-first catalog line.
+- Added `/artwork`, 404 social metadata, matching 404 navigation/footer/build data, and sitemap/static-route support.
+- Bumped the service-worker cache to `scaled-cook-card-v6`.
 
-- `.factory/review-1.md` — full review, copy inventory with word counts, findings, claim results, and route/accessibility evidence.
-- `.factory/handoff.md` — this review handoff.
+`polish-1.md` maps F-1-1 through F-1-27 to their changes and evidence. Local screenshots are under `.factory/evidence-polish-1/`.
 
 ## Verification
 
-The ten exact commands in `.factory/claims.json` passed from a fresh clone of `f70858d7612a31e5e0dbe66a9a1cb7c4d2f54ec2`.
+Fresh clone: `/tmp/scaled-cook-card-clean.mQL7Ys` cloned from pushed `main`, then `npm ci` (171 packages, 0 vulnerabilities).
 
-```text
-npm ci                                      PASS
-npm test                                    PASS — 12/12
-npm run lint                                PASS
-npm run typecheck                           PASS
-npm run build                               PASS — dist/ produced
-npm run test:e2e                            PASS — 39 passed, 1 expected skip
-npm run test:checkout-enabled -- --project=chromium
-                                            PASS — 1/1
-/opt/fleet/lib/verify-url.sh <live URL> ...  PASS
-live Playwright axe checks                   PASS — 0 serious/critical on five routes
-```
+- Every exact command in `.factory/claims.json` passed from that clone: 17/17 claims.
+- `npm test` — PASS, 15 tests.
+- `npm run lint` — PASS.
+- `npm run typecheck` — PASS.
+- `npm run build` — PASS; `dist/index.html` exists.
+- `npm run test:e2e` — PASS in the default build (checkout-only tests correctly skipped).
+- `npm run test:checkout-enabled -- --project=chromium` — PASS, 2 tests.
+- `VITE_KITCHEN_PASS_CHECKOUT_ENABLED=true npx playwright test --grep @claim:billing-terms --project=chromium` — PASS.
+- Axe coverage remains in the Playwright suite for landing, workspace, cook mode, and Privacy; no serious or critical violations.
 
-## What remains
+Default build budget: JavaScript 79.88 kB raw / 26.93 kB gzip; CSS 20.60 kB raw / 5.28 kB gzip; no shipped web fonts.
 
-Address F-1-1 through F-1-27 in `.factory/review-1.md`, then repeat the full review rather than checking only changed areas. The most important follow-up is to register or narrow every paid-feature and public assurance claim, correct the two joined accessible labels, and bring the 404 and demo header into the standard route contract.
+## Deploy and live check
+
+Pushed `cb0ee6b` to `origin/main`. The static deployment is expected to publish from that branch. At handoff update time, the public endpoint still served the preceding build (`Last-Modified: 2026-08-30`); recheck after publication before accepting the deployment. The intended cold checks are `/`, `/demo`, `?demo=1`, `/privacy`, `/terms`, `/artwork`, and an unknown path.
+
+## Known gaps
+
+No product gaps remain locally. Live publication confirmation is pending the external static deployment propagation.
