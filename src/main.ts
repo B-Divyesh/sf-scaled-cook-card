@@ -28,7 +28,7 @@ interface AppState {
 }
 
 const SITE_URL = 'https://scaled-cook-card.sociobot.in';
-const BUILD_ID = '2026.09.01-polish.3';
+const BUILD_ID = '2026.09.01-repair.5';
 
 const appRoot = document.querySelector<HTMLDivElement>('#app');
 if (!appRoot) throw new Error('App root is missing.');
@@ -102,6 +102,7 @@ function renderStepText(step: RecipeStep): string {
 }
 
 function header(): string {
+  const passAction = state.license.valid ? 'History upgrade active' : CHECKOUT_ENABLED ? 'View history upgrade' : 'Restore a Kitchen Pass';
   return `<header class="site-header">
     <a class="wordmark" href="/" aria-label="Scaled Cook Card home"${state.demo ? ' data-action="start-real"' : ''}>
       <span class="mark" aria-hidden="true">${icon('scale')}</span>
@@ -111,7 +112,7 @@ function header(): string {
       ${!state.online ? '<span class="connection-pill"><span aria-hidden="true">●</span> Offline — your card still works</span>' : ''}
       <a class="nav-link" href="/demo">Demo</a>
       <a class="nav-link" href="/privacy" data-nav="/privacy">Privacy</a>
-      <button class="text-button" data-action="open-pass">${state.license.valid ? 'History upgrade active' : 'View history upgrade'}</button>
+      <button class="text-button" data-action="open-pass">${passAction}</button>
     </nav>
   </header>`;
 }
@@ -133,11 +134,13 @@ function footer(): string {
 }
 
 function landing(): string {
+  const passFact = CHECKOUT_ENABLED ? '$9 once for optional history.' : 'Kitchen Pass purchase is unavailable.';
+  const passAction = CHECKOUT_ENABLED ? 'View history upgrade' : 'Restore a Kitchen Pass';
   return `<main id="main" class="landing">
     <section class="hero-copy" aria-labelledby="main-title">
       <h1 id="main-title">Scale recipe amounts <br><em>in every step.</em></h1>
       <p class="lede">For home cooks who need correct quantities while their hands are busy.</p>
-      <ul class="plain-facts" aria-label="Product facts"><li>Works offline after the first visit.</li><li>$9 once for optional history.</li><li>Cook cards stay in this browser.</li></ul>
+      <ul class="plain-facts" aria-label="Product facts"><li>Works offline after the first visit.</li><li>${passFact}</li><li>Cook cards stay in this browser.</li></ul>
       <div class="hero-actions">
         <button class="button primary" data-action="try-sample">Try it with sample data ${icon('arrow')}</button>
         <button class="button secondary" data-action="open-import">${icon('upload')} Import my recipe</button>
@@ -171,7 +174,7 @@ function landing(): string {
       <div><p class="eyebrow">Optional upgrade</p><h2 id="pass-heading">Optional recipe history</h2></div>
       <div>${CHECKOUT_ENABLED
     ? '<p><strong>$9 once.</strong> Keep an unlimited local recipe library and complete local cook history.</p>'
-    : '<p><strong>Kitchen Pass checkout is unavailable right now.</strong> The free cook card keeps scaling, cooking, and export.</p>'}<button class="button secondary" data-action="open-pass">View history upgrade</button></div>
+    : '<p><strong>Kitchen Pass purchase is unavailable.</strong> The free cook card keeps scaling, cooking, and export. Restore a license you already have.</p>'}<button class="button secondary" data-action="open-pass">${passAction}</button></div>
     </section>
   </main>`;
 }
@@ -282,20 +285,23 @@ function importDialog(): string {
 }
 
 function passDialog(): string {
+  const legalNote = CHECKOUT_ENABLED
+    ? 'Checkout opens on Sociobot. A revoked license stops paid history.'
+    : 'Kitchen Pass purchase is unavailable. Restore a license you already have.';
   return `<dialog id="pass-dialog" class="notebook-dialog pass-dialog" aria-labelledby="pass-title">
     <button class="dialog-close" data-action="close-pass" aria-label="Close Kitchen Pass dialog">${icon('close')}</button>
     <p class="eyebrow">One-time upgrade</p>
     <h2 id="pass-title">Kitchen Pass storage upgrade</h2>
     ${state.license.valid ? `<div class="license-active">${icon('check')}<div><strong>License active</strong><span>Unlimited recipe library and full cook history are unlocked.</span></div></div>
       <button class="text-button danger-link" data-action="remove-license">Remove license from this device</button>`
-      : `${CHECKOUT_ENABLED ? '<p class="pass-price"><strong>$9</strong> once</p>' : '<p class="checkout-unavailable" role="status"><strong>Checkout is unavailable right now.</strong> Your free cook card stays usable. If you already bought Kitchen Pass, paste your license below.</p>'}
+      : `${CHECKOUT_ENABLED ? '<p class="pass-price"><strong>$9</strong> once</p>' : '<p class="checkout-unavailable" role="status"><strong>Kitchen Pass purchase is unavailable.</strong> Your free cook card stays usable. If you already bought Kitchen Pass, paste your license below.</p>'}
       <ul class="check-list"><li>${icon('check')} Save unlimited cook cards</li><li>${icon('check')} Keep the complete correction history</li><li>${icon('check')} Restore your license on this device</li></ul>
       <p>The free cook card includes scaling, cook mode, one saved cook card and its latest correction, offline use, and scaled cook card export.</p>
       ${CHECKOUT_ENABLED ? `<a class="button primary full-button" href="${CHECKOUT_URL}" target="_blank" rel="noopener noreferrer" aria-label="Buy Kitchen Pass (opens hosted checkout in a new tab)">Buy Kitchen Pass ${icon('arrow')}</a><p class="field-help">Checkout opens separately, and your free cook card stays usable here.</p>` : ''}
       <hr>
       <form id="license-form"><label for="license-token">Have a license? Paste it here</label><div class="inline-field"><input id="license-token" name="license" autocomplete="off" required><button class="button secondary" type="submit">Restore Kitchen Pass</button></div></form>
       ${state.license.message ? `<p class="license-message" aria-live="polite">${escapeHtml(state.license.message)}</p>` : ''}`}
-    <p class="legal-note">Checkout opens on Sociobot. A revoked license stops paid history. <a href="/privacy" data-nav="/privacy">Privacy</a> · <a href="/terms" data-nav="/terms">Terms</a></p>
+    <p class="legal-note">${legalNote} <a href="/privacy" data-nav="/privacy">Privacy</a> · <a href="/terms" data-nav="/terms">Terms</a></p>
   </dialog>`;
 }
 
