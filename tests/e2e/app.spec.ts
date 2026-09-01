@@ -96,6 +96,12 @@ test('landing page has no serious accessibility violations', async ({ page }) =>
   expect(results.violations.filter((item) => ['serious', 'critical'].includes(item.impact ?? ''))).toEqual([]);
 });
 
+test('keeps word boundaries in the headline and recipe-file label', async ({ page }) => {
+  await expect(page.getByRole('heading', { level: 1, name: 'Scale recipe amounts in every step.' })).toBeVisible();
+  await page.getByRole('button', { name: /import my recipe/i }).click();
+  await expect(page.getByLabel('Choose a recipe file or drop it here')).toBeVisible();
+});
+
 test('legal routes work directly', async ({ page }) => {
   await page.goto('/privacy');
   await expect(page.getByRole('heading', { level: 1, name: 'Privacy, in plain language' })).toBeVisible();
@@ -109,7 +115,7 @@ test('keeps Kitchen Pass checkout build-gated and restores a license @claim:kitc
   await page.route('https://api.sociobot.in/api/v1/products/scaled-cook-card/verify?license=fixture-license', async (route) => {
     await route.fulfill({ json: { valid: true, reason: 'ok' } });
   });
-  await page.getByRole('button', { name: 'Kitchen Pass', exact: true }).click();
+  await page.locator('.site-header').getByRole('button', { name: 'View history upgrade', exact: true }).click();
   const purchaseLink = page.getByRole('link', { name: /buy kitchen pass/i });
   if (process.env.VITE_KITCHEN_PASS_CHECKOUT_ENABLED === 'true') {
     await expect(page.getByText('$9', { exact: true })).toBeVisible();
@@ -121,8 +127,76 @@ test('keeps Kitchen Pass checkout build-gated and restores a license @claim:kitc
   }
   await expect(page.getByLabel(/have a license/i)).toBeVisible();
   await page.getByLabel(/have a license/i).fill('fixture-license');
-  await page.getByRole('button', { name: 'Verify' }).click();
+  await page.getByRole('button', { name: 'Restore Kitchen Pass' }).click();
   await expect(page.getByText('License active')).toBeVisible();
+});
+
+test('shows the $9 one-time price and hosted checkout when enabled @claim:kitchen-pass-price', async ({ page }) => {
+  test.skip(process.env.VITE_KITCHEN_PASS_CHECKOUT_ENABLED !== 'true', 'Requires the checkout-enabled build.');
+  await page.locator('.site-header').getByRole('button', { name: 'View history upgrade', exact: true }).click();
+  await expect(page.getByText('$9', { exact: true })).toBeVisible();
+  await expect(page.locator('.pass-price')).toContainText('$9 once');
+  await expect(page.getByRole('link', { name: /buy kitchen pass/i })).toHaveAttribute('href', 'https://api.sociobot.in/api/v1/products/scaled-cook-card/checkout');
+});
+
+async function importCookCard(page: import('@playwright/test').Page, source: string, replace = false): Promise<void> {
+  await page.getByRole('button', { name: /import (my recipe|another)/i }).click();
+  await page.getByLabel('Recipe YAML or JSON').fill(source);
+  if (replace) page.once('dialog', (dialog) => dialog.accept());
+  await page.getByRole('button', { name: /make cook card/i }).click();
+}
+
+async function saveCorrection(page: import('@playwright/test').Page, yieldValue: string): Promise<void> {
+  await page.locator('.start-cook').click();
+  for (let step = 0; step < 8; step += 1) {
+    const finish = page.getByRole('button', { name: /finish & note changes/i });
+    if (await finish.isVisible()) { await finish.click(); break; }
+    await page.getByRole('button', { name: /next step/i }).click();
+  }
+  await page.getByLabel('Actual yield').fill(yieldValue);
+  await page.getByRole('button', { name: /save to ledger/i }).click();
+}
+
+test('keeps multiple cook cards and correction records after restoring Kitchen Pass @claim:paid-history-limits', async ({ page }) => {
+  await page.route('https://api.sociobot.in/api/v1/products/scaled-cook-card/verify?license=fixture-license', (route) => route.fulfill({ json: { valid: true, reason: 'ok' } }));
+  await importCookCard(page, `title: First card\nservings: 2\ningredients:\n  - id: oil\n    name: olive oil\n    quantity: 1\n    unit: tbsp\nsteps:\n  - text: Add {{oil}}.`, false);
+  await page.locator('.site-header').getByRole('button', { name: 'View history upgrade', exact: true }).click();
+  await page.getByLabel(/have a license/i).fill('fixture-license');
+  await page.getByRole('button', { name: 'Restore Kitchen Pass' }).click();
+  await expect(page.getByText('License active')).toBeVisible();
+  await page.getByRole('button', { name: /close kitchen pass dialog/i }).click();
+  await saveCorrection(page, '2');
+  await saveCorrection(page, '3');
+  await importCookCard(page, `title: Second card\nservings: 2\ningredients:\n  - id: salt\n    name: salt\n    quantity: 1\n    unit: tsp\nsteps:\n  - text: Add {{salt}}.`, true);
+  await page.reload();
+  await expect(page.locator('#recipe-library option')).toHaveCount(2);
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('scc:cook-records') ?? '[]')) as Array<{ recipeId: string }>;
+  expect(saved).toHaveLength(2);
+  expect(new Set(saved.map((record) => record.recipeId)).size).toBe(1);
+});
+
+test('keeps one free cook card and its latest correction @claim:free-card-limits', async ({ page }) => {
+  await importCookCard(page, `title: First free card\nservings: 2\ningredients:\n  - id: oil\n    name: olive oil\n    quantity: 1\n    unit: tbsp\nsteps:\n  - text: Add {{oil}}.`, false);
+  await saveCorrection(page, '2');
+  await saveCorrection(page, '3');
+  await importCookCard(page, `title: Second free card\nservings: 2\ningredients:\n  - id: salt\n    name: salt\n    quantity: 1\n    unit: tsp\nsteps:\n  - text: Add {{salt}}.`, true);
+  await saveCorrection(page, '4');
+  await page.reload();
+  await expect(page.getByRole('heading', { level: 1, name: 'Second free card' })).toBeVisible();
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('scc:cook-records') ?? '[]')) as Array<{ actualYield: number }>;
+  expect(saved).toEqual([expect.objectContaining({ actualYield: 4 })]);
+});
+
+test('shows hosted billing and locks paid history after a revoked verification @claim:billing-terms', async ({ page }) => {
+  test.skip(process.env.VITE_KITCHEN_PASS_CHECKOUT_ENABLED !== 'true', 'Requires the checkout-enabled build.');
+  await page.route('https://api.sociobot.in/api/v1/products/scaled-cook-card/verify?license=revoked-license', (route) => route.fulfill({ json: { valid: false, reason: 'revoked' } }));
+  await page.locator('.site-header').getByRole('button', { name: 'View history upgrade', exact: true }).click();
+  await expect(page.getByRole('link', { name: /buy kitchen pass/i })).toHaveAttribute('href', 'https://api.sociobot.in/api/v1/products/scaled-cook-card/checkout');
+  await expect(page.locator('.legal-note')).toContainText('Sociobot/Dodo is the merchant of record');
+  await page.getByLabel(/have a license/i).fill('revoked-license');
+  await page.getByRole('button', { name: 'Restore Kitchen Pass' }).click();
+  await expect(page.getByText('License no longer active')).toBeVisible();
+  await expect(page.locator('.library-strip')).toHaveCount(0);
 });
 
 test('exports the active recipe as JSON @claim:json-export', async ({ page }) => {
@@ -187,16 +261,16 @@ test('activates the current service worker and accepts an update check', async (
     });
     expect(workerState.controlled).toBe(true);
     expect(workerState.scope).toBe('http://127.0.0.1:4173/');
-    expect(workerState.caches).toContain('scaled-cook-card-v5');
+    expect(workerState.caches).toContain('scaled-cook-card-v6');
   } finally {
     await context.close();
   }
 });
 
 test('keeps demo data separate from a real card @claim:demo-sandbox', async ({ page }) => {
-  await page.goto('/demo');
+  await page.goto('/?demo=1');
   await expect(page).toHaveTitle('Demo — Scaled Cook Card');
-  await expect(page.getByLabel('Demo mode')).toContainText('sample data, nothing is saved to your real card');
+  await expect(page.getByLabel('Demo mode')).toContainText('sample data, nothing is saved to your real cook card');
   await expect(page.getByRole('heading', { level: 1, name: 'Weeknight tomato pasta' })).toBeVisible();
   await page.getByLabel('Number of servings').fill('6');
   await page.getByLabel('Number of servings').press('Tab');
@@ -204,6 +278,13 @@ test('keeps demo data separate from a real card @claim:demo-sandbox', async ({ p
   const storageKeys = await page.evaluate(() => Object.keys(localStorage));
   expect(storageKeys.some((key) => key.startsWith('demo:scc:'))).toBeTruthy();
   expect(storageKeys.some((key) => key.startsWith('scc:'))).toBeFalsy();
+});
+
+test('sends the demo wordmark home without reading demo storage', async ({ page }) => {
+  await page.goto('/demo');
+  await page.getByRole('link', { name: 'Scaled Cook Card home' }).click();
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.getByRole('heading', { level: 1, name: 'Scale recipe amounts in every step.' })).toBeVisible();
 });
 
 test('does not send recipe data to another origin @claim:local-only-recipe-data', async ({ page }) => {

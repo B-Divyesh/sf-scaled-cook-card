@@ -13,6 +13,10 @@
       "rewrite": "/index.html"
     },
     {
+      "route": "/artwork",
+      "rewrite": "/index.html"
+    },
+    {
       "route": "/assets/*",
       "headers": {
         "Cache-Control": "public, max-age=31536000, immutable"

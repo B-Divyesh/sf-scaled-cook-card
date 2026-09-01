@@ -28,7 +28,7 @@ interface AppState {
 }
 
 const SITE_URL = 'https://scaled-cook-card.sociobot.in';
-const BUILD_ID = '2026.08.30-repair.4';
+const BUILD_ID = '2026.09.01-polish.1';
 
 const appRoot = document.querySelector<HTMLDivElement>('#app');
 if (!appRoot) throw new Error('App root is missing.');
@@ -36,6 +36,7 @@ const root: HTMLDivElement = appRoot;
 const routeAnnouncementElement = document.querySelector<HTMLElement>('#route-announcement');
 
 const demo = location.pathname === '/demo' || new URL(location.href).searchParams.get('demo') === '1';
+const historyUpgrade = new URL(location.href).searchParams.get('history') === 'upgrade';
 setStorageNamespace(demo ? 'demo:scc:' : 'scc:');
 if (!demo) captureLicenseFromUrl();
 const initialRecipe = getActiveRecipe() ?? (demo ? parseRecipe(sampleRecipe) : null);
@@ -46,7 +47,7 @@ const state: AppState = {
   records: getCookRecords(),
   license: demo ? { token: null, valid: false, checking: false, message: '' } : cachedLicenseState(),
   importOpen: false,
-  passOpen: false,
+  passOpen: historyUpgrade,
   cookOpen: false,
   completionOpen: false,
   cookStep: 0,
@@ -102,7 +103,7 @@ function renderStepText(step: RecipeStep): string {
 
 function header(): string {
   return `<header class="site-header">
-    <a class="wordmark" href="${state.demo ? '/demo' : '/'}" data-nav="${state.demo ? '/demo' : '/'}" aria-label="Scaled Cook Card home">
+    <a class="wordmark" href="/" aria-label="Scaled Cook Card home">
       <span class="mark" aria-hidden="true">${icon('scale')}</span>
       <span>Scaled Cook Card</span>
     </a>
@@ -110,39 +111,38 @@ function header(): string {
       ${!state.online ? '<span class="connection-pill"><span aria-hidden="true">●</span> Offline — your card still works</span>' : ''}
       <a class="nav-link" href="/demo">Demo</a>
       <a class="nav-link" href="/privacy" data-nav="/privacy">Privacy</a>
-      <button class="text-button" data-action="open-pass">${state.license.valid ? 'Kitchen Pass active' : 'Kitchen Pass'}</button>
+      <button class="text-button" data-action="open-pass">${state.license.valid ? 'History upgrade active' : 'View history upgrade'}</button>
     </nav>
   </header>`;
 }
 
 function demoBanner(): string {
   if (!state.demo) return '';
-  return `<aside class="demo-banner" aria-label="Demo mode"><span><strong>Demo</strong> — sample data, nothing is saved to your real card.</span><span><button class="text-button" data-action="reset-demo">Reset demo</button><button class="text-button" data-action="start-real">Start for real</button></span></aside>`;
+  return `<aside class="demo-banner" aria-label="Demo mode"><span><strong>Demo</strong> — sample data, nothing is saved to your real cook card.</span><span><button class="text-button" data-action="reset-demo">Reset demo</button><button class="text-button" data-action="start-real">Start for real</button></span></aside>`;
 }
 
 function footer(): string {
   return `<footer class="site-footer">
-    <p>Scaled recipe cards for home cooks.</p>
+    <p>Scaled cook cards for home cooks.</p>
     <nav aria-label="Legal">
       <a href="/privacy" data-nav="/privacy">Privacy</a>
       <a href="/terms" data-nav="/terms">Terms</a>
     </nav>
-    <p class="generation-note">Built by Param Factory · build ${BUILD_ID}. Notebook artwork was generated for this product with Azure AI Foundry.</p>
+    <p class="generation-note">Built by Param Factory · build ${BUILD_ID}. <a href="/artwork" data-nav="/artwork">Artwork provenance</a>.</p>
   </footer>`;
 }
 
 function landing(): string {
   return `<main id="main" class="landing">
     <section class="hero-copy" aria-labelledby="main-title">
-      <p class="eyebrow">Scaled Cook Card</p>
-      <h1 id="main-title">Scale recipe amounts<br><em>in every step.</em></h1>
+      <h1 id="main-title">Scale recipe amounts <br><em>in every step.</em></h1>
       <p class="lede">For home cooks who need correct quantities while their hands are busy.</p>
       <div class="hero-actions">
         <button class="button primary" data-action="try-sample">Try it with sample data ${icon('arrow')}</button>
         <button class="button secondary" data-action="open-import">${icon('upload')} Import my recipe</button>
       </div>
-      <p class="action-help">Open a ready pasta card, or paste a recipe you wrote.</p>
-      <ul class="plain-facts" aria-label="Product facts"><li>Import YAML or JSON.</li><li>Works offline after the first visit.</li><li>$9 once for optional history. Recipes stay in this browser.</li></ul>
+      <p class="action-help">Open a ready pasta cook card, or paste a recipe you wrote.</p>
+      <ul class="plain-facts" aria-label="Product facts"><li>Import YAML or JSON.</li><li>Works offline after the first visit.</li><li>$9 once for optional history.</li><li>Recipes stay in this browser.</li></ul>
     </section>
     <figure class="hero-figure">
       <picture>
@@ -150,15 +150,16 @@ function landing(): string {
         <source type="image/webp" srcset="/hero-notebook-v1-768.webp 768w, /hero-notebook-v1-1280.webp 1280w" sizes="(max-width: 760px) 94vw, 52vw">
         <img src="/hero-notebook-v1-1280.webp" width="1280" height="853" alt="Illustrated open kitchen notebook with ingredient bowls, a wooden spoon, and pencil corrections" fetchpriority="high" decoding="async">
       </picture>
-      <figcaption><span>01</span> Scale once <i></i> <span>02</span> Cook step by step <i></i> <span>03</span> Note what changed</figcaption>
+      <figcaption>Sample cook card workflow: scale, cook, then note changes.</figcaption>
     </figure>
     <section class="how-it-works" aria-labelledby="how-heading">
       <div>
         <p class="eyebrow">How it works</p>
-        <h2 id="how-heading">Bind each amount to its cooking step.</h2>
+        <h2 id="how-heading">See each ingredient amount inside its cooking step.</h2>
       </div>
-      <div class="syntax-demo" aria-label="Example of a bound ingredient">
-        <code>Add &#123;&#123;salt&#125;&#125; to the pot.</code>
+      <div class="syntax-demo" aria-label="Example of a linked ingredient amount">
+        <span class="syntax-label">In your recipe file</span><code>Add &#123;&#123;salt&#125;&#125; to the pot.</code>
+        <span class="syntax-help">The name inside braces matches an ingredient id.</span>
         <span aria-hidden="true">becomes</span>
         <p>Add <span class="bound-token"><strong>1½ tsp</strong> fine salt</span> to the pot.</p>
       </div>
@@ -168,10 +169,10 @@ function landing(): string {
       <p>Start with a recipe you wrote or can import. This card focuses on scaling and cooking that recipe.</p>
     </section>
     <section class="landing-detail pass-section" aria-labelledby="pass-heading">
-      <div><p class="eyebrow">Optional upgrade</p><h2 id="pass-heading">Kitchen Pass</h2></div>
+      <div><p class="eyebrow">Optional upgrade</p><h2 id="pass-heading">Optional recipe history</h2></div>
       <div>${CHECKOUT_ENABLED
     ? '<p><strong>$9 once.</strong> Keep an unlimited local recipe library and complete local cook history.</p>'
-    : '<p><strong>Kitchen Pass checkout is unavailable right now.</strong> The free card keeps scaling, cooking, and export.</p>'}<button class="button secondary" data-action="open-pass">See Kitchen Pass details</button></div>
+    : '<p><strong>Kitchen Pass checkout is unavailable right now.</strong> The free cook card keeps scaling, cooking, and export.</p>'}<button class="button secondary" data-action="open-pass">View history upgrade</button></div>
     </section>
   </main>`;
 }
@@ -192,7 +193,7 @@ function workspace(): string {
   return `<main id="main" class="workspace">
     <div class="recipe-masthead">
       <div>
-        <p class="eyebrow">Your live cook card</p>
+        <p class="eyebrow">Your cook card</p>
         <h1>${escapeHtml(recipe.title)}</h1>
         <p class="recipe-fact">Original recipe: ${formatQuantity(recipe.servings)} servings · ${recipe.steps.length} steps</p>
       </div>
@@ -212,7 +213,7 @@ function workspace(): string {
         </ul>
       </aside>
       <section class="procedure" aria-labelledby="procedure-heading">
-        <div class="section-heading"><span class="section-number" aria-hidden="true">B</span><div><p class="eyebrow">Quantities are bound in blue</p><h2 id="procedure-heading">Procedure</h2></div></div>
+        <div class="section-heading"><span class="section-number" aria-hidden="true">B</span><div><p class="eyebrow">Scaled amounts appear in blue</p><h2 id="procedure-heading">Procedure</h2></div></div>
         <ol class="step-list">
           ${recipe.steps.map((step, index) => `<li><span class="step-index" aria-hidden="true">${String(index + 1).padStart(2, '0')}</span><p>${renderStepText(step)}</p></li>`).join('')}
         </ol>
@@ -233,7 +234,7 @@ function workspace(): string {
 
 function libraryPanel(): string {
   if (!state.library.length) return '';
-  return `<section class="library-strip" aria-label="Saved recipe library">
+  return `<section class="library-strip" aria-label="Saved cook card library">
     <label for="recipe-library">Kitchen Pass library</label>
     <select id="recipe-library">
       ${state.library.map((item) => `<option value="${escapeHtml(item.id)}" ${item.id === state.recipe?.id ? 'selected' : ''}>${escapeHtml(item.title)}</option>`).join('')}
@@ -245,7 +246,7 @@ function libraryPanel(): string {
 function legalPage(kind: 'privacy' | 'terms'): string {
   const privacy = kind === 'privacy';
   const passPurchase = CHECKOUT_ENABLED
-    ? 'The Kitchen Pass is a $9 one-time license for one person’s devices. It unlocks an unlimited local recipe library and complete local cook history. Sociobot/Dodo is the merchant of record and handles payment and refunds. A refunded, expired, or revoked license may stop unlocking paid features; recipe export remains available.'
+    ? 'Kitchen Pass is a $9 one-time license. It unlocks an unlimited local recipe library and complete local cook history. Checkout is hosted by Sociobot/Dodo. A refunded, expired, or revoked license stops the paid features. Recipe export remains available.'
     : 'Kitchen Pass checkout is currently unavailable. The free card keeps scaling, cooking, offline use, and export. If you already have a Kitchen Pass license, you can restore it on this device. When checkout is enabled, it will be a $9 one-time license for one person’s devices.';
   return `<main id="main" class="legal-page">
     <p class="eyebrow">Last updated August 28, 2026</p>
@@ -253,7 +254,7 @@ function legalPage(kind: 'privacy' | 'terms'): string {
     <p class="lede">${privacy ? 'Your recipes belong in your kitchen, not in our database.' : 'A short, practical agreement for using Scaled Cook Card.'}</p>
     ${privacy ? `<section><h2>What stays on this device</h2><p>Imported recipes, scaled serving choices, cook corrections, and license tokens are stored in your browser’s local storage. Scaled Cook Card has no account system and does not send recipe content to us.</p></section>
       <section><h2>Network requests</h2><p>The app requests its own files and, when you provide a Kitchen Pass license, asks the Sociobot billing API whether that license is valid. When checkout is enabled, Sociobot/Dodo hosts it as the merchant of record. There are no advertising or behavioral analytics scripts.</p></section>
-      <section><h2>Your control</h2><p>Export is always available. “Remove this card” deletes the active recipe after confirmation. Clearing site data in your browser removes all local recipes, records, and the saved license.</p></section>`
+      <section><h2>Your control</h2><p>Export is always available. “Remove this card” deletes the active cook card after confirmation. Clearing site data in your browser removes local cook cards, records, and the saved license.</p></section>`
       : `<section><h2>Use of the tool</h2><p>Scaled Cook Card performs arithmetic on user-authored recipe data. Check amounts, allergens, temperatures, and food safety for your circumstances. The tool is provided “as is” without cooking, nutrition, or medical guarantees.</p></section>
       <section><h2>Your content</h2><p>You retain all rights to recipes you enter. Only import content you have the right to use. The service does not scrape or republish recipe websites.</p></section>
       <section><h2>Kitchen Pass purchase</h2><p>${passPurchase}</p></section>
@@ -265,10 +266,10 @@ function legalPage(kind: 'privacy' | 'terms'): string {
 function importDialog(): string {
   return `<dialog id="import-dialog" class="notebook-dialog" aria-labelledby="import-title">
     <button class="dialog-close" data-action="close-import" aria-label="Close import dialog">${icon('close')}</button>
-    <p class="eyebrow">New notebook sheet</p>
+    <p class="eyebrow">Import recipe</p>
     <h2 id="import-title">Import your recipe</h2>
-    <p>Paste YAML or JSON below, or choose a small <code>.yaml</code>, <code>.yml</code>, or <code>.json</code> file. Ingredient ids connect quantities to <code>&#123;&#123;tokens&#125;&#125;</code> in each step.</p>
-    <label class="file-drop" for="recipe-file">${icon('upload')}<strong>Choose a recipe file</strong><span>or drop it here</span></label>
+    <p>Paste YAML or JSON below, or choose a small <code>.yaml</code>, <code>.yml</code>, or <code>.json</code> file. The name inside braces matches an ingredient id.</p>
+    <label class="file-drop" for="recipe-file">${icon('upload')}<strong>Choose a recipe file </strong><span>or drop it here</span></label>
     <input id="recipe-file" class="sr-only" type="file" accept=".yaml,.yml,.json,application/json,text/yaml">
     <label for="recipe-source">Recipe YAML or JSON</label>
     <textarea id="recipe-source" rows="15" spellcheck="false" aria-describedby="import-help import-error">${escapeHtml(state.importText)}</textarea>
@@ -284,16 +285,16 @@ function importDialog(): string {
 function passDialog(): string {
   return `<dialog id="pass-dialog" class="notebook-dialog pass-dialog" aria-labelledby="pass-title">
     <button class="dialog-close" data-action="close-pass" aria-label="Close Kitchen Pass dialog">${icon('close')}</button>
-    <p class="eyebrow">One useful upgrade, no subscription</p>
+    <p class="eyebrow">One-time upgrade</p>
     <h2 id="pass-title">Kitchen Pass</h2>
     ${state.license.valid ? `<div class="license-active">${icon('check')}<div><strong>License active</strong><span>Unlimited recipe library and full cook history are unlocked.</span></div></div>
       <button class="text-button danger-link" data-action="remove-license">Remove license from this device</button>`
       : `${CHECKOUT_ENABLED ? '<p class="pass-price"><strong>$9</strong> once</p>' : '<p class="checkout-unavailable" role="status"><strong>Checkout is unavailable right now.</strong> Your free cook card stays usable. If you already bought Kitchen Pass, paste your license below.</p>'}
-      <ul class="check-list"><li>${icon('check')} Save unlimited recipe cards</li><li>${icon('check')} Keep the complete correction history</li><li>${icon('check')} Use the same license on your devices</li></ul>
-      <p>The free card still includes scaling, cook mode, one saved recipe and its latest correction, offline use, and export.</p>
+      <ul class="check-list"><li>${icon('check')} Save unlimited cook cards</li><li>${icon('check')} Keep the complete correction history</li><li>${icon('check')} Restore your license on this device</li></ul>
+      <p>The free cook card includes scaling, cook mode, one saved cook card and its latest correction, offline use, and export.</p>
       ${CHECKOUT_ENABLED ? `<a class="button primary full-button" href="${CHECKOUT_URL}" target="_blank" rel="noopener noreferrer" aria-label="Buy Kitchen Pass (opens hosted checkout in a new tab)">Buy Kitchen Pass ${icon('arrow')}</a><p class="field-help">Checkout opens separately, and your free cook card stays usable here.</p>` : ''}
       <hr>
-      <form id="license-form"><label for="license-token">Have a license? Paste it here</label><div class="inline-field"><input id="license-token" name="license" autocomplete="off" required><button class="button secondary" type="submit">Verify</button></div></form>
+      <form id="license-form"><label for="license-token">Have a license? Paste it here</label><div class="inline-field"><input id="license-token" name="license" autocomplete="off" required><button class="button secondary" type="submit">Restore Kitchen Pass</button></div></form>
       ${state.license.message ? `<p class="license-message" aria-live="polite">${escapeHtml(state.license.message)}</p>` : ''}`}
     <p class="legal-note">Sociobot/Dodo is the merchant of record and handles refunds. Refunds revoke the license. <a href="/privacy" data-nav="/privacy">Privacy</a> · <a href="/terms" data-nav="/terms">Terms</a></p>
   </dialog>`;
@@ -336,6 +337,7 @@ function render(): void {
   updateDocumentMetadata(path);
   const page = path === '/privacy' ? legalPage('privacy')
     : path === '/terms' ? legalPage('terms')
+      : path === '/artwork' ? artworkPage()
       : path === '/' || path === '/demo' ? (state.recipe ? workspace() : landing())
         : notFoundPage();
   root.innerHTML = `${header()}${demoBanner()}${page}${footer()}${importDialog()}${passDialog()}${cookDialog()}<div class="toast" role="status" aria-live="polite">${escapeHtml(state.toast)}</div>`;
@@ -348,14 +350,20 @@ function notFoundPage(): string {
   return `<main id="main" class="legal-page not-found"><p class="eyebrow">Page not found</p><h1>That cook card page is missing.</h1><p class="lede">Return to the cook card to scale a recipe or open the sample.</p><p><a class="button primary" href="/" data-nav="/">Back to cook card</a></p></main>`;
 }
 
+function artworkPage(): string {
+  return `<main id="main" class="legal-page"><p class="eyebrow">Artwork provenance</p><h1>Original notebook artwork</h1><p class="lede">The notebook illustration was made for this cook card.</p><section><h2>How it was made</h2><p>The image was generated with Azure AI Foundry for this product. It shows a kitchen notebook, ingredient bowls, and pencil corrections. It contains no text, brands, or people.</p></section><section><h2>Source record</h2><p>The prompt, date, model, and original source record are kept in this product’s design documentation.</p></section><p><a class="button secondary" href="/" data-nav="/">Back to cook card</a></p></main>`;
+}
+
 function updateDocumentMetadata(path: string): void {
   const page = path === '/privacy' ? { title: 'Privacy — Scaled Cook Card', description: 'How Scaled Cook Card keeps recipe data in your browser.' }
     : path === '/terms' ? { title: 'Terms — Scaled Cook Card', description: 'Terms for using Scaled Cook Card.' }
-      : path === '/demo' ? { title: 'Demo — Scaled Cook Card', description: 'Try Scaled Cook Card with a sample recipe.' }
+      : path === '/demo' || (path === '/' && demo) ? { title: 'Demo — Scaled Cook Card', description: 'Try Scaled Cook Card with a sample recipe.' }
+        : path === '/artwork' ? { title: 'Artwork provenance — Scaled Cook Card', description: 'Original notebook artwork made for Scaled Cook Card.' }
         : path === '/' ? { title: 'Scaled Cook Card — scale recipe steps', description: 'Scale a recipe once, then see the right ingredient amount in every cooking step.' }
           : { title: 'Page not found — Scaled Cook Card', description: 'This Scaled Cook Card page is not available.' };
   document.title = page.title;
-  document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.setAttribute('href', `${SITE_URL}${path === '/' ? '/' : path}`);
+  const canonicalPath = path === '/' && demo ? '/demo' : path;
+  document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.setAttribute('href', `${SITE_URL}${canonicalPath === '/' ? '/' : canonicalPath}`);
   document.querySelector<HTMLMetaElement>('meta[name="description"]')?.setAttribute('content', page.description);
   document.querySelector<HTMLMetaElement>('meta[property="og:title"]')?.setAttribute('content', page.title);
   document.querySelector<HTMLMetaElement>('meta[property="og:description"]')?.setAttribute('content', page.description);
@@ -408,7 +416,7 @@ function navigate(path: string): void {
   render();
   window.scrollTo(0, 0);
   focusRouteHeading();
-  announceRoute(`Opened ${path === '/privacy' ? 'Privacy' : path === '/terms' ? 'Terms' : 'Scaled Cook Card'}.`);
+  announceRoute(`Opened ${path === '/privacy' ? 'Privacy' : path === '/terms' ? 'Terms' : path === '/artwork' ? 'Artwork provenance' : 'Scaled Cook Card'}.`);
 }
 
 function notify(message: string): void {
@@ -423,11 +431,16 @@ function notify(message: string): void {
 }
 
 function activateRecipe(recipe: Recipe, addToLibrary = state.license.valid): void {
+  const replacingFreeCard = !state.license.valid && Boolean(state.recipe) && state.recipe?.id !== recipe.id;
   state.recipe = recipe;
   state.targetServings = recipe.servings;
   saveActiveRecipe(recipe);
   saveTargetServings(recipe.servings);
   if (addToLibrary) state.library = upsertLibrary(recipe);
+  if (replacingFreeCard) {
+    state.records = [];
+    saveCookRecords([]);
+  }
   state.importOpen = false;
   state.importError = '';
   history.pushState({}, '', state.demo ? '/demo' : '/');
@@ -476,9 +489,8 @@ function finishCook(data?: FormData): void {
     actualYield: enteredYield === '' ? null : Number(enteredYield),
     substitutions: String(data?.get('substitutions') ?? '').trim(), notes: String(data?.get('notes') ?? '').trim(),
   };
-  const others = state.records.filter((item) => item.recipeId !== state.recipe?.id);
   const own = state.records.filter((item) => item.recipeId === state.recipe?.id);
-  state.records = state.license.valid ? [record, ...own, ...others] : [record, ...others];
+  state.records = state.license.valid ? [record, ...own, ...state.records.filter((item) => item.recipeId !== state.recipe?.id)] : [record];
   saveCookRecords(state.records);
   state.cookOpen = false;
   state.completionOpen = false;

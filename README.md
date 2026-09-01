@@ -2,28 +2,28 @@
 
 Scale a recipe once and see the amount inside every cooking step. It is for home cooks whose hands are busy.
 
-Use recipes you wrote or can import. The card focuses on scaling and cooking that recipe.
+Use a recipe file you wrote or can import. The cook card scales it while you cook.
 
 Live: https://scaled-cook-card.sociobot.in
 
-Try the isolated sample at `https://scaled-cook-card.sociobot.in/demo`. It uses separate browser storage and never changes a real card.
+Try the isolated sample at `https://scaled-cook-card.sociobot.in/demo`. It uses separate browser storage and never changes a real cook card.
 
 ## What it does
 
-- Imports a recipe and scales each bound ingredient reference in its steps.
+- Imports a recipe and scales each linked ingredient amount in its cooking steps.
 - Keeps exact fractions such as `3/16` instead of changing them to a nearby amount.
 - Lets you cook with arrow keys when screen wake is unavailable.
 - Saves actual yield, substitutions, and notes locally after cooking.
-- Exports the active recipe as JSON.
+- Exports the active cook card as JSON.
 - Works offline after the first visit.
 - Keeps recipe data in this browser. The cooking flow makes no analytics or third-party runtime requests.
 - Runs `/demo` with separate `demo:scc:` browser storage.
 
-When checkout is enabled, Kitchen Pass is a $9 one-time license. It adds an unlimited local recipe library and complete local cook history. The free card keeps scaling, cooking, and export.
+When checkout is enabled, Kitchen Pass costs $9 once. It keeps unlimited local cook cards and complete local cook history. The free cook card keeps scaling, cooking, and export.
 
 ## Recipe format
 
-Ingredient `id` values bind to `{{id}}` tokens inside steps:
+Ingredient `id` values match the names inside `{{braces}}` in each step:
 
 ```yaml
 title: Weeknight tomato pasta
@@ -51,7 +51,7 @@ A step may instead use an `ingredients` list; its scaled ingredient tokens appea
 }
 ```
 
-Required top-level fields are `title`, positive `servings`, a non-empty `ingredients` array, and a non-empty `steps` array. Ingredient quantities may be numbers or fraction strings.
+Required fields are `title`, positive `servings`, non-empty `ingredients`, and non-empty `steps`. Ingredient quantities may be numbers or fraction strings.
 
 ## Develop and verify
 
@@ -66,9 +66,9 @@ npm run build
 npm run test:e2e
 ```
 
-The exact production build command is `npm run build`. It type-checks the app and writes the static deployment to `dist/`, with `dist/index.html` at its root. Browser tests use Playwright 1.58.2 and expect its Chromium binary to be installed.
+The production build command is `npm run build`. It type-checks and writes `dist/`, with `dist/index.html` at its root. Browser tests use Playwright 1.58.2. Install its Chromium binary before running them.
 
-To regenerate the responsive AVIF and WebP hero derivatives from the retained source:
+To rebuild the responsive hero images from the original image:
 
 ```bash
 npm run optimize:image
@@ -76,14 +76,14 @@ npm run optimize:image
 
 ## Deployment and billing
 
-Deploy `dist/` as an Azure Static Web App. `public/staticwebapp.config.json` supplies direct app routes, a real 404 response, security headers, asset MIME types, and one-year immutable caching for fingerprinted assets and versioned hero art. Bump the hero-art URL version when replacing that image.
+Deploy `dist/` as an Azure Static Web App. The deployment file defines routes, headers, MIME types, and caching. Versioned assets are cached for one year. Bump the artwork URL version when replacing the image.
 
 When enabled, the product uses only these Sociobot billing endpoints:
 
 - checkout: `https://api.sociobot.in/api/v1/products/scaled-cook-card/checkout`
 - verify: `https://api.sociobot.in/api/v1/products/scaled-cook-card/verify?license=…`
 
-Checkout is disabled unless the public build setting `VITE_KITCHEN_PASS_CHECKOUT_ENABLED` is exactly `true`. This keeps an unavailable shared checkout endpoint out of the product while the free card and license restore path remain usable. After the billing operator verifies the endpoint, build with that setting enabled and verify the hosted redirect and return-token flow. Browser tests use a recorded verification fixture for the restore path. No payment-provider SDK or product id is embedded here.
+Checkout is disabled unless `VITE_KITCHEN_PASS_CHECKOUT_ENABLED` is `true`. This hides the buy link until checkout is ready. The free cook card and license restore still work. Enable the setting after checkout is available. Confirm that checkout returns a license and that the app restores it. Browser tests use a saved billing response. They confirm license restore without contacting billing. No payment-provider SDK or product id is embedded here.
 
 ## Product records
 

@@ -1,7 +1,7 @@
 [
   {
     "id": "recipe-import-scaling",
-    "claim": "Imports a recipe and scales every bound ingredient reference in its cooking steps without changing exact fractions.",
+    "claim": "Imports a recipe and scales every linked ingredient amount in its cooking steps without changing exact fractions.",
     "where": "landing page, README, ingredient list, procedure",
     "test": "npm run test:e2e -- --grep @claim:recipe-import-scaling",
     "sandbox": "fresh browser; import a recipe with 3/16 tsp, assert 3/16 appears in the list and its bound step, then scale to 8 servings and assert 3/8 in both places"
@@ -36,7 +36,7 @@
   },
   {
     "id": "json-export",
-    "claim": "Exports the active recipe as JSON.",
+    "claim": "Exports the active cook card as JSON.",
     "where": "README, workspace export button",
     "test": "npm run test:e2e -- --grep @claim:json-export",
     "sandbox": "fresh browser; open the sample, download JSON, and parse the downloaded file"
@@ -50,7 +50,7 @@
   },
   {
     "id": "demo-sandbox",
-    "claim": "The sample demo does not save to your real card",
+    "claim": "The sample demo does not save to your real cook card",
     "where": "demo banner, README",
     "test": "npm run test:e2e -- --grep @claim:demo-sandbox",
     "sandbox": "open /demo, edit servings, and assert only demo:scc: browser storage keys exist"
@@ -68,5 +68,54 @@
     "where": "landing page, Kitchen Pass dialog, README, terms",
     "test": "npm run test:e2e -- --grep @claim:kitchen-pass",
     "sandbox": "fresh browser; assert the default build exposes no broken checkout link, intercept the documented verification URL with a valid recorded fixture, submit a fixture token, and observe the active state"
+  },
+  {
+    "id": "kitchen-pass-price",
+    "claim": "Kitchen Pass costs $9 once when checkout is enabled.",
+    "where": "landing page, Kitchen Pass dialog, README, terms",
+    "test": "npm run test:checkout-enabled -- --grep @claim:kitchen-pass-price --project=chromium",
+    "sandbox": "checkout-enabled production preview; assert the visible $9 once price and documented hosted checkout URL"
+  },
+  {
+    "id": "paid-history-limits",
+    "claim": "Kitchen Pass keeps unlimited local cook cards and complete local cook history.",
+    "where": "Kitchen Pass dialog, landing page, README, terms",
+    "test": "npm run test:e2e -- --grep @claim:paid-history-limits --project=chromium",
+    "sandbox": "restore a valid fixture license, save two cook cards and two corrections for one card, reload, and assert all records remain"
+  },
+  {
+    "id": "free-card-limits",
+    "claim": "The free cook card keeps one saved cook card and its latest correction.",
+    "where": "Kitchen Pass dialog",
+    "test": "npm run test:e2e -- --grep @claim:free-card-limits --project=chromium",
+    "sandbox": "fresh browser; replace the first cook card with a second and save two corrections, then assert only the second card and latest correction remain"
+  },
+  {
+    "id": "billing-terms",
+    "claim": "Checkout is hosted by Sociobot/Dodo, and a revoked license stops paid features.",
+    "where": "Kitchen Pass dialog, terms",
+    "test": "VITE_KITCHEN_PASS_CHECKOUT_ENABLED=true npx playwright test --grep @claim:billing-terms --project=chromium",
+    "sandbox": "checkout-enabled preview; assert the documented hosted URL and a recorded revoked verification response locks the paid library"
+  },
+  {
+    "id": "art-provenance",
+    "claim": "The notebook artwork was generated for this product with Azure AI Foundry.",
+    "where": "Artwork provenance page",
+    "test": "npm test -- --testNamePattern @claim:art-provenance",
+    "sandbox": "inspect the retained design provenance, source metadata, and referenced public artwork"
+  },
+  {
+    "id": "payment-integration",
+    "claim": "No payment-provider SDK or product id is embedded here.",
+    "where": "README",
+    "test": "npm test -- --testNamePattern @claim:payment-integration",
+    "sandbox": "build the application and inspect source and output for provider SDKs and payment product identifiers"
+  },
+  {
+    "id": "versioned-asset-cache",
+    "claim": "Versioned assets are cached for one year.",
+    "where": "README",
+    "test": "npm test -- --testNamePattern @claim:versioned-asset-cache",
+    "sandbox": "inspect the Static Web Apps cache rules for hashed and versioned assets"
   }
 ]

@@ -1,4 +1,4 @@
-const CACHE = 'scaled-cook-card-v5';
+const CACHE = 'scaled-cook-card-v6';
 const SHELL = ['/', '/index.html', '/manifest.webmanifest', '/favicon.svg', '/hero-notebook-v1-768.webp', '/hero-notebook-v1-1280.webp', '/hero-notebook-v1-1280.avif'];
 
 self.addEventListener('install', (event) => {

@@ -68,7 +68,6 @@ h2 { margin: 0; font-family: ui-rounded, "Arial Rounded MT Bold", system-ui, san
 .plain-facts li { display: flex; gap: 8px; align-items: baseline; }
 .plain-facts li::before { content: "—"; color: var(--tomato-dark); font-weight: 800; }
 .hero-figure { margin: 0; position: relative; }
-.hero-figure::before { content: "FIELD NOTES / 01"; position: absolute; z-index: 2; right: -10px; top: -32px; font: 700 .68rem/1 ui-monospace, monospace; letter-spacing: .12em; color: var(--graphite-soft); transform: rotate(3deg); }
 .hero-figure picture { display: block; padding: 10px; background: var(--paper-raised); box-shadow: var(--shadow); transform: rotate(1.2deg); }
 .hero-figure img { width: 100%; aspect-ratio: 3/2; object-fit: cover; }
 .hero-figure figcaption { margin-top: 24px; display: flex; align-items: center; gap: 10px; color: var(--graphite-soft); font: 700 .68rem/1.2 ui-monospace, monospace; letter-spacing: .06em; text-transform: uppercase; }
@@ -81,6 +80,9 @@ h2 { margin: 0; font-family: ui-rounded, "Arial Rounded MT Bold", system-ui, san
 .pass-section .button { margin-top: 18px; }
 .syntax-demo { padding: 24px 28px; background: var(--paper-raised); border-left: 3px solid var(--ink-blue); box-shadow: 4px 4px 0 var(--rule); }
 .syntax-demo code { display: block; color: var(--graphite-soft); }
+.syntax-demo .syntax-label, .syntax-demo .syntax-help { display: block; color: var(--graphite-soft); font-size: .78rem; }
+.syntax-demo .syntax-label { margin-bottom: 6px; color: var(--ink-blue); font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
+.syntax-demo .syntax-help { margin-top: 10px; }
 .syntax-demo > span { display: block; margin: 6px 0; color: var(--tomato-dark); font-size: .75rem; font-weight: 800; text-transform: uppercase; }
 .syntax-demo p { margin: 0; font-size: 1.1rem; }
 .bound-token { display: inline; padding: .06em .24em .12em; color: var(--ink-blue); background: #e4eef0; border-bottom: 2px solid #6c93a4; border-radius: 3px 7px 2px 5px; box-decoration-break: clone; -webkit-box-decoration-break: clone; white-space: nowrap; }
@@ -205,7 +207,6 @@ dialog::backdrop { background: rgb(37 40 34 / 58%); backdrop-filter: blur(2px); 
   .hero-copy { max-width: none; }
   h1 { font-size: clamp(3rem, 14vw, 4.6rem); }
   .hero-figure { margin-top: 64px; }
-  .hero-figure::before { right: 4px; }
   .how-it-works, .landing-detail { grid-template-columns: 1fr; gap: 28px; }
   .how-it-works { margin-top: 72px; }
   .recipe-masthead { align-items: stretch; flex-direction: column; }
