@@ -1,0 +1,16 @@
+HTTP/2 200 
+content-type: text/javascript
+date: Tue, 01 Sep 2026 22:57:39 GMT
+accept-ranges: bytes
+cache-control: public, max-age=31536000, immutable
+etag: "87517610"
+last-modified: Tue, 01 Sep 2026 22:56:44 GMT
+content-length: 80331
+strict-transport-security: max-age=10886400; includeSubDomains; preload
+referrer-policy: strict-origin-when-cross-origin
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+x-dns-prefetch-control: off
+permissions-policy: camera=(), microphone=(), geolocation=()
+content-security-policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://api.sociobot.in; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https://api.sociobot.in; frame-ancestors 'none'
+
