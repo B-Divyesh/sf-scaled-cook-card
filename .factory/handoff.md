@@ -34,8 +34,8 @@ Default build budget: JavaScript 79.88 kB raw / 26.93 kB gzip; CSS 20.60 kB raw 
 
 ## Deploy and live check
 
-Pushed `cb0ee6b` to `origin/main`. The static deployment is expected to publish from that branch. At handoff update time, the public endpoint still served the preceding build (`Last-Modified: 2026-08-30`); recheck after publication before accepting the deployment. The intended cold checks are `/`, `/demo`, `?demo=1`, `/privacy`, `/terms`, `/artwork`, and an unknown path.
+Pushed `cb0ee6b` to `origin/main` and the handoff commit `ae0a131`. Repeated cold checks still returned the preceding JavaScript bundle (`/assets/index-C_Kr74Dc.js`, build `2026.08.30-repair.4`). A direct, in-scope Azure Static Web App lookup for `sf-scaled-cook-card` was rejected with `AuthorizationFailed`; this work order identity has no Static Web Apps read/deploy permission. Recheck after the factory publishes the branch before accepting the deployment. The intended cold checks are `/`, `/demo`, `?demo=1`, `/privacy`, `/terms`, `/artwork`, and an unknown path.
 
 ## Known gaps
 
-No product gaps remain locally. Live publication confirmation is pending the external static deployment propagation.
+No product gaps remain locally. Live publication confirmation is blocked by unavailable factory deployment authorization.

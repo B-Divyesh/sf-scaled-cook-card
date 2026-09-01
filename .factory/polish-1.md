@@ -44,4 +44,4 @@ Candidate repaired from `39c5ba365be0bab50615663d16e444697b542a71` on 2026-09-01
 - Extra checkout contract: `VITE_KITCHEN_PASS_CHECKOUT_ENABLED=true npx playwright test --grep @claim:billing-terms --project=chromium` — PASS.
 - Visual checks: `.factory/evidence-polish-1/local-landing.png`, `.factory/evidence-polish-1/local-demo-390.png`, and `.factory/evidence-polish-1/local-404.png`.
 
-After deployment, the live recheck target is <https://scaled-cook-card.sociobot.in> with `/demo`, `/privacy`, `/terms`, `/artwork`, and an unknown route.
+Live recheck target: <https://scaled-cook-card.sociobot.in> with `/demo`, `/privacy`, `/terms`, `/artwork`, and an unknown route. At 2026-09-01 19:24 UTC it still served prior bundle `index-C_Kr74Dc.js` and build `2026.08.30-repair.4`; the in-scope Static Web App lookup was blocked by Azure `AuthorizationFailed` for this work-order identity.
