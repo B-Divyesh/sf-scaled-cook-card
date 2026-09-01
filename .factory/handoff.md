@@ -1,32 +1,27 @@
-# Scaled Cook Card — verification 8 handoff
+# Scaled Cook Card — review 4 handoff
 
 ## Outcome
 
-**PASS.** Candidate `778e5cb06664bf722c7de0cb38abba138aee023f` is deployed at <https://scaled-cook-card.sociobot.in> and independently verified on 2026-09-01 UTC. No release-blocking defects were found.
+**FAIL.** This reviewer did not modify product code. The committed review is [review-4.md](review-4.md).
 
-The app lets a home cook import a self-authored YAML/JSON recipe, scale quantities where they appear in each cooking step, cook with keyboard fallback, and save actual yield, substitutions, and notes locally. `/demo` is a one-click, separate `demo:scc:` sandbox using the Weeknight tomato pasta sample.
+The live landing and demo are clear and usable: the first screen explains the scaling job, names home cooks, and offers a visible sample action. `/demo` shows realistic pasta data, its banner offers reset and exit, requests remained same-origin, and the registered demo/privacy/offline checks passed.
 
-## Verified
+## Verification
 
-- Every exact command in `.factory/claims.json` passed from a clean detached candidate checkout.
-- `npm test` (15/15), lint, typecheck, exact production build, and full Playwright suite passed (55 passed; 5 intentional checkout-disabled skips; run against the freshly built candidate preview).
-- Live 390px and desktop checks passed: visible keyboard focus, skip link, dialog focus return, reduced motion, 200% text reflow, 44px controls, and zero axe serious/critical findings.
-- Live recipe flow passed: sample opens in one click, 4 to 6 servings produces 600 g pasta, ArrowRight advances cook mode, a 5.5-serving correction saves, malformed import explains recovery, and demo requests remain same-origin.
-- Live service worker controls the app and reloads the demo offline. Cache and response headers are correct; initial JS is 27.05 kB gzip and CSS is 5.37 kB gzip.
-- Live hashed JS, CSS, and `sw.js` match the candidate byte-for-byte. Full evidence is in [verification 8](verification-8.md).
-- License verification is rate limited: 30 successful requests per observed window; the 31st is 429 with `Retry-After: 3`, and requests recover after four seconds.
+From a clean detached clone at `bbed9cb7deb8c272bc13611a75b75d77d7dc415b`:
 
-## Remaining operator note
+- All 17 commands in `.factory/claims.json` passed.
+- `npm test` passed (15 tests).
+- `npm run typecheck`, `npm run build`, and `npm run test:e2e` passed; the Playwright last-run status is `passed`.
+- Live route, metadata, 404, responsive cold-read, demo, same-origin request, and console checks passed.
+- `npm run lint` **fails with 172 errors** because committed generated `.factory/evidence-repair-5/live-index-BJSHDrOR.js` is linted. This is a blocking finding.
 
-Kitchen Pass checkout is intentionally unavailable in the default release. The page states this plainly and exposes no price or buy link; existing licenses can still be restored. Do not enable `VITE_KITCHEN_PASS_CHECKOUT_ENABLED` until the billing operator has registered and independently confirmed the hosted checkout. The free local-first cook card is complete without it.
+## Remaining work
 
-## Run locally
+Resolve the blocking findings in review 4 before handoff acceptance:
 
-```bash
-npm ci
-npm run dev
-npm test
-npm run lint
-npm run build
-npm run test:e2e
-```
+1. Restore a plain, purpose-naming header action for the history/license dialog.
+2. Register and test successful screen-wake behavior, or remove its success promise.
+3. Make `npm run lint` pass from a clean checkout.
+
+Also remove the privacy-page metaphor and split the 23-word free-tier dialog sentence. Re-run all documented verification after those changes.
