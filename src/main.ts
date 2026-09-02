@@ -28,7 +28,7 @@ interface AppState {
 }
 
 const SITE_URL = 'https://scaled-cook-card.sociobot.in';
-const BUILD_ID = '2026.09.02-polish.4';
+const BUILD_ID = '2026.09.02-polish.5';
 
 const appRoot = document.querySelector<HTMLDivElement>('#app');
 if (!appRoot) throw new Error('App root is missing.');

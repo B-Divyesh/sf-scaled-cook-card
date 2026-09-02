@@ -52,7 +52,7 @@ A step may instead use an `ingredients` list; its scaled ingredient tokens appea
 }
 ```
 
-Required fields are `title`, positive `servings`, non-empty `ingredients`, and non-empty `steps`. Ingredient quantities may be numbers or fraction strings.
+Recipe files need a `title`, positive `servings`, at least one `ingredient`, and at least one preparation `step`. Ingredient quantities may be numbers or fraction strings.
 
 ## Develop and verify
 

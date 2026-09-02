@@ -25,7 +25,7 @@ Reviewed 2026-09-02. Counts treat code tokens and hyphenated terms as one word. 
 | The free cook card keeps scaling, cooking, and export. | 9 | Pass; registered feature claims |
 | Restore a license you already have. | 6 | Pass |
 | Scaled cook cards for home cooks. | 6 | Pass |
-| Built by Param Factory · build 2026.09.02-polish.4. | 6 | Pass |
+| Built by Param Factory · build 2026.09.02-polish.5. | 6 | Pass |
 | Paste YAML or JSON below, or choose a small `.yaml`, `.yml`, or `.json` file. | 14 | Pass |
 | The name inside braces matches an ingredient id. | 8 | Pass |
 | Quantities may be decimals or fractions such as `1 1/2`. | 10 | Pass; registered claim |
@@ -54,7 +54,7 @@ No README sentence exceeds 22 words. Technical terms appear only in recipe-forma
 
 ## Catalog description
 
-`Scale recipe servings and show each amount inside its cooking step.` — 11 words, 67 characters, verb first, no banned words.
+`Scale recipe servings and see the right amount in every cooking step.` — 12 words, 69 characters, verb first, no banned words.
 
 ## Terminology
 

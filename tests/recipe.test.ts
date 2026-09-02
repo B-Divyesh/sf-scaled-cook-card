@@ -10,6 +10,16 @@ describe('recipe import', () => {
     expect(parseQuantity('1 1/2', 'Quantity')).toBe(1.5);
   });
 
+  it('requires a title, positive servings, ingredients, and preparation steps @claim:recipe-required-fields', () => {
+    const validIngredients = `ingredients:\n  - id: water\n    name: water\n    quantity: 2\n    unit: cups`;
+    const validSteps = 'steps:\n  - Bring {{water}} to a boil.';
+
+    expect(() => parseRecipe(`servings: 2\n${validIngredients}\n${validSteps}`)).toThrow('Add a recipe title.');
+    expect(() => parseRecipe(`title: Soup\nservings: 0\n${validIngredients}\n${validSteps}`)).toThrow('Servings must be greater than zero.');
+    expect(() => parseRecipe('title: Soup\nservings: 2\nsteps:\n  - Simmer for 10 minutes.')).toThrow('Add at least one ingredient.');
+    expect(() => parseRecipe(`title: Soup\nservings: 2\n${validIngredients}`)).toThrow('Add at least one preparation step.');
+  });
+
   it('accepts structured ingredient lists after a step @claim:step-binding-list', () => {
     const recipe = parseRecipe(JSON.stringify({
       title: 'Toast', servings: 1,

@@ -14,6 +14,13 @@
     "sandbox": "parse the documented YAML recipe and assert its title, ingredients, and bound step"
   },
   {
+    "id": "recipe-required-fields",
+    "claim": "Recipe files need a title, positive servings, at least one ingredient, and at least one preparation step.",
+    "where": "README recipe format",
+    "test": "npm test -- --testNamePattern @claim:recipe-required-fields",
+    "sandbox": "try a recipe missing each required value and assert the useful validation error"
+  },
+  {
     "id": "step-binding-list",
     "claim": "A step can list ingredient ids when its text has no inline ingredient token.",
     "where": "README recipe format",
