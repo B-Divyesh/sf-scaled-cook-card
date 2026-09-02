@@ -170,6 +170,7 @@ test('keeps word boundaries in the headline and recipe-file label', async ({ pag
 test('legal routes work directly', async ({ page }) => {
   await page.goto('/privacy');
   await expect(page.getByRole('heading', { level: 1, name: 'Privacy, in plain language' })).toBeVisible();
+  await expect(page.getByText('Your recipes stay in your browser, not in our database.', { exact: true })).toBeVisible();
   await expect(page).toHaveTitle('Privacy — Scaled Cook Card');
   await page.goto('/terms');
   await expect(page.getByRole('heading', { level: 1, name: 'Terms of use' })).toBeVisible();
@@ -203,7 +204,7 @@ test('keeps Kitchen Pass checkout build-gated and restores a license @claim:kitc
   await page.route('https://api.sociobot.in/api/v1/products/scaled-cook-card/verify?license=fixture-license', async (route) => {
     await route.fulfill({ json: { valid: true, reason: 'ok' } });
   });
-  const passAction = process.env.VITE_KITCHEN_PASS_CHECKOUT_ENABLED === 'true' ? 'View history upgrade' : 'Restore a Kitchen Pass';
+  const passAction = process.env.VITE_KITCHEN_PASS_CHECKOUT_ENABLED === 'true' ? 'View history upgrade' : 'Restore a license';
   await page.locator('.site-header').getByRole('button', { name: passAction, exact: true }).click();
   const purchaseLink = page.getByRole('link', { name: /buy kitchen pass/i });
   if (process.env.VITE_KITCHEN_PASS_CHECKOUT_ENABLED === 'true') {
@@ -218,6 +219,8 @@ test('keeps Kitchen Pass checkout build-gated and restores a license @claim:kitc
   }
   await expect(page.getByLabel(/have a license/i)).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Kitchen Pass storage upgrade' })).toBeVisible();
+  await expect(page.getByText('The free cook card scales, cooks, works offline, and exports the card.', { exact: true })).toBeVisible();
+  await expect(page.getByText('It keeps one card with its latest correction.', { exact: true })).toBeVisible();
   await page.getByLabel(/have a license/i).fill('fixture-license');
   await page.getByRole('button', { name: 'Restore Kitchen Pass' }).click();
   await expect(page.getByText('License active')).toBeVisible();
@@ -252,7 +255,7 @@ async function saveOneStepCorrection(page: import('@playwright/test').Page, yiel
 test('keeps multiple cook cards and correction records after restoring Kitchen Pass @claim:paid-history-limits', async ({ page }) => {
   await page.route('https://api.sociobot.in/api/v1/products/scaled-cook-card/verify?license=fixture-license', (route) => route.fulfill({ json: { valid: true, reason: 'ok' } }));
   await importCookCard(page, `title: First card\nservings: 2\ningredients:\n  - id: oil\n    name: olive oil\n    quantity: 1\n    unit: tbsp\nsteps:\n  - text: Add {{oil}}.`, false);
-  await page.locator('.site-header').getByRole('button', { name: 'Restore a Kitchen Pass', exact: true }).click();
+  await page.locator('.site-header').getByRole('button', { name: 'Restore a license', exact: true }).click();
   await page.getByLabel(/have a license/i).fill('fixture-license');
   await page.getByRole('button', { name: 'Restore Kitchen Pass' }).click();
   await expect(page.getByText('License active')).toBeVisible();
@@ -321,6 +324,42 @@ test('keeps arrow-key cooking available when screen wake is unsupported @claim:c
   await expect(page.getByRole('heading', { name: 'Step 2 of 4' })).toBeVisible();
 });
 
+test('requests and releases screen wake and recovers when a request is rejected @claim:screen-wake', async ({ page }) => {
+  await page.addInitScript(() => {
+    const wakeTest = { requests: [] as string[], releases: 0, reject: false };
+    Object.defineProperty(window, '__wakeTest', { value: wakeTest, configurable: true });
+    Object.defineProperty(navigator, 'wakeLock', {
+      configurable: true,
+      value: {
+        request: async (type: string) => {
+          wakeTest.requests.push(type);
+          if (wakeTest.reject) throw new Error('Wake lock denied');
+          return {
+            released: false,
+            addEventListener: () => undefined,
+            release: async () => { wakeTest.releases += 1; },
+          };
+        },
+      },
+    });
+  });
+  await page.goto('/?demo=1');
+  await page.getByRole('button', { name: /start cook mode/i }).click();
+  await page.getByLabel('Keep screen awake').check();
+  await expect(page.getByText('Screen wake is active.')).toBeVisible();
+  await expect(page.getByLabel('Keep screen awake')).toBeChecked();
+  await expect.poll(() => page.evaluate(() => (window as Window & { __wakeTest: { requests: string[] } }).__wakeTest.requests)).toEqual(['screen']);
+
+  await page.getByRole('button', { name: 'Exit cook mode' }).click();
+  await expect.poll(() => page.evaluate(() => (window as Window & { __wakeTest: { releases: number } }).__wakeTest.releases)).toBe(1);
+
+  await page.evaluate(() => { (window as Window & { __wakeTest: { reject: boolean } }).__wakeTest.reject = true; });
+  await page.getByRole('button', { name: /start cook mode/i }).click();
+  await page.getByLabel('Keep screen awake').click();
+  await expect(page.getByText('Your browser did not allow screen wake. Cooking controls still work.')).toBeVisible();
+  await expect(page.getByLabel('Keep screen awake')).not.toBeChecked();
+});
+
 test('reloads a saved card offline @claim:offline-reload', async ({ browser }) => {
   const context = await browser.newContext();
   const page = await context.newPage();
@@ -359,7 +398,7 @@ test('activates the current service worker and accepts an update check', async (
     });
     expect(workerState.controlled).toBe(true);
     expect(workerState.scope).toBe('http://127.0.0.1:4173/');
-    expect(workerState.caches).toContain('scaled-cook-card-v8');
+    expect(workerState.caches).toContain('scaled-cook-card-v9');
   } finally {
     await context.close();
   }

@@ -57,7 +57,8 @@ describe('site discovery and social assets', () => {
     expect(notFound).toContain('property="og:description"');
     expect(notFound).toContain('property="og:image"');
     expect(notFound).toContain('name="twitter:card"');
-    expect(notFound).toContain('2026.09.01-repair.5');
+    expect(notFound).toContain('>Restore a license</a>');
+    expect(notFound).toContain('2026.09.02-polish.4');
   });
 
   it('ships a real 1200 by 630 social image and a 180 pixel touch icon', async () => {

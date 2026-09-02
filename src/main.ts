@@ -28,7 +28,7 @@ interface AppState {
 }
 
 const SITE_URL = 'https://scaled-cook-card.sociobot.in';
-const BUILD_ID = '2026.09.01-repair.5';
+const BUILD_ID = '2026.09.02-polish.4';
 
 const appRoot = document.querySelector<HTMLDivElement>('#app');
 if (!appRoot) throw new Error('App root is missing.');
@@ -102,7 +102,7 @@ function renderStepText(step: RecipeStep): string {
 }
 
 function header(): string {
-  const passAction = state.license.valid ? 'History upgrade active' : CHECKOUT_ENABLED ? 'View history upgrade' : 'Restore a Kitchen Pass';
+  const passAction = state.license.valid ? 'History upgrade active' : CHECKOUT_ENABLED ? 'View history upgrade' : 'Restore a license';
   return `<header class="site-header">
     <a class="wordmark" href="/" aria-label="Scaled Cook Card home"${state.demo ? ' data-action="start-real"' : ''}>
       <span class="mark" aria-hidden="true">${icon('scale')}</span>
@@ -135,7 +135,7 @@ function footer(): string {
 
 function landing(): string {
   const passFact = CHECKOUT_ENABLED ? '$9 once for optional history.' : 'Kitchen Pass purchase is unavailable.';
-  const passAction = CHECKOUT_ENABLED ? 'View history upgrade' : 'Restore a Kitchen Pass';
+  const passAction = CHECKOUT_ENABLED ? 'View history upgrade' : 'Restore a license';
   return `<main id="main" class="landing">
     <section class="hero-copy" aria-labelledby="main-title">
       <h1 id="main-title">Scale recipe amounts <br><em>in every step.</em></h1>
@@ -253,7 +253,7 @@ function legalPage(kind: 'privacy' | 'terms'): string {
   return `<main id="main" class="legal-page">
     <p class="eyebrow">Last updated August 28, 2026</p>
     <h1>${privacy ? 'Privacy, in plain language' : 'Terms of use'}</h1>
-    <p class="lede">${privacy ? 'Your recipes belong in your kitchen, not in our database.' : 'A short, practical agreement for using Scaled Cook Card.'}</p>
+    <p class="lede">${privacy ? 'Your recipes stay in your browser, not in our database.' : 'A short, practical agreement for using Scaled Cook Card.'}</p>
     ${privacy ? `<section><h2>What stays on this device</h2><p>Imported recipes, scaled serving choices, cook corrections, and license tokens are stored in your browser’s local storage. Scaled Cook Card has no account system and does not send recipe content to us.</p></section>
       <section><h2>Network requests</h2><p>The app requests its own files and, when you provide a Kitchen Pass license, asks the Sociobot billing API whether that license is valid. There are no advertising or behavioral analytics scripts.</p></section>
       <section><h2>Your control</h2><p>Scaled cook card export is always available. “Remove this card” deletes the active cook card after confirmation. Clearing site data in your browser removes local cook cards, records, and the saved license.</p></section>`
@@ -296,7 +296,8 @@ function passDialog(): string {
       <button class="text-button danger-link" data-action="remove-license">Remove license from this device</button>`
       : `${CHECKOUT_ENABLED ? '<p class="pass-price"><strong>$9</strong> once</p>' : '<p class="checkout-unavailable" role="status"><strong>Kitchen Pass purchase is unavailable.</strong> Your free cook card stays usable. If you already bought Kitchen Pass, paste your license below.</p>'}
       <ul class="check-list"><li>${icon('check')} Save unlimited cook cards</li><li>${icon('check')} Keep the complete correction history</li><li>${icon('check')} Restore your license on this device</li></ul>
-      <p>The free cook card includes scaling, cook mode, one saved cook card and its latest correction, offline use, and scaled cook card export.</p>
+      <p>The free cook card scales, cooks, works offline, and exports the card.</p>
+      <p>It keeps one card with its latest correction.</p>
       ${CHECKOUT_ENABLED ? `<a class="button primary full-button" href="${CHECKOUT_URL}" target="_blank" rel="noopener noreferrer" aria-label="Buy Kitchen Pass (opens hosted checkout in a new tab)">Buy Kitchen Pass ${icon('arrow')}</a><p class="field-help">Checkout opens separately, and your free cook card stays usable here.</p>` : ''}
       <hr>
       <form id="license-form"><label for="license-token">Have a license? Paste it here</label><div class="inline-field"><input id="license-token" name="license" autocomplete="off" required><button class="button secondary" type="submit">Restore Kitchen Pass</button></div></form>

@@ -35,6 +35,13 @@
     "sandbox": "fresh browser with navigator.wakeLock removed; start the sample cook, assert the disabled wake control explains the fallback, then advance with ArrowRight"
   },
   {
+    "id": "screen-wake",
+    "claim": "When screen wake is supported and allowed, cook mode keeps the screen awake until you exit.",
+    "where": "cook mode",
+    "test": "npm run test:e2e -- --grep @claim:screen-wake",
+    "sandbox": "fresh browser with a recorded Wake Lock API; assert a screen request, active state, release on cook exit, and recovery after a rejected request"
+  },
+  {
     "id": "json-export",
     "claim": "Exports the displayed scaled cook card as JSON.",
     "where": "README, workspace export button",

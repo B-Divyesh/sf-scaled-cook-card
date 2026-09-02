@@ -3,7 +3,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { mkdirSync, writeFileSync } from 'node:fs';
 
 const base = 'https://scaled-cook-card.sociobot.in';
-const evidenceDir = '.factory/evidence-repair-5/live-qa';
+const evidenceDir = '.factory/evidence-polish-4/live-qa';
 mkdirSync(evidenceDir, { recursive: true });
 
 const checks = [];
@@ -31,6 +31,7 @@ try {
   record('cold first screen states the job', heading === 'Scale recipe amounts in every step.', heading);
   record('cold first screen identifies the user', lede.includes('home cooks') && lede.includes('hands are busy'), lede);
   record('cold first screen has one-click sample demo', demoButton === 1, `matching actions: ${demoButton}`);
+  record('header action names license restoration', await page.locator('.site-header').getByRole('button', { name: 'Restore a license', exact: true }).isVisible(), 'Restore a license');
   record('workflow heading names the three-step section', await page.getByRole('heading', { level: 2, name: 'Make a cook card in three steps' }).isVisible(), 'Make a cook card in three steps');
   const firstScreenFacts = await page.locator('.plain-facts li').evaluateAll((items) => items.map((item) => {
     const box = item.getBoundingClientRect();
@@ -234,7 +235,7 @@ try {
     return { controlled: Boolean(navigator.serviceWorker.controller), scope: registration.scope, caches: await caches.keys() };
   });
   record('live service worker controls the page', worker.controlled && worker.scope === `${base}/`, JSON.stringify(worker));
-  record('live service worker uses candidate cache version', worker.caches.includes('scaled-cook-card-v8'), JSON.stringify(worker.caches));
+  record('live service worker uses candidate cache version', worker.caches.includes('scaled-cook-card-v9'), JSON.stringify(worker.caches));
   await offlineContext.setOffline(true);
   await offlinePage.reload({ waitUntil: 'domcontentloaded' });
   record('live demo reloads offline', await offlinePage.getByRole('heading', { level: 1, name: 'Weeknight tomato pasta' }).isVisible() && await offlinePage.getByText(/offline — your card still works/i).isVisible(), offlinePage.url());
@@ -256,6 +257,8 @@ try {
     const socialTitle = await legalPage.locator('meta[property="og:title"]').getAttribute('content');
     record(`${route} route has direct semantic metadata`, response?.status() === 200 && h1Count === 1 && await legalPage.locator('main').count() === 1 && await legalPage.title() === expectedTitle && canonical === `${base}${route}` && socialTitle === expectedTitle, `status=${response?.status()} title=${await legalPage.title()} canonical=${canonical} h1=${h1Count}`);
   }
+  await legalPage.goto(`${base}/privacy`, { waitUntil: 'networkidle' });
+  record('privacy lede states browser storage directly', await legalPage.getByText('Your recipes stay in your browser, not in our database.', { exact: true }).isVisible(), 'direct browser storage wording');
   const privacyAxe = await new AxeBuilder({ page: legalPage }).analyze();
   record('legal page has zero serious or critical axe findings', serious(privacyAxe).length === 0, JSON.stringify(serious(privacyAxe).map((v) => ({ id: v.id, impact: v.impact }))));
   const crawledLinks = new Set();
@@ -279,7 +282,7 @@ try {
     announcement: document.querySelector('#route-announcement')?.textContent,
   }));
   record('Back restores and focuses the root heading', backState.focusedHeading === 'Scale recipe amounts in every step.' && backState.announcement === 'Page changed.', JSON.stringify(backState));
-  const missingResponse = await legalPage.goto(`${base}/definitely-missing-repair-5`, { waitUntil: 'networkidle' });
+  const missingResponse = await legalPage.goto(`${base}/definitely-missing-polish-4`, { waitUntil: 'networkidle' });
   const missingTitle = await legalPage.title();
   const missingSocialTitle = await legalPage.locator('meta[property="og:title"]').getAttribute('content');
   record('unknown URL returns designed 404 with metadata', missingResponse?.status() === 404 && await legalPage.getByRole('heading', { level: 1, name: 'That cook card page is missing.' }).isVisible() && missingTitle === 'Page not found — Scaled Cook Card' && missingSocialTitle === missingTitle, `status=${missingResponse?.status()} title=${missingTitle}`);

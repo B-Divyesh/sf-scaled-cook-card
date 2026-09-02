@@ -12,7 +12,8 @@ Try the isolated sample at `https://scaled-cook-card.sociobot.in/?demo=1`. It us
 
 - Imports a recipe and scales each linked ingredient amount in its cooking steps.
 - Keeps exact fractions such as `3/16` instead of changing them to a nearby amount.
-- Lets you cook with arrow keys when screen wake is unavailable.
+- Keeps the screen awake in cook mode when your browser allows it.
+- Arrow keys still work when screen wake is unavailable.
 - Saves actual yield, substitutions, and notes locally after cooking.
 - Exports the displayed scaled cook card as JSON.
 - Works offline after the first visit.
