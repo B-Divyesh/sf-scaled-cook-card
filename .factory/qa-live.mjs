@@ -3,7 +3,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { mkdirSync, writeFileSync } from 'node:fs';
 
 const base = 'https://scaled-cook-card.sociobot.in';
-const evidenceDir = '.factory/evidence-polish-4/live-qa';
+const evidenceDir = '.factory/evidence-polish-5/live-qa';
 mkdirSync(evidenceDir, { recursive: true });
 
 const checks = [];
@@ -266,7 +266,7 @@ try {
     return { controlled: Boolean(navigator.serviceWorker.controller), scope: registration.scope, caches: await caches.keys() };
   });
   record('live service worker controls the page', worker.controlled && worker.scope === `${base}/`, JSON.stringify(worker));
-  record('live service worker uses candidate cache version', worker.caches.includes('scaled-cook-card-v9'), JSON.stringify(worker.caches));
+  record('live service worker uses candidate cache version', worker.caches.includes('scaled-cook-card-v10'), JSON.stringify(worker.caches));
   await offlineContext.setOffline(true);
   await offlinePage.reload({ waitUntil: 'domcontentloaded' });
   record('live demo reloads offline', await offlinePage.getByRole('heading', { level: 1, name: 'Weeknight tomato pasta' }).isVisible() && await offlinePage.getByText(/offline — your card still works/i).isVisible(), offlinePage.url());
@@ -313,7 +313,7 @@ try {
     announcement: document.querySelector('#route-announcement')?.textContent,
   }));
   record('Back restores and focuses the root heading', backState.focusedHeading === 'Scale recipe amounts in every step.' && backState.announcement === 'Page changed.', JSON.stringify(backState));
-  const missingResponse = await legalPage.goto(`${base}/definitely-missing-polish-4`, { waitUntil: 'networkidle' });
+  const missingResponse = await legalPage.goto(`${base}/definitely-missing-polish-5`, { waitUntil: 'networkidle' });
   const missingTitle = await legalPage.title();
   const missingSocialTitle = await legalPage.locator('meta[property="og:title"]').getAttribute('content');
   record('unknown URL returns designed 404 with metadata', missingResponse?.status() === 404 && await legalPage.getByRole('heading', { level: 1, name: 'That cook card page is missing.' }).isVisible() && missingTitle === 'Page not found — Scaled Cook Card' && missingSocialTitle === missingTitle, `status=${missingResponse?.status()} title=${missingTitle}`);
