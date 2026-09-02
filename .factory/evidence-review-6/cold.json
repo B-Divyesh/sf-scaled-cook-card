@@ -1,0 +1,176 @@
+{
+  "mobile": {
+    "status": 200,
+    "url": "https://scaled-cook-card.sociobot.in/",
+    "title": "Scaled Cook Card — scale recipe steps",
+    "above": [
+      {
+        "tag": "A",
+        "text": "Scaled Cook Card",
+        "top": 10,
+        "bottom": 54
+      },
+      {
+        "tag": "A",
+        "text": "Demo",
+        "top": 62,
+        "bottom": 106
+      },
+      {
+        "tag": "A",
+        "text": "Privacy",
+        "top": 62,
+        "bottom": 106
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Restore a license",
+        "top": 62,
+        "bottom": 106
+      },
+      {
+        "tag": "H1",
+        "text": "Scale recipe amounts in every step.",
+        "top": 164,
+        "bottom": 320
+      },
+      {
+        "tag": "P",
+        "text": "For home cooks who need correct quantities while their hands are busy.",
+        "top": 340,
+        "bottom": 392
+      },
+      {
+        "tag": "LI",
+        "text": "Works offline after the first visit.",
+        "top": 412,
+        "bottom": 433
+      },
+      {
+        "tag": "LI",
+        "text": "Kitchen Pass purchase is unavailable.",
+        "top": 437,
+        "bottom": 459
+      },
+      {
+        "tag": "LI",
+        "text": "Cook cards stay in this browser.",
+        "top": 463,
+        "bottom": 485
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Try it with sample data",
+        "top": 505,
+        "bottom": 554
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Import my recipe",
+        "top": 566,
+        "bottom": 615
+      },
+      {
+        "tag": "P",
+        "text": "Open a ready pasta cook card, or paste a recipe you wrote.",
+        "top": 627,
+        "bottom": 671
+      }
+    ],
+    "visible": "Skip to main content\n\nScaled Cook Card\nDemo\nPrivacy\nRestore a license\nScale recipe amounts\nin every step.\n\nFor home cooks who need correct quantities while their hands are busy.\n\nWorks offline after the first visit.\nKitchen Pass purchase is unavailable.\nCook cards stay in this browser.\nTry it with sample data\nImport my recipe\n\nOpen a ready pasta cook card, or paste a recipe you wrote.\n\nSAMPLE COOK CARD WORKFLOW: SCALE, COOK, THEN NOTE CHANGES.\n\nHOW IT WORKS\n\nMake a cook card in three steps\n01\nImport a recipe file\n\nPaste YAML or JSON from a recipe you wrote.\n\n02\nScale and cook each step\n\nChange servings. Linked amounts update where you need them.\n\nAdd {{salt}} to the pot.\n\nbecomes 1½ tsp fine salt\n\n03\nSave what changed\n\nRecord the real yield, substitutions, and notes after cooking.\n\nRECIPE BOUNDARIES\n\nWhat this card does not do\n\nStart with a recipe you wrote or can import. This card focuses on scaling and cooking that recipe.\n\nOPTIONAL UPGRADE\n\nOptional recipe history\n\nKitchen Pass purchase is unavailable. The free cook card keeps scaling, cooking, and export. Restore a license you already have.\n\nRestore a license\n\nScaled cook cards for home cooks.\n\nPrivacy\nTerms\n\nBuilt by Param Factory · build 2026.09.02-polish.5. Artwork provenance.",
+    "requests": [
+      "https://scaled-cook-card.sociobot.in/",
+      "https://scaled-cook-card.sociobot.in/assets/index--SJgiHGi.js",
+      "https://scaled-cook-card.sociobot.in/assets/style-DFv06S3l.css",
+      "https://scaled-cook-card.sociobot.in/hero-notebook-v1-1280.avif"
+    ],
+    "errors": []
+  },
+  "desktop": {
+    "status": 200,
+    "url": "https://scaled-cook-card.sociobot.in/",
+    "title": "Scaled Cook Card — scale recipe steps",
+    "above": [
+      {
+        "tag": "A",
+        "text": "Scaled Cook Card",
+        "top": 16,
+        "bottom": 60
+      },
+      {
+        "tag": "A",
+        "text": "Demo",
+        "top": 16,
+        "bottom": 60
+      },
+      {
+        "tag": "A",
+        "text": "Privacy",
+        "top": 16,
+        "bottom": 60
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Restore a license",
+        "top": 16,
+        "bottom": 60
+      },
+      {
+        "tag": "H1",
+        "text": "Scale recipe amounts in every step.",
+        "top": 309,
+        "bottom": 522
+      },
+      {
+        "tag": "P",
+        "text": "For home cooks who need correct quantities while their hands are busy.",
+        "top": 542,
+        "bottom": 604
+      },
+      {
+        "tag": "LI",
+        "text": "Works offline after the first visit.",
+        "top": 624,
+        "bottom": 646
+      },
+      {
+        "tag": "LI",
+        "text": "Kitchen Pass purchase is unavailable.",
+        "top": 650,
+        "bottom": 672
+      },
+      {
+        "tag": "LI",
+        "text": "Cook cards stay in this browser.",
+        "top": 676,
+        "bottom": 698
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Try it with sample data",
+        "top": 718,
+        "bottom": 768
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Import my recipe",
+        "top": 780,
+        "bottom": 831
+      },
+      {
+        "tag": "P",
+        "text": "Open a ready pasta cook card, or paste a recipe you wrote.",
+        "top": 843,
+        "bottom": 865
+      }
+    ],
+    "visible": "Skip to main content\n\nScaled Cook Card\nDemo\nPrivacy\nRestore a license\nScale recipe amounts\nin every step.\n\nFor home cooks who need correct quantities while their hands are busy.\n\nWorks offline after the first visit.\nKitchen Pass purchase is unavailable.\nCook cards stay in this browser.\nTry it with sample data\nImport my recipe\n\nOpen a ready pasta cook card, or paste a recipe you wrote.\n\nSAMPLE COOK CARD WORKFLOW: SCALE, COOK, THEN NOTE CHANGES.\n\nHOW IT WORKS\n\nMake a cook card in three steps\n01\nImport a recipe file\n\nPaste YAML or JSON from a recipe you wrote.\n\n02\nScale and cook each step\n\nChange servings. Linked amounts update where you need them.\n\nAdd {{salt}} to the pot.\n\nbecomes 1½ tsp fine salt\n\n03\nSave what changed\n\nRecord the real yield, substitutions, and notes after cooking.\n\nRECIPE BOUNDARIES\n\nWhat this card does not do\n\nStart with a recipe you wrote or can import. This card focuses on scaling and cooking that recipe.\n\nOPTIONAL UPGRADE\n\nOptional recipe history\n\nKitchen Pass purchase is unavailable. The free cook card keeps scaling, cooking, and export. Restore a license you already have.\n\nRestore a license\n\nScaled cook cards for home cooks.\n\nPrivacy\nTerms\n\nBuilt by Param Factory · build 2026.09.02-polish.5. Artwork provenance.",
+    "requests": [
+      "https://scaled-cook-card.sociobot.in/",
+      "https://scaled-cook-card.sociobot.in/assets/index--SJgiHGi.js",
+      "https://scaled-cook-card.sociobot.in/assets/style-DFv06S3l.css",
+      "https://scaled-cook-card.sociobot.in/hero-notebook-v1-1280.avif"
+    ],
+    "errors": []
+  }
+}

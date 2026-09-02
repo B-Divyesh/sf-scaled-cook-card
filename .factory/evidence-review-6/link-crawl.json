@@ -1,0 +1,318 @@
+{
+  "found": {
+    "/": [
+      {
+        "text": "Skip to main content",
+        "href": "https://scaled-cook-card.sociobot.in/#main"
+      },
+      {
+        "text": "Scaled Cook Card",
+        "href": "https://scaled-cook-card.sociobot.in/"
+      },
+      {
+        "text": "Demo",
+        "href": "https://scaled-cook-card.sociobot.in/demo"
+      },
+      {
+        "text": "Privacy",
+        "href": "https://scaled-cook-card.sociobot.in/privacy"
+      },
+      {
+        "text": "Privacy",
+        "href": "https://scaled-cook-card.sociobot.in/privacy"
+      },
+      {
+        "text": "Terms",
+        "href": "https://scaled-cook-card.sociobot.in/terms"
+      },
+      {
+        "text": "Artwork provenance",
+        "href": "https://scaled-cook-card.sociobot.in/artwork"
+      },
+      {
+        "text": "Privacy",
+        "href": "https://scaled-cook-card.sociobot.in/privacy"
+      },
+      {
+        "text": "Terms",
+        "href": "https://scaled-cook-card.sociobot.in/terms"
+      }
+    ],
+    "/demo": [
+      {
+        "text": "Skip to main content",
+        "href": "https://scaled-cook-card.sociobot.in/demo#main"
+      },
+      {
+        "text": "Scaled Cook Card",
+        "href": "https://scaled-cook-card.sociobot.in/"
+      },
+      {
+        "text": "Demo",
+        "href": "https://scaled-cook-card.sociobot.in/demo"
+      },
+      {
+        "text": "Privacy",
+        "href": "https://scaled-cook-card.sociobot.in/privacy"
+      },
+      {
+        "text": "Privacy",
+        "href": "https://scaled-cook-card.sociobot.in/privacy"
+      },
+      {
+        "text": "Terms",
+        "href": "https://scaled-cook-card.sociobot.in/terms"
+      },
+      {
+        "text": "Artwork provenance",
+        "href": "https://scaled-cook-card.sociobot.in/artwork"
+      },
+      {
+        "text": "Privacy",
+        "href": "https://scaled-cook-card.sociobot.in/privacy"
+      },
+      {
+        "text": "Terms",
+        "href": "https://scaled-cook-card.sociobot.in/terms"
+      }
+    ],
+    "/privacy": [
+      {
+        "text": "Skip to main content",
+        "href": "https://scaled-cook-card.sociobot.in/privacy#main"
+      },
+      {
+        "text": "Scaled Cook Card",
+        "href": "https://scaled-cook-card.sociobot.in/"
+      },
+      {
+        "text": "Demo",
+        "href": "https://scaled-cook-card.sociobot.in/demo"
+      },
+      {
+        "text": "Privacy",
+        "href": "https://scaled-cook-card.sociobot.in/privacy"
+      },
+      {
+        "text": "Back to cook card",
+        "href": "https://scaled-cook-card.sociobot.in/"
+      },
+      {
+        "text": "Privacy",
+        "href": "https://scaled-cook-card.sociobot.in/privacy"
+      },
+      {
+        "text": "Terms",
+        "href": "https://scaled-cook-card.sociobot.in/terms"
+      },
+      {
+        "text": "Artwork provenance",
+        "href": "https://scaled-cook-card.sociobot.in/artwork"
+      },
+      {
+        "text": "Privacy",
+        "href": "https://scaled-cook-card.sociobot.in/privacy"
+      },
+      {
+        "text": "Terms",
+        "href": "https://scaled-cook-card.sociobot.in/terms"
+      }
+    ],
+    "/terms": [
+      {
+        "text": "Skip to main content",
+        "href": "https://scaled-cook-card.sociobot.in/terms#main"
+      },
+      {
+        "text": "Scaled Cook Card",
+        "href": "https://scaled-cook-card.sociobot.in/"
+      },
+      {
+        "text": "Demo",
+        "href": "https://scaled-cook-card.sociobot.in/demo"
+      },
+      {
+        "text": "Privacy",
+        "href": "https://scaled-cook-card.sociobot.in/privacy"
+      },
+      {
+        "text": "Back to cook card",
+        "href": "https://scaled-cook-card.sociobot.in/"
+      },
+      {
+        "text": "Privacy",
+        "href": "https://scaled-cook-card.sociobot.in/privacy"
+      },
+      {
+        "text": "Terms",
+        "href": "https://scaled-cook-card.sociobot.in/terms"
+      },
+      {
+        "text": "Artwork provenance",
+        "href": "https://scaled-cook-card.sociobot.in/artwork"
+      },
+      {
+        "text": "Privacy",
+        "href": "https://scaled-cook-card.sociobot.in/privacy"
+      },
+      {
+        "text": "Terms",
+        "href": "https://scaled-cook-card.sociobot.in/terms"
+      }
+    ],
+    "/artwork": [
+      {
+        "text": "Skip to main content",
+        "href": "https://scaled-cook-card.sociobot.in/artwork#main"
+      },
+      {
+        "text": "Scaled Cook Card",
+        "href": "https://scaled-cook-card.sociobot.in/"
+      },
+      {
+        "text": "Demo",
+        "href": "https://scaled-cook-card.sociobot.in/demo"
+      },
+      {
+        "text": "Privacy",
+        "href": "https://scaled-cook-card.sociobot.in/privacy"
+      },
+      {
+        "text": "Back to cook card",
+        "href": "https://scaled-cook-card.sociobot.in/"
+      },
+      {
+        "text": "Privacy",
+        "href": "https://scaled-cook-card.sociobot.in/privacy"
+      },
+      {
+        "text": "Terms",
+        "href": "https://scaled-cook-card.sociobot.in/terms"
+      },
+      {
+        "text": "Artwork provenance",
+        "href": "https://scaled-cook-card.sociobot.in/artwork"
+      },
+      {
+        "text": "Privacy",
+        "href": "https://scaled-cook-card.sociobot.in/privacy"
+      },
+      {
+        "text": "Terms",
+        "href": "https://scaled-cook-card.sociobot.in/terms"
+      }
+    ],
+    "/missing-review-6-link-crawl": [
+      {
+        "text": "Skip to main content",
+        "href": "https://scaled-cook-card.sociobot.in/missing-review-6-link-crawl#main"
+      },
+      {
+        "text": "↔ Scaled Cook Card",
+        "href": "https://scaled-cook-card.sociobot.in/"
+      },
+      {
+        "text": "Demo",
+        "href": "https://scaled-cook-card.sociobot.in/demo"
+      },
+      {
+        "text": "Privacy",
+        "href": "https://scaled-cook-card.sociobot.in/privacy"
+      },
+      {
+        "text": "Restore a license",
+        "href": "https://scaled-cook-card.sociobot.in/?history=upgrade"
+      },
+      {
+        "text": "Back to cook card",
+        "href": "https://scaled-cook-card.sociobot.in/"
+      },
+      {
+        "text": "Privacy",
+        "href": "https://scaled-cook-card.sociobot.in/privacy"
+      },
+      {
+        "text": "Terms",
+        "href": "https://scaled-cook-card.sociobot.in/terms"
+      },
+      {
+        "text": "Artwork provenance",
+        "href": "https://scaled-cook-card.sociobot.in/artwork"
+      }
+    ]
+  },
+  "results": [
+    {
+      "href": "https://scaled-cook-card.sociobot.in/#main",
+      "status": 200,
+      "fragment": "#main",
+      "fragmentExists": 1
+    },
+    {
+      "href": "https://scaled-cook-card.sociobot.in/",
+      "status": 200,
+      "fragment": null,
+      "fragmentExists": null
+    },
+    {
+      "href": "https://scaled-cook-card.sociobot.in/demo",
+      "status": 200,
+      "fragment": null,
+      "fragmentExists": null
+    },
+    {
+      "href": "https://scaled-cook-card.sociobot.in/privacy",
+      "status": 200,
+      "fragment": null,
+      "fragmentExists": null
+    },
+    {
+      "href": "https://scaled-cook-card.sociobot.in/terms",
+      "status": 200,
+      "fragment": null,
+      "fragmentExists": null
+    },
+    {
+      "href": "https://scaled-cook-card.sociobot.in/artwork",
+      "status": 200,
+      "fragment": null,
+      "fragmentExists": null
+    },
+    {
+      "href": "https://scaled-cook-card.sociobot.in/demo#main",
+      "status": 200,
+      "fragment": "#main",
+      "fragmentExists": 1
+    },
+    {
+      "href": "https://scaled-cook-card.sociobot.in/privacy#main",
+      "status": 200,
+      "fragment": "#main",
+      "fragmentExists": 1
+    },
+    {
+      "href": "https://scaled-cook-card.sociobot.in/terms#main",
+      "status": 200,
+      "fragment": "#main",
+      "fragmentExists": 1
+    },
+    {
+      "href": "https://scaled-cook-card.sociobot.in/artwork#main",
+      "status": 200,
+      "fragment": "#main",
+      "fragmentExists": 1
+    },
+    {
+      "href": "https://scaled-cook-card.sociobot.in/missing-review-6-link-crawl#main",
+      "status": 404,
+      "fragment": "#main",
+      "fragmentExists": 1
+    },
+    {
+      "href": "https://scaled-cook-card.sociobot.in/?history=upgrade",
+      "status": 200,
+      "fragment": null,
+      "fragmentExists": null
+    }
+  ]
+}

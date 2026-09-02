@@ -1,0 +1,6 @@
+PASS	npm test
+PASS	npm run lint
+PASS	npm run typecheck
+PASS	npm run build
+PASS	npm run test:e2e
+PASS	npm run test:checkout-enabled

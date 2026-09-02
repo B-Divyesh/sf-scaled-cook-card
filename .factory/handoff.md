@@ -1,20 +1,22 @@
-# Scaled Cook Card — independent verification 10 handoff
+# Scaled Cook Card — adversarial review 6 handoff
 
 ## Outcome
 
-**PASS.** Candidate `93a42bc3c371dfb15e572971107849f8e4023f1f` is verified at <https://scaled-cook-card.sociobot.in>. No product source was changed during verification.
+**PASS.** No product source was changed. The review found zero blocking or minor findings against source commit `18bf16d76f8a86919b3bf6158fa30fb425a7470c` and <https://scaled-cook-card.sociobot.in>.
+
+The complete review is [review-6.md](review-6.md).
 
 ## What was verified
 
-- All 20 required claim commands from `.factory/claims.json` passed independently after `npm ci`.
-- `npm test` (16 tests), `npm run lint`, `npm run typecheck`, `npm run build`, `npm run test:e2e` (62 tests), and `npm run test:checkout-enabled` (4 tests) passed.
-- The candidate-built JavaScript and live `/assets/index--SJgiHGi.js` match SHA-256: `9b31412a6e45b65b24a7d030096b1e8ca52f72a1d005f93f17bdf4ed4e6e3925`.
-- Live desktop/mobile QA passed: first-read/demo gate, import and recovery, scaling/fractions, cook mode, keyboard use, local corrections, offline reload, service-worker update, privacy request log, reduced motion, touch targets, headers, routes, and cache policy.
-- `verify-url.sh` passed with no console errors. Axe had zero serious/critical findings. Mobile Lighthouse recorded 100 performance, accessibility, best practices, and SEO.
+- Cold first-read clarity at 390 × 844 and 1440 × 900.
+- One-click realistic demo, `demo:scc:` isolation, reset, exit, real-data sentinel preservation, and live offline reload.
+- All 19 exact `.factory/claims.json` commands from a clean clone.
+- Every finding from reviews 1–5 against current source and live behavior.
+- Copy sentence counts, terminology, claim registration, route metadata, links, 404, history/focus behavior, request privacy, and visual identity.
+- Clean-clone unit tests, lint, typecheck, build, full Playwright suite, and checkout-enabled suite.
+- Live/default-build JavaScript identity and the live URL accessibility/console smoke check.
 
-See [independent verification 10](verification-10.md) and its [live evidence](evidence-verification-10/verify.json).
-
-## How to run and verify
+## How to verify
 
 ```bash
 npm ci
@@ -26,8 +28,8 @@ npm run test:e2e
 npm run test:checkout-enabled
 ```
 
-Open <https://scaled-cook-card.sociobot.in/?demo=1> for the isolated sample. **Reset demo** restores the supplied pasta card. **Start for real** discards only `demo:scc:` data.
+Open <https://scaled-cook-card.sociobot.in/?demo=1>. **Reset demo** restores the shipped pasta card. **Start for real** removes demo data without changing `scc:` storage.
 
 ## Known gaps and next steps
 
-None. Kitchen Pass checkout remains intentionally disabled in the public artifact; the complete free local/offline cook-card workflow, export, and license restoration remain usable.
+None. Kitchen Pass purchase is intentionally unavailable in the default deployment; the live copy states that limitation and license restoration remains available.

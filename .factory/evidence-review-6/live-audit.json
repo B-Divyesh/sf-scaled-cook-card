@@ -1,0 +1,251 @@
+{
+  "afterClick": {
+    "url": "https://scaled-cook-card.sociobot.in/?demo=1",
+    "h1": [
+      "Weeknight tomato pasta"
+    ],
+    "body": "Skip to main content\n\nScaled Cook Card\nDemo\nPrivacy\nRestore a license\nDemo — sample data, nothing is saved to your real cook card.\nReset demo\nStart for real\n\nYOUR COOK CARD\n\nWeeknight tomato pasta\n\nOriginal recipe: 4 servings · 4 steps\n\nServes\n−\nNumber of servings\n+\nStart cook mode\n\nRecipe scaled to 4 servings.\n\nA\nScaled ingredients\n400 g\ndried pasta\n800 g\ncrushed tomatoes\n2 tbsp\nolive oil\n3 cloves\ngarlic\n1 tsp\nfine salt\nB\n\nSCALED AMOUNTS APPEAR IN BLUE\n\nProcedure\n01\n\nBring a large pot of water to a boil. Add 1 tsp fine salt.\n\n02\n\nWarm 2 tbsp olive oil in a wide pan. Add 3 cloves garlic and cook until fragrant.\n\n03\n\nStir in 800 g crushed tomatoes and simmer for 12 minutes.\n\n04\n\nCook 400 g dried pasta until just tender, then toss through the sauce.\n\nAFTER COOKING\n\nCorrection ledger\n\nFinish a cook to save the real yield, substitutions, and notes on this device.\n\nStart cooking\nExport scaled cook card JSON\nImport another\nRemove this card\n\nScaled cook cards for home cooks.\n\nPrivacy\nTerms\n\nBuilt by Param Factory · build 2026.09.02-polish.5. Artwork provenance.",
+    "storage": {
+      "scc:review-6-sentinel": "real-data"
+    },
+    "banner": "Demo — sample data, nothing is saved to your real cook card.\nReset demo\nStart for real"
+  },
+  "scaled": {
+    "pasta": 2,
+    "storage": {
+      "scc:review-6-sentinel": "real-data",
+      "demo:scc:target-servings": "6"
+    }
+  },
+  "reset": {
+    "servings": "4",
+    "storage": {
+      "demo:scc:active-recipe": "{\"id\":\"recipe-1unmmea\",\"title\":\"Weeknight tomato pasta\",\"servings\":4,\"ingredients\":[{\"id\":\"pasta\",\"name\":\"dried pasta\",\"quantity\":400,\"unit\":\"g\"},{\"id\":\"tomatoes\",\"name\":\"crushed tomatoes\",\"quantity\":800,\"unit\":\"g\"},{\"id\":\"oil\",\"name\":\"olive oil\",\"quantity\":2,\"unit\":\"tbsp\"},{\"id\":\"garlic\",\"name\":\"garlic\",\"quantity\":3,\"unit\":\"cloves\"},{\"id\":\"salt\",\"name\":\"fine salt\",\"quantity\":1,\"unit\":\"tsp\"}],\"steps\":[{\"text\":\"Bring a large pot of water to a boil. Add {{salt}}.\"},{\"text\":\"Warm {{oil}} in a wide pan. Add {{garlic}} and cook until fragrant.\"},{\"text\":\"Stir in {{tomatoes}} and simmer for 12 minutes.\"},{\"text\":\"Cook {{pasta}} until just tender, then toss through the sauce.\"}]}",
+      "scc:review-6-sentinel": "real-data",
+      "demo:scc:target-servings": "4"
+    }
+  },
+  "exit": {
+    "url": "https://scaled-cook-card.sociobot.in/",
+    "storage": {
+      "scc:review-6-sentinel": "real-data"
+    },
+    "h1": "Scale recipe amounts\nin every step."
+  },
+  "routes": {
+    "/": {
+      "status": 200,
+      "title": "Scaled Cook Card — scale recipe steps",
+      "h1Count": 1,
+      "h1": [
+        "Scale recipe amounts\nin every step."
+      ],
+      "mainCount": 1,
+      "description": "Scale a recipe once, then see the right ingredient amount in every cooking step.",
+      "canonical": "https://scaled-cook-card.sociobot.in/",
+      "ogTitle": "Scaled Cook Card — scale recipe steps",
+      "ogImage": "https://scaled-cook-card.sociobot.in/social-card.jpg",
+      "twitter": "summary_large_image",
+      "lang": "en",
+      "headerLinks": [
+        "Scaled Cook Card",
+        "Demo",
+        "Privacy",
+        "Restore a license"
+      ],
+      "footerLinks": [
+        "Privacy",
+        "Terms",
+        "Artwork provenance"
+      ]
+    },
+    "/demo": {
+      "status": 200,
+      "title": "Demo — Scaled Cook Card",
+      "h1Count": 1,
+      "h1": [
+        "Weeknight tomato pasta"
+      ],
+      "mainCount": 1,
+      "description": "Try Scaled Cook Card with a sample recipe.",
+      "canonical": "https://scaled-cook-card.sociobot.in/demo",
+      "ogTitle": "Demo — Scaled Cook Card",
+      "ogImage": "https://scaled-cook-card.sociobot.in/social-card.jpg",
+      "twitter": "summary_large_image",
+      "lang": "en",
+      "headerLinks": [
+        "Scaled Cook Card",
+        "Demo",
+        "Privacy",
+        "Restore a license"
+      ],
+      "footerLinks": [
+        "Privacy",
+        "Terms",
+        "Artwork provenance"
+      ]
+    },
+    "/privacy": {
+      "status": 200,
+      "title": "Privacy — Scaled Cook Card",
+      "h1Count": 1,
+      "h1": [
+        "Privacy, in plain language"
+      ],
+      "mainCount": 1,
+      "description": "How Scaled Cook Card keeps recipe data in your browser.",
+      "canonical": "https://scaled-cook-card.sociobot.in/privacy",
+      "ogTitle": "Privacy — Scaled Cook Card",
+      "ogImage": "https://scaled-cook-card.sociobot.in/social-card.jpg",
+      "twitter": "summary_large_image",
+      "lang": "en",
+      "headerLinks": [
+        "Scaled Cook Card",
+        "Demo",
+        "Privacy",
+        "Restore a license"
+      ],
+      "footerLinks": [
+        "Privacy",
+        "Terms",
+        "Artwork provenance"
+      ]
+    },
+    "/terms": {
+      "status": 200,
+      "title": "Terms — Scaled Cook Card",
+      "h1Count": 1,
+      "h1": [
+        "Terms of use"
+      ],
+      "mainCount": 1,
+      "description": "Terms for using Scaled Cook Card.",
+      "canonical": "https://scaled-cook-card.sociobot.in/terms",
+      "ogTitle": "Terms — Scaled Cook Card",
+      "ogImage": "https://scaled-cook-card.sociobot.in/social-card.jpg",
+      "twitter": "summary_large_image",
+      "lang": "en",
+      "headerLinks": [
+        "Scaled Cook Card",
+        "Demo",
+        "Privacy",
+        "Restore a license"
+      ],
+      "footerLinks": [
+        "Privacy",
+        "Terms",
+        "Artwork provenance"
+      ]
+    },
+    "/artwork": {
+      "status": 200,
+      "title": "Artwork provenance — Scaled Cook Card",
+      "h1Count": 1,
+      "h1": [
+        "Original notebook artwork"
+      ],
+      "mainCount": 1,
+      "description": "Original notebook artwork made for Scaled Cook Card.",
+      "canonical": "https://scaled-cook-card.sociobot.in/artwork",
+      "ogTitle": "Artwork provenance — Scaled Cook Card",
+      "ogImage": "https://scaled-cook-card.sociobot.in/social-card.jpg",
+      "twitter": "summary_large_image",
+      "lang": "en",
+      "headerLinks": [
+        "Scaled Cook Card",
+        "Demo",
+        "Privacy",
+        "Restore a license"
+      ],
+      "footerLinks": [
+        "Privacy",
+        "Terms",
+        "Artwork provenance"
+      ]
+    },
+    "/definitely-missing-review-6": {
+      "status": 404,
+      "title": "Page not found — Scaled Cook Card",
+      "h1Count": 1,
+      "h1": [
+        "That cook card page is missing."
+      ],
+      "mainCount": 1,
+      "description": "This Scaled Cook Card page is not available.",
+      "canonical": "https://scaled-cook-card.sociobot.in/404",
+      "ogTitle": "Page not found — Scaled Cook Card",
+      "ogImage": "https://scaled-cook-card.sociobot.in/social-card.jpg",
+      "twitter": "summary_large_image",
+      "lang": "en",
+      "headerLinks": [
+        "↔\nScaled Cook Card",
+        "Demo",
+        "Privacy",
+        "Restore a license"
+      ],
+      "footerLinks": [
+        "Privacy",
+        "Terms",
+        "Artwork provenance"
+      ]
+    }
+  },
+  "firstTab": {
+    "text": "Skip to main content",
+    "href": "#main"
+  },
+  "privacyFocus": {
+    "tag": "H1",
+    "text": "Privacy, in plain language",
+    "announcement": "Opened Privacy."
+  },
+  "backFocus": {
+    "url": "https://scaled-cook-card.sociobot.in/",
+    "tag": "H1",
+    "text": "Scale recipe amounts in every step.",
+    "announcement": "Page changed."
+  },
+  "linkStatus": [
+    {
+      "href": "https://scaled-cook-card.sociobot.in/#main",
+      "status": 200
+    },
+    {
+      "href": "https://scaled-cook-card.sociobot.in/",
+      "status": 200
+    },
+    {
+      "href": "https://scaled-cook-card.sociobot.in/demo",
+      "status": 200
+    },
+    {
+      "href": "https://scaled-cook-card.sociobot.in/privacy",
+      "status": 200
+    },
+    {
+      "href": "https://scaled-cook-card.sociobot.in/terms",
+      "status": 200
+    },
+    {
+      "href": "https://scaled-cook-card.sociobot.in/artwork",
+      "status": 200
+    }
+  ],
+  "requests": [
+    "https://scaled-cook-card.sociobot.in/",
+    "https://scaled-cook-card.sociobot.in/assets/index--SJgiHGi.js",
+    "https://scaled-cook-card.sociobot.in/assets/style-DFv06S3l.css",
+    "https://scaled-cook-card.sociobot.in/hero-notebook-v1-1280.avif",
+    "https://scaled-cook-card.sociobot.in/?demo=1",
+    "https://scaled-cook-card.sociobot.in/demo",
+    "https://scaled-cook-card.sociobot.in/privacy",
+    "https://scaled-cook-card.sociobot.in/terms",
+    "https://scaled-cook-card.sociobot.in/artwork",
+    "https://scaled-cook-card.sociobot.in/definitely-missing-review-6",
+    "https://scaled-cook-card.sociobot.in/404.css"
+  ],
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 404 ()"
+  ],
+  "pageErrors": []
+}

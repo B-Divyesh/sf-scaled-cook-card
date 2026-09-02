@@ -1,0 +1,7 @@
+live_url=https://scaled-cook-card.sociobot.in/assets/index--SJgiHGi.js
+live_sha256=9b31412a6e45b65b24a7d030096b1e8ca52f72a1d005f93f17bdf4ed4e6e3925
+live_bytes=80312
+clean_build_path=/assets/index--SJgiHGi.js
+clean_build_sha256=9b31412a6e45b65b24a7d030096b1e8ca52f72a1d005f93f17bdf4ed4e6e3925
+clean_build_bytes=80312
+match=true

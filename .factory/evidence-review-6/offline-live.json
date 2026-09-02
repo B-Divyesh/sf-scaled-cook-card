@@ -1,0 +1,17 @@
+{
+  "controlled": true,
+  "error": null,
+  "url": "https://scaled-cook-card.sociobot.in/?demo=1",
+  "h1": [
+    "Weeknight tomato pasta"
+  ],
+  "banner": [
+    "Demo — sample data, nothing is saved to your real cook card.\nReset demo\nStart for real"
+  ],
+  "body": "Skip to main content\n\nScaled Cook Card\n●\nOffline — your card still works\nDemo\nPrivacy\nRestore a license\nDemo — sample data, nothing is saved to your real cook card.\nReset demo\nStart for real\n\nYOUR COOK CARD\n\nWeeknight tomato pasta\n\nOriginal recipe: 4 servings · 4 steps\n\nServes\n−\nNumber of servings\n+\nStart cook mode\n\nRecipe scaled to 4 servings.\n\nA\nScaled ingredients\n400 g\ndried pasta\n800 g\ncrushed tomatoes\n2 tbsp\nolive oil\n3 cloves\ngarlic\n1 tsp\nfine salt\nB\n\nSCALED AMOUNTS APPEAR IN BLUE\n\nProcedure\n01\n\nBring a large pot of water to a boil. Add 1 tsp fine salt.\n\n02\n\nWarm 2 tbsp olive oil in a wi",
+  "requests": [
+    "https://scaled-cook-card.sociobot.in/?demo=1",
+    "https://scaled-cook-card.sociobot.in/assets/index--SJgiHGi.js",
+    "https://scaled-cook-card.sociobot.in/assets/style-DFv06S3l.css"
+  ]
+}
