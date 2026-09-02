@@ -58,6 +58,11 @@ try {
   const landingAxe = await new AxeBuilder({ page }).analyze();
   record('landing has zero serious or critical axe findings', serious(landingAxe).length === 0, JSON.stringify(serious(landingAxe).map((v) => ({ id: v.id, impact: v.impact }))));
 
+  await page.locator('.site-header').getByRole('button', { name: 'Restore a license', exact: true }).click();
+  const freeTierCopy = await page.locator('#pass-dialog p').evaluateAll((items) => items.map((item) => item.textContent?.trim()));
+  record('free-tier limits use two short sentences', freeTierCopy.includes('The free cook card scales, cooks, works offline, and exports the card.') && freeTierCopy.includes('It keeps one card with its latest correction.'), JSON.stringify(freeTierCopy));
+  await page.getByRole('button', { name: 'Close Kitchen Pass dialog' }).click();
+
   await page.evaluate(() => localStorage.setItem('scc:live-demo-sentinel', 'real-data'));
   await page.getByRole('button', { name: /try it with sample data/i }).click();
   await page.waitForURL(`${base}/?demo=1`);
@@ -175,6 +180,32 @@ try {
   const capturedToken = await licensePage.evaluate(() => localStorage.getItem('sb_license:scaled-cook-card'));
   record('return license is stored, scrubbed, and fixture-verified', licensePage.url() === `${base}/` && capturedToken === 'fixture-return-license' && interceptedVerification.endsWith('license=fixture-return-license') && await licensePage.getByRole('button', { name: 'History upgrade active' }).isVisible(), `url=${licensePage.url()} token=${capturedToken} intercepted=${interceptedVerification}`);
   await licenseContext.close();
+
+  const wakeContext = await browser.newContext();
+  await wakeContext.addInitScript(() => {
+    const wakeTest = { requests: [], releases: 0 };
+    Object.defineProperty(window, '__wakeTest', { value: wakeTest, configurable: true });
+    Object.defineProperty(navigator, 'wakeLock', {
+      configurable: true,
+      value: {
+        request: async (type) => {
+          wakeTest.requests.push(type);
+          return { released: false, addEventListener: () => undefined, release: async () => { wakeTest.releases += 1; } };
+        },
+      },
+    });
+  });
+  const wakePage = await wakeContext.newPage();
+  await wakePage.goto(`${base}/?demo=1`, { waitUntil: 'networkidle' });
+  await wakePage.getByRole('button', { name: /start cook mode/i }).click();
+  await wakePage.getByLabel('Keep screen awake').check();
+  await wakePage.getByText('Screen wake is active.').waitFor({ state: 'visible' });
+  const wakeActive = await wakePage.getByText('Screen wake is active.').isVisible();
+  await wakePage.getByRole('button', { name: 'Exit cook mode' }).click();
+  await wakePage.waitForFunction(() => window.__wakeTest.releases === 1);
+  const wakeResult = await wakePage.evaluate(() => window.__wakeTest);
+  record('live cook mode requests and releases screen wake', wakeActive && wakeResult.requests.join(',') === 'screen' && wakeResult.releases === 1, JSON.stringify(wakeResult));
+  await wakeContext.close();
 
   const mobileContext = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, isMobile: false });
   const mobilePage = await mobileContext.newPage();
